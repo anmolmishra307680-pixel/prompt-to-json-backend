@@ -15,6 +15,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from src.extractor import extract_basic_fields
+from src.schema import save_valid_spec
 from evaluator_agent import evaluate_spec
 from utils import apply_fallbacks, save_json
 
@@ -39,15 +40,20 @@ def run_pipeline(prompt):
     spec_data = apply_fallbacks(extracted)
     print(f"   Final spec: {spec_data}")
     
-    # Step 3: Save specification
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    slug = create_slug(prompt)
-    spec_filename = f"{slug}_{timestamp}.json"
-    spec_path = f"spec_outputs/{spec_filename}"
+    # Step 3: Validate and save specification
+    print("3. Validating and saving spec...")
+    spec_path = save_valid_spec(spec_data, prompt=prompt)
     
-    os.makedirs("spec_outputs", exist_ok=True)
-    save_json(spec_data, spec_path)
-    print(f"3. Saved spec to: {spec_path}")
+    if not spec_path:
+        print("   [ERROR] Spec validation failed, using fallback save")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        slug = create_slug(prompt)
+        spec_filename = f"{slug}_{timestamp}.json"
+        spec_path = f"spec_outputs/{spec_filename}"
+        os.makedirs("spec_outputs", exist_ok=True)
+        save_json(spec_data, spec_path)
+    
+    print(f"   Saved to: {spec_path}")
     
     # Step 4: Evaluate specification
     print("4. Evaluating spec...")
@@ -55,6 +61,8 @@ def run_pipeline(prompt):
     print(f"   Evaluation: {evaluation['severity']} - {evaluation['critic_feedback']}")
     
     # Step 5: Save evaluation
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    slug = create_slug(prompt)
     eval_filename = f"eval_{slug}_{timestamp}.json"
     eval_path = f"evaluations/{eval_filename}"
     
@@ -72,6 +80,7 @@ def run_pipeline(prompt):
     print("\n=== PIPELINE SUMMARY ===")
     print(f"Prompt: {prompt}")
     print(f"Spec: {spec_path}")
+    # print(f"Validated: {'Yes' if validated else 'No'}")
     print(f"Evaluation: {evaluation['severity']} severity")
     print(f"Issues: {len(evaluation['issues'])}")
     print(f"Feedback: {evaluation['critic_feedback']}")
@@ -80,7 +89,8 @@ def run_pipeline(prompt):
         "spec_path": spec_path,
         "eval_path": eval_path,
         "spec_data": spec_data,
-        "evaluation": evaluation
+        "evaluation": evaluation,
+        "validated": spec_path is not None and 'validation_errors' not in str(spec_path)
     }
 
 def main():

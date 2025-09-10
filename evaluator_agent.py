@@ -22,21 +22,33 @@ def evaluate_spec(prompt, spec):
         issues.append("type_missing")
         critic_parts.append("Type specification is missing or unclear")
     
-    # Check material
-    material = spec.get('material', '').lower()
-    if not material or material in ['unspecified', 'default']:
+    # Check material (handle both string and list formats)
+    material = spec.get('material', '')
+    if isinstance(material, list):
+        material_str = ', '.join(material).lower()
+        material_list = [m.lower() for m in material]
+    else:
+        material_str = str(material).lower()
+        material_list = [material_str]
+    
+    if not material_str or material_str in ['unspecified', 'default']:
         issues.append("material_missing")
         critic_parts.append("Material not specified")
-    elif not any(known.lower() in material for known in KNOWN_MATERIALS):
+    elif not any(known.lower() in mat for mat in material_list for known in KNOWN_MATERIALS):
         issues.append("material_unrecognized")
-        critic_parts.append(f"Material '{material}' not recognized")
+        critic_parts.append(f"Material '{material_str}' not recognized")
     
-    # Check dimensions
+    # Check dimensions (handle both string and dict formats)
     dimensions = spec.get('dimensions', '')
-    if not dimensions or dimensions in ['standard', 'default']:
+    if isinstance(dimensions, dict):
+        dim_str = str(dimensions.get('raw', ''))
+    else:
+        dim_str = str(dimensions)
+    
+    if not dim_str or dim_str in ['standard', 'default', 'None']:
         issues.append("dimensions_missing")
         critic_parts.append("Dimensions are missing (provide specific measurements)")
-    elif not any(unit in dimensions.lower() for unit in ['feet', 'ft', 'cm', 'm', 'inches', 'in']):
+    elif dim_str != 'None' and not any(unit in dim_str.lower() for unit in ['feet', 'ft', 'cm', 'm', 'inches', 'in', 'floor']):
         issues.append("dimensions_unparseable")
         critic_parts.append("Dimensions format unclear or missing units")
     
