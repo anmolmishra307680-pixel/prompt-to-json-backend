@@ -1,0 +1,62 @@
+[
+  {
+    "prompt": "Create a red gearbox with steel gears for automotive use.",
+    "extracted_fields": {
+      "type": "gearbox",
+      "material": ["steel"],
+      "color": "red",
+      "dimensions": null,
+      "purpose": "automotive use",
+      "extras": null
+    },
+    "generated_spec": "data/spec_outputs/gearbox.json"
+  },
+  {
+    "prompt": "Design a 2-floor house using brick and wood.",
+    "extracted_fields": {
+      "type": "house",
+      "material": ["brick", "wood"],
+      "color": null,
+      "dimensions": "2-floor",
+      "purpose": null,
+      "extras": null
+    },
+    "generated_spec": "data/spec_outputs/house.json"
+  },
+  {
+    "prompt": "Create a lightweight drone body using carbon fiber.",
+    "extracted_fields": {
+      "type": "drone",
+      "material": ["carbon fiber"],
+      "color": null,
+      "dimensions": null,
+      "purpose": null,
+      "extras": null
+    },
+    "generated_spec": "data/spec_outputs/drone.json"
+  },
+  {
+    "prompt": "Build a treasure chest for a medieval game.",
+    "extracted_fields": {
+      "type": "chest",
+      "material": ["unspecified"],
+      "color": null,
+      "dimensions": null,
+      "purpose": "a medieval game",
+      "extras": null
+    },
+    "generated_spec": "data/spec_outputs/chest.json"
+  },
+  {
+    "prompt": "Model a robotic hand for surgery.",
+    "extracted_fields": {
+      "type": "robotic hand",
+      "material": ["unspecified"],
+      "color": null,
+      "dimensions": null,
+      "purpose": "surgery",
+      "extras": null
+    },
+    "generated_spec": "data/spec_outputs/robotic_hand.json"
+  }
+]

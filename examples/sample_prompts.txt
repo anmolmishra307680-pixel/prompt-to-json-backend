@@ -1,0 +1,31 @@
+# Sample Prompts for Prompt-to-JSON Agent
+
+## Architecture & Buildings
+- Design a 2-floor house using brick and wood.
+- Create a modern office building with glass and steel.
+- Build a medieval castle using stone and wood.
+
+## Mechanical Objects
+- Create a red gearbox with steel gears for automotive use.
+- Design a lightweight drone body using carbon fiber.
+- Model a robotic hand for surgery applications.
+
+## Game Assets
+- Build a treasure chest for a medieval game.
+- Generate a desert scene for a fantasy game.
+- Create a magical throne for a fantasy RPG.
+
+## Furniture & Decor
+- Design a wooden dining table for 6 people.
+- Create a leather armchair in brown color.
+- Build a bookshelf using oak wood.
+
+## Vehicles & Transportation
+- Design a sports car with aluminum body.
+- Create a bicycle frame using carbon fiber.
+- Model a helicopter rotor system.
+
+## Tools & Equipment
+- Create a surgical instrument set using stainless steel.
+- Design a camping tent for 4 people.
+- Build a telescope mount using aluminum.
