@@ -5,3 +5,45 @@ type
     For further information visit https://errors.pydantic.dev/2.9/v/missing
 Timestamp: 2025-09-10T14:47:57.256223
 
+Validation failed for spec: {'material': ['wood'], 'color': 'brown'}
+Errors: 1 validation error for DesignSpec
+type
+  Field required [type=missing, input_value={'material': ['wood'], 'color': 'brown'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Timestamp: 2025-09-10T15:32:30.911825
+
+Validation failed for spec: {'material': ['wood'], 'color': 'brown'}
+Errors: 1 validation error for DesignSpec
+type
+  Field required [type=missing, input_value={'material': ['wood'], 'color': 'brown'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Timestamp: 2025-09-10T15:34:41.134464
+
+Validation failed for spec: {'material': ['wood'], 'color': 'brown'}
+Errors: 1 validation error for DesignSpec
+type
+  Field required [type=missing, input_value={'material': ['wood'], 'color': 'brown'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Timestamp: 2025-09-10T15:35:50.455027
+
+Validation failed for spec: {'material': ['wood'], 'color': 'brown'}
+Errors: 1 validation error for DesignSpec
+type
+  Field required [type=missing, input_value={'material': ['wood'], 'color': 'brown'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Timestamp: 2025-09-10T15:37:08.810497
+
+Validation failed for spec: {'material': ['wood'], 'color': 'brown'}
+Errors: 1 validation error for DesignSpec
+type
+  Field required [type=missing, input_value={'material': ['wood'], 'color': 'brown'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Timestamp: 2025-09-10T15:37:39.669813
+
+Validation failed for spec: {'material': ['wood'], 'color': 'brown'}
+Errors: 1 validation error for DesignSpec
+type
+  Field required [type=missing, input_value={'material': ['wood'], 'color': 'brown'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Timestamp: 2025-09-10T15:38:17.201260
+

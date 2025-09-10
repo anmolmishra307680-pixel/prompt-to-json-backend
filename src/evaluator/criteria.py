@@ -129,13 +129,13 @@ def check_dimensions_validity(spec: Dict[str, Any]) -> Tuple[bool, str]:
 
 def check_purpose_consistency(spec: Dict[str, Any], prompt: str) -> Tuple[bool, str]:
     """Check if purpose is specified and consistent."""
-    purpose = spec.get('purpose', '').lower().strip()
+    purpose = str(spec.get('purpose', '')).lower().strip()
     
     if not purpose or purpose in ['general', 'unspecified']:
         return False, "Purpose or intended use not specified"
     
     # Check type-purpose consistency
-    spec_type = spec.get('type', '').lower()
+    spec_type = str(spec.get('type', '')).lower()
     if spec_type in TYPE_RULES:
         typical_purposes = TYPE_RULES[spec_type].get('typical_purposes', [])
         if typical_purposes and not any(tp in purpose for tp in typical_purposes):
@@ -157,7 +157,7 @@ def check_eco_requirements(spec: Dict[str, Any], prompt: str) -> Tuple[bool, str
 
 def check_type_specific_requirements(spec: Dict[str, Any]) -> Tuple[bool, str]:
     """Check type-specific requirements."""
-    spec_type = spec.get('type', '').lower()
+    spec_type = str(spec.get('type', '')).lower()
     
     if spec_type not in TYPE_RULES:
         return True, ""  # No specific rules for this type
@@ -200,7 +200,7 @@ def generate_recommendations(issues: List[str], spec: Dict[str, Any], prompt: st
         recommendations.append("Add sustainable or energy-efficient features as requested")
     
     # Type-specific recommendations
-    spec_type = spec.get('type', '').lower()
+    spec_type = str(spec.get('type', '')).lower()
     if spec_type == "building" and "floors" not in str(spec.get('dimensions', {})):
         recommendations.append("Specify number of floors for building")
     
