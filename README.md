@@ -40,3 +40,10 @@ prompt-to-json-agent/
    ```bash
    pip install -r requirements.txt
    ```
+
+## Testing
+
+Run tests with pytest:
+```bash
+python -m pytest tests/ -v
+```
