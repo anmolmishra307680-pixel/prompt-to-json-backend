@@ -1,7 +1,6 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
 *.pyc
 
 # Virtual Environment
@@ -26,3 +25,7 @@ sample_outputs/*.json
 
 # Keep important sample files
 !sample_outputs/pipeline_summary.json
+
+# Development files (optional for production)
+advanced_demo.py
+test_multi_material.py

@@ -102,13 +102,18 @@ def extract_basic_fields(prompt):
             purpose_match = purpose
             break
     
-    # Type-specific purpose inference
+    # Type-specific purpose inference (fixed mapping)
     if not purpose_match and type_match:
         type_purpose_map = {
             'drone': 'aerial',
             'throne': 'ceremonial',
-            'library': 'library',
-            'cabinet': 'storage'
+            'library': 'study',
+            'cabinet': 'storage',
+            'table': 'dining',
+            'chair': 'seating',
+            'shelf': 'storage',
+            'sofa': 'seating',
+            'bed': 'sleeping'
         }
         purpose_match = type_purpose_map.get(type_match)
     

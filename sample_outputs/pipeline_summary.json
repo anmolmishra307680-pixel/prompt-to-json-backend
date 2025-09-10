@@ -1,8 +1,8 @@
 {
   "total_runs": 5,
-  "timestamp": "2025-09-10T13:39:27.081506",
-  "average_score": 6.6,
-  "average_reward": 0.132,
+  "timestamp": "2025-09-10T13:50:51.166615",
+  "average_score": 8.4,
+  "average_reward": 0.632,
   "results_summary": [
     {
       "category": "architectural",
@@ -21,23 +21,23 @@
     {
       "category": "props",
       "prompt": "Build a medieval wooden throne with gold accents...",
-      "score": 6.0,
-      "reward": 0.12,
-      "issues_count": 1
+      "score": 9.0,
+      "reward": 0.9,
+      "issues_count": 0
     },
     {
       "category": "scene",
       "prompt": "Design a modern glass coffee table for living room...",
-      "score": 7.0,
-      "reward": 0.13999999999999999,
-      "issues_count": 1
+      "score": 10.0,
+      "reward": 1.0,
+      "issues_count": 0
     },
     {
       "category": "medical",
       "prompt": "Create a stainless steel surgical instrument cabin...",
-      "score": 7.0,
-      "reward": 0.13999999999999999,
-      "issues_count": 1
+      "score": 10.0,
+      "reward": 1.0,
+      "issues_count": 0
     }
   ]
 }
