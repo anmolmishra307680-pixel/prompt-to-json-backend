@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-09-10T12:31:46.512585",
+  "prompt": "Design a 2-floor eco-friendly library with glass and concrete",
+  "extracted_fields": {
+    "type": null,
+    "material": "glass",
+    "color": null,
+    "dimensions": null,
+    "purpose": null
+  },
+  "spec": {
+    "type": "unknown",
+    "material": "glass",
+    "color": "default",
+    "dimensions": "standard",
+    "purpose": "general"
+  },
+  "spec_path": "spec_outputs/architectural_spec.json",
+  "evaluation": {
+    "critic_feedback": "Type specification is missing or unclear. Dimensions are missing (provide specific measurements). Purpose or intended use not specified. No mention of energy efficiency or sustainable features.",
+    "issues": [
+      "type_missing",
+      "dimensions_missing",
+      "purpose_missing",
+      "energy_source_missing"
+    ],
+    "severity": "major"
+  },
+  "scoring": {
+    "format_score": 4.0,
+    "completeness_score": 1,
+    "material_realism_score": 3,
+    "dimension_validity_score": 0,
+    "type_match_score": 0,
+    "explanations": [
+      "Missing or default value for type",
+      "Missing or default value for dimensions",
+      "Missing or default value for purpose",
+      "Dimensions not parseable or missing"
+    ]
+  },
+  "reward": -0.4,
+  "dashboard": {
+    "prompt": "Design a 2-floor eco-friendly library with glass and concrete",
+    "spec_score": 4.0,
+    "completeness_score": 1,
+    "material_realism_score": 3,
+    "dimension_validity_score": 0,
+    "type_match_score": 0,
+    "critic": "Type specification is missing or unclear. Dimensions are missing (provide specific measurements). Purpose or intended use not specified. No mention of energy efficiency or sustainable features.",
+    "reward": -0.4,
+    "explanations": [
+      "Missing or default value for type",
+      "Missing or default value for dimensions",
+      "Missing or default value for purpose",
+      "Dimensions not parseable or missing"
+    ]
+  }
+}

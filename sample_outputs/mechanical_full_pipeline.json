@@ -1,0 +1,63 @@
+{
+  "timestamp": "2025-09-10T12:31:46.514542",
+  "prompt": "Create a lightweight drone body using carbon fiber",
+  "extracted_fields": {
+    "type": null,
+    "material": null,
+    "color": null,
+    "dimensions": null,
+    "purpose": null
+  },
+  "spec": {
+    "type": "unknown",
+    "material": "unspecified",
+    "color": "default",
+    "dimensions": "standard",
+    "purpose": "general"
+  },
+  "spec_path": "spec_outputs/mechanical_spec.json",
+  "evaluation": {
+    "critic_feedback": "Type specification is missing or unclear. Material not specified. Dimensions are missing (provide specific measurements). Purpose or intended use not specified.",
+    "issues": [
+      "type_missing",
+      "material_missing",
+      "dimensions_missing",
+      "purpose_missing"
+    ],
+    "severity": "major"
+  },
+  "scoring": {
+    "format_score": 0.0,
+    "completeness_score": 0,
+    "material_realism_score": 0,
+    "dimension_validity_score": 0,
+    "type_match_score": 0,
+    "explanations": [
+      "Missing or default value for type",
+      "Missing or default value for material",
+      "Missing or default value for dimensions",
+      "Missing or default value for purpose",
+      "No material specified",
+      "Dimensions not parseable or missing"
+    ]
+  },
+  "reward": -0.0,
+  "dashboard": {
+    "prompt": "Create a lightweight drone body using carbon fiber",
+    "spec_score": 0.0,
+    "completeness_score": 0,
+    "material_realism_score": 0,
+    "dimension_validity_score": 0,
+    "type_match_score": 0,
+    "critic": "Type specification is missing or unclear. Material not specified. Dimensions are missing (provide specific measurements). Purpose or intended use not specified.",
+    "reward": -0.0,
+    "explanations": [
+      "Missing or default value for type",
+      "Missing or default value for material",
+      "Missing or default value for dimensions",
+      "Missing or default value for purpose",
+      "No material specified",
+      "Dimensions not parseable or missing"
+    ]
+  }
+}

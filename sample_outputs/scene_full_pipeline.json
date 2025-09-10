@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-09-10T12:31:46.517413",
+  "prompt": "Design a modern glass coffee table for living room",
+  "extracted_fields": {
+    "type": "table",
+    "material": "glass",
+    "color": null,
+    "dimensions": null,
+    "purpose": "living room"
+  },
+  "spec": {
+    "type": "table",
+    "material": "glass",
+    "color": "default",
+    "dimensions": "standard",
+    "purpose": "living room"
+  },
+  "spec_path": "spec_outputs/scene_spec.json",
+  "evaluation": {
+    "critic_feedback": "Dimensions are missing (provide specific measurements).",
+    "issues": [
+      "dimensions_missing"
+    ],
+    "severity": "minor"
+  },
+  "scoring": {
+    "format_score": 7.0,
+    "completeness_score": 3,
+    "material_realism_score": 3,
+    "dimension_validity_score": 0,
+    "type_match_score": 1,
+    "explanations": [
+      "Missing or default value for dimensions",
+      "Dimensions not parseable or missing"
+    ]
+  },
+  "reward": 0.13999999999999999,
+  "dashboard": {
+    "prompt": "Design a modern glass coffee table for living room",
+    "spec_score": 7.0,
+    "completeness_score": 3,
+    "material_realism_score": 3,
+    "dimension_validity_score": 0,
+    "type_match_score": 1,
+    "critic": "Dimensions are missing (provide specific measurements).",
+    "reward": 0.13999999999999999,
+    "explanations": [
+      "Missing or default value for dimensions",
+      "Dimensions not parseable or missing"
+    ]
+  }
+}
