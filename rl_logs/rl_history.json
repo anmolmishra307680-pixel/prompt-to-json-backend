@@ -1,0 +1,62 @@
+[
+  {
+    "timestamp": "2025-09-10T12:25:51.473443",
+    "prompt": "Create a wooden dining table",
+    "spec_path": "spec_outputs/rl_spec_2025-09-10T12-25-51.json",
+    "critic_issues": [
+      "dimensions_missing"
+    ],
+    "spec_score": null,
+    "reward": 0.2,
+    "notes": "auto"
+  },
+  {
+    "timestamp": "2025-09-10T12:25:51.475103",
+    "prompt": "Design a metal office chair",
+    "spec_path": "spec_outputs/rl_spec_2025-09-10T12-25-51.json",
+    "critic_issues": [
+      "dimensions_missing"
+    ],
+    "spec_score": null,
+    "reward": 0.2,
+    "notes": "auto"
+  },
+  {
+    "timestamp": "2025-09-10T12:25:51.476129",
+    "prompt": "Make a glass coffee table",
+    "spec_path": "spec_outputs/rl_spec_2025-09-10T12-25-51.json",
+    "critic_issues": [
+      "dimensions_missing",
+      "purpose_missing"
+    ],
+    "spec_score": null,
+    "reward": 0.2,
+    "notes": "auto"
+  },
+  {
+    "timestamp": "2025-09-10T12:25:51.477172",
+    "prompt": "Build a storage cabinet",
+    "spec_path": "spec_outputs/rl_spec_2025-09-10T12-25-51.json",
+    "critic_issues": [
+      "material_missing",
+      "dimensions_missing"
+    ],
+    "spec_score": null,
+    "reward": 0.2,
+    "notes": "auto"
+  },
+  {
+    "timestamp": "2025-09-10T12:25:51.478266",
+    "prompt": "Design an eco-friendly bookshelf",
+    "spec_path": "spec_outputs/rl_spec_2025-09-10T12-25-51.json",
+    "critic_issues": [
+      "material_missing",
+      "dimensions_missing",
+      "purpose_missing",
+      "energy_source_missing"
+    ],
+    "spec_score": null,
+    "reward": -1.0,
+    "notes": "auto"
+  }
+]
