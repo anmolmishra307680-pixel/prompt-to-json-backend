@@ -135,5 +135,116 @@
       ]
     },
     "notes": "auto"
+  },
+  {
+    "timestamp": "2025-09-10T14:21:41.235903",
+    "prompt": "Create a wooden dining table",
+    "spec_path": "spec_outputs/rl_spec_2025-09-10T14-21-41.json",
+    "critic_issues": [],
+    "spec_score": 10.0,
+    "reward": 1.0,
+    "dashboard": {
+      "prompt": "Create a wooden dining table",
+      "spec_score": 10.0,
+      "completeness_score": 4,
+      "material_realism_score": 3,
+      "dimension_validity_score": 2,
+      "type_match_score": 1,
+      "critic": "Specification looks complete and well-defined.",
+      "reward": 1.0,
+      "explanations": []
+    },
+    "notes": "auto"
+  },
+  {
+    "timestamp": "2025-09-10T14:21:41.237619",
+    "prompt": "Design a metal office chair",
+    "spec_path": "spec_outputs/rl_spec_2025-09-10T14-21-41.json",
+    "critic_issues": [],
+    "spec_score": 10.0,
+    "reward": 1.0,
+    "dashboard": {
+      "prompt": "Design a metal office chair",
+      "spec_score": 10.0,
+      "completeness_score": 4,
+      "material_realism_score": 3,
+      "dimension_validity_score": 2,
+      "type_match_score": 1,
+      "critic": "Specification looks complete and well-defined.",
+      "reward": 1.0,
+      "explanations": []
+    },
+    "notes": "auto"
+  },
+  {
+    "timestamp": "2025-09-10T14:21:41.239177",
+    "prompt": "Make a glass coffee table",
+    "spec_path": "spec_outputs/rl_spec_2025-09-10T14-21-41.json",
+    "critic_issues": [],
+    "spec_score": 10.0,
+    "reward": 1.0,
+    "dashboard": {
+      "prompt": "Make a glass coffee table",
+      "spec_score": 10.0,
+      "completeness_score": 4,
+      "material_realism_score": 3,
+      "dimension_validity_score": 2,
+      "type_match_score": 1,
+      "critic": "Specification looks complete and well-defined.",
+      "reward": 1.0,
+      "explanations": []
+    },
+    "notes": "auto"
+  },
+  {
+    "timestamp": "2025-09-10T14:21:41.241083",
+    "prompt": "Build a storage cabinet",
+    "spec_path": "spec_outputs/rl_spec_2025-09-10T14-21-41.json",
+    "critic_issues": [
+      "material_missing"
+    ],
+    "spec_score": 6.0,
+    "reward": 0.12,
+    "dashboard": {
+      "prompt": "Build a storage cabinet",
+      "spec_score": 6.0,
+      "completeness_score": 3,
+      "material_realism_score": 0,
+      "dimension_validity_score": 2,
+      "type_match_score": 1,
+      "critic": "Material not specified.",
+      "reward": 0.12,
+      "explanations": [
+        "Missing or default value for material",
+        "No material specified"
+      ]
+    },
+    "notes": "auto"
+  },
+  {
+    "timestamp": "2025-09-10T14:21:41.242778",
+    "prompt": "Design an eco-friendly bookshelf",
+    "spec_path": "spec_outputs/rl_spec_2025-09-10T14-21-41.json",
+    "critic_issues": [
+      "material_missing",
+      "energy_source_missing"
+    ],
+    "spec_score": 6.0,
+    "reward": 0.12,
+    "dashboard": {
+      "prompt": "Design an eco-friendly bookshelf",
+      "spec_score": 6.0,
+      "completeness_score": 3,
+      "material_realism_score": 0,
+      "dimension_validity_score": 2,
+      "type_match_score": 1,
+      "critic": "Material not specified. No mention of energy efficiency or sustainable features.",
+      "reward": 0.12,
+      "explanations": [
+        "Missing or default value for material",
+        "No material specified"
+      ]
+    },
+    "notes": "auto"
   }
 ]

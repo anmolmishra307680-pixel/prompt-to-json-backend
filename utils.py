@@ -22,12 +22,12 @@ def apply_fallbacks(extracted_fields):
     # Smart color defaults based on material/type
     color = extracted_fields.get('color')
     if not color:
-        material = extracted_fields.get('material', '')
+        material = extracted_fields.get('material') or ''
         type_val = extracted_fields.get('type')
         
-        if 'wood' in material.lower():
+        if material and 'wood' in str(material).lower():
             color = 'brown'
-        elif 'metal' in material.lower() or 'steel' in material.lower():
+        elif material and ('metal' in str(material).lower() or 'steel' in str(material).lower()):
             color = 'silver'
         elif type_val == 'throne':
             color = 'gold'
