@@ -1,59 +1,55 @@
 {
-  "timestamp": "2025-09-10T12:31:46.512585",
+  "timestamp": "2025-09-10T13:08:15.670966",
   "prompt": "Design a 2-floor eco-friendly library with glass and concrete",
   "extracted_fields": {
-    "type": null,
+    "type": "library",
     "material": "glass",
     "color": null,
     "dimensions": null,
-    "purpose": null
+    "purpose": "library"
   },
   "spec": {
-    "type": "unknown",
+    "type": "library",
     "material": "glass",
     "color": "default",
     "dimensions": "standard",
-    "purpose": "general"
+    "purpose": "library"
   },
   "spec_path": "spec_outputs/architectural_spec.json",
   "evaluation": {
-    "critic_feedback": "Type specification is missing or unclear. Dimensions are missing (provide specific measurements). Purpose or intended use not specified. No mention of energy efficiency or sustainable features.",
+    "critic_feedback": "Dimensions are missing (provide specific measurements). No mention of energy efficiency or sustainable features.",
     "issues": [
-      "type_missing",
       "dimensions_missing",
-      "purpose_missing",
       "energy_source_missing"
     ],
-    "severity": "major"
+    "severity": "minor"
   },
   "scoring": {
-    "format_score": 4.0,
-    "completeness_score": 1,
+    "format_score": 6.0,
+    "completeness_score": 3,
     "material_realism_score": 3,
     "dimension_validity_score": 0,
     "type_match_score": 0,
     "explanations": [
-      "Missing or default value for type",
       "Missing or default value for dimensions",
-      "Missing or default value for purpose",
-      "Dimensions not parseable or missing"
+      "Dimensions not parseable or missing",
+      "Type 'library' doesn't match prompt context"
     ]
   },
-  "reward": -0.4,
+  "reward": 0.12,
   "dashboard": {
     "prompt": "Design a 2-floor eco-friendly library with glass and concrete",
-    "spec_score": 4.0,
-    "completeness_score": 1,
+    "spec_score": 6.0,
+    "completeness_score": 3,
     "material_realism_score": 3,
     "dimension_validity_score": 0,
     "type_match_score": 0,
-    "critic": "Type specification is missing or unclear. Dimensions are missing (provide specific measurements). Purpose or intended use not specified. No mention of energy efficiency or sustainable features.",
-    "reward": -0.4,
+    "critic": "Dimensions are missing (provide specific measurements). No mention of energy efficiency or sustainable features.",
+    "reward": 0.12,
     "explanations": [
-      "Missing or default value for type",
       "Missing or default value for dimensions",
-      "Missing or default value for purpose",
-      "Dimensions not parseable or missing"
+      "Dimensions not parseable or missing",
+      "Type 'library' doesn't match prompt context"
     ]
   }
 }

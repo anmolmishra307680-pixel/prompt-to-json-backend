@@ -1,58 +1,57 @@
 {
-  "timestamp": "2025-09-10T12:31:46.516031",
+  "timestamp": "2025-09-10T13:08:15.672991",
   "prompt": "Build a medieval wooden throne with gold accents",
   "extracted_fields": {
-    "type": null,
+    "type": "throne",
     "material": "wood",
-    "color": null,
+    "color": "gold",
     "dimensions": null,
     "purpose": null
   },
   "spec": {
-    "type": "unknown",
+    "type": "throne",
     "material": "wood",
-    "color": "default",
+    "color": "gold",
     "dimensions": "standard",
     "purpose": "general"
   },
   "spec_path": "spec_outputs/props_spec.json",
   "evaluation": {
-    "critic_feedback": "Type specification is missing or unclear. Dimensions are missing (provide specific measurements). Purpose or intended use not specified.",
+    "critic_feedback": "Dimensions are missing (provide specific measurements). Purpose or intended use not specified.",
     "issues": [
-      "type_missing",
       "dimensions_missing",
       "purpose_missing"
     ],
-    "severity": "major"
+    "severity": "minor"
   },
   "scoring": {
-    "format_score": 4.0,
-    "completeness_score": 1,
+    "format_score": 5.0,
+    "completeness_score": 2,
     "material_realism_score": 3,
     "dimension_validity_score": 0,
     "type_match_score": 0,
     "explanations": [
-      "Missing or default value for type",
       "Missing or default value for dimensions",
       "Missing or default value for purpose",
-      "Dimensions not parseable or missing"
+      "Dimensions not parseable or missing",
+      "Type 'throne' doesn't match prompt context"
     ]
   },
-  "reward": -0.4,
+  "reward": 0.1,
   "dashboard": {
     "prompt": "Build a medieval wooden throne with gold accents",
-    "spec_score": 4.0,
-    "completeness_score": 1,
+    "spec_score": 5.0,
+    "completeness_score": 2,
     "material_realism_score": 3,
     "dimension_validity_score": 0,
     "type_match_score": 0,
-    "critic": "Type specification is missing or unclear. Dimensions are missing (provide specific measurements). Purpose or intended use not specified.",
-    "reward": -0.4,
+    "critic": "Dimensions are missing (provide specific measurements). Purpose or intended use not specified.",
+    "reward": 0.1,
     "explanations": [
-      "Missing or default value for type",
       "Missing or default value for dimensions",
       "Missing or default value for purpose",
-      "Dimensions not parseable or missing"
+      "Dimensions not parseable or missing",
+      "Type 'throne' doesn't match prompt context"
     ]
   }
 }

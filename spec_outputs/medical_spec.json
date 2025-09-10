@@ -1,7 +1,7 @@
 {
   "type": "cabinet",
-  "material": "unspecified",
+  "material": "metal",
   "color": "default",
   "dimensions": "standard",
-  "purpose": "general"
+  "purpose": "dining"
 }

@@ -6,6 +6,7 @@ from src.extractor import extract_basic_fields
 from src.schema import validate_and_save
 from evaluator_agent import evaluate_spec
 from data_scorer import score_spec, create_dashboard
+from utils import apply_fallbacks
 
 def compute_reward(evaluator_result, spec_score=None):
     """Compute reward based on evaluator result and optional spec score."""
@@ -37,14 +38,8 @@ def rl_iteration(prompt):
     # Generate spec using extractor
     extracted_fields = extract_basic_fields(prompt)
     
-    # Add fallback values
-    fallback_data = {
-        'type': extracted_fields.get('type') or 'unknown',
-        'material': extracted_fields.get('material') or 'unspecified',
-        'color': extracted_fields.get('color') or 'default',
-        'dimensions': extracted_fields.get('dimensions') or 'standard',
-        'purpose': extracted_fields.get('purpose') or 'general'
-    }
+    # Apply unified fallback values
+    fallback_data = apply_fallbacks(extracted_fields)
     
     # Save spec
     timestamp = datetime.now().isoformat().replace(':', '-').split('.')[0]

@@ -24,7 +24,6 @@ def parse_dimensions(dimensions_str):
     if dim_match:
         length, width, unit = dim_match.groups()
         if unit in ['feet', 'ft']:
-            # Convert to meters
             parsed['length_m'] = float(length) * 0.3048
             parsed['width_m'] = float(width) * 0.3048
         else:

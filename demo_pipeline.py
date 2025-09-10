@@ -6,6 +6,7 @@ from src.schema import validate_and_save
 from evaluator_agent import evaluate_spec
 from data_scorer import score_spec, create_dashboard
 from rl_loop import compute_reward
+from utils import apply_fallbacks
 
 def run_full_pipeline(prompt, output_name):
     """Run complete pipeline: extract -> validate -> evaluate -> score -> reward."""
@@ -15,14 +16,8 @@ def run_full_pipeline(prompt, output_name):
     extracted = extract_basic_fields(prompt)
     print(f"1. Extracted: {extracted}")
     
-    # Step 2: Add fallbacks and validate
-    fallback_data = {
-        'type': extracted.get('type') or 'unknown',
-        'material': extracted.get('material') or 'unspecified',
-        'color': extracted.get('color') or 'default',
-        'dimensions': extracted.get('dimensions') or 'standard',
-        'purpose': extracted.get('purpose') or 'general'
-    }
+    # Step 2: Apply fallbacks and validate
+    fallback_data = apply_fallbacks(extracted)
     
     spec_filename = f"{output_name}_spec.json"
     spec = validate_and_save(fallback_data, spec_filename)

@@ -1,29 +1,29 @@
 {
   "total_runs": 5,
-  "timestamp": "2025-09-10T12:31:46.519221",
-  "average_score": 3.4,
-  "average_reward": -0.17200000000000001,
+  "timestamp": "2025-09-10T13:08:15.675335",
+  "average_score": 6.4,
+  "average_reward": 0.12799999999999997,
   "results_summary": [
     {
       "category": "architectural",
       "prompt": "Design a 2-floor eco-friendly library with glass a...",
-      "score": 4.0,
-      "reward": -0.4,
-      "issues_count": 4
+      "score": 6.0,
+      "reward": 0.12,
+      "issues_count": 2
     },
     {
       "category": "mechanical",
       "prompt": "Create a lightweight drone body using carbon fiber...",
-      "score": 0.0,
-      "reward": -0.0,
-      "issues_count": 4
+      "score": 7.0,
+      "reward": 0.13999999999999999,
+      "issues_count": 1
     },
     {
       "category": "props",
       "prompt": "Build a medieval wooden throne with gold accents...",
-      "score": 4.0,
-      "reward": -0.4,
-      "issues_count": 3
+      "score": 5.0,
+      "reward": 0.1,
+      "issues_count": 2
     },
     {
       "category": "scene",
@@ -35,9 +35,9 @@
     {
       "category": "medical",
       "prompt": "Create a stainless steel surgical instrument cabin...",
-      "score": 2.0,
-      "reward": -0.2,
-      "issues_count": 3
+      "score": 7.0,
+      "reward": 0.13999999999999999,
+      "issues_count": 1
     }
   ]
 }

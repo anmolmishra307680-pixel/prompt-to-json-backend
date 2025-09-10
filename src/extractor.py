@@ -1,29 +1,72 @@
 import re
 
 def extract_basic_fields(prompt):
-    """Extract structured info from text using simple pattern matching rules."""
+    """Extract structured info from text using enhanced pattern matching."""
     prompt_lower = prompt.lower()
     
-    # Extract furniture type using predefined patterns
-    type_patterns = ['table', 'chair', 'desk', 'shelf', 'cabinet', 'sofa', 'bed']
-    type_match = next((t for t in type_patterns if t in prompt_lower), None)
+    # Enhanced type extraction with more patterns
+    type_patterns = {
+        'table': ['table', 'desk', 'surface'],
+        'chair': ['chair', 'seat', 'stool'],
+        'shelf': ['shelf', 'shelving', 'bookcase'],
+        'cabinet': ['cabinet', 'cupboard', 'storage'],
+        'sofa': ['sofa', 'couch', 'settee'],
+        'bed': ['bed', 'mattress'],
+        'drone': ['drone', 'aircraft', 'uav'],
+        'library': ['library', 'building'],
+        'throne': ['throne', 'chair']
+    }
     
-    # Extract material using common furniture materials
-    material_patterns = ['wood', 'metal', 'plastic', 'glass', 'fabric', 'leather']
-    material_match = next((m for m in material_patterns if m in prompt_lower), None)
+    type_match = None
+    for main_type, patterns in type_patterns.items():
+        if any(pattern in prompt_lower for pattern in patterns):
+            type_match = main_type
+            break
     
-    # Extract color using basic color names
-    color_patterns = ['red', 'blue', 'green', 'black', 'white', 'brown', 'gray', 'yellow']
+    # Enhanced material extraction
+    material_patterns = {
+        'wood': ['wood', 'wooden', 'oak', 'pine', 'mahogany'],
+        'metal': ['metal', 'steel', 'aluminum', 'iron'],
+        'glass': ['glass', 'crystal'],
+        'plastic': ['plastic', 'polymer'],
+        'fabric': ['fabric', 'cloth', 'textile'],
+        'leather': ['leather', 'hide'],
+        'concrete': ['concrete', 'cement'],
+        'carbon fiber': ['carbon fiber', 'carbon fibre', 'composite']
+    }
+    
+    material_match = None
+    for material, patterns in material_patterns.items():
+        if any(pattern in prompt_lower for pattern in patterns):
+            material_match = material
+            break
+    
+    # Enhanced color extraction
+    color_patterns = ['red', 'blue', 'green', 'black', 'white', 'brown', 'gray', 'grey', 'yellow', 'gold', 'silver']
     color_match = next((c for c in color_patterns if c in prompt_lower), None)
     
-    # Extract dimensions using regex for measurements (e.g., "5 feet", "10cm", "2x3")
-    dimension_pattern = r'(\d+(?:\.\d+)?)\s*(?:x\s*(\d+(?:\.\d+)?))?\s*(feet|ft|cm|m|inches|in)'
+    # Enhanced dimension extraction
+    dimension_pattern = r'(\d+(?:\.\d+)?)\s*(?:x\s*(\d+(?:\.\d+)?))?\s*(feet|ft|cm|m|inches|in|floor)'
     dimensions = re.findall(dimension_pattern, prompt_lower)
     dimension_str = ', '.join([f"{d[0]}{f'x{d[1]}' if d[1] else ''} {d[2]}" for d in dimensions]) if dimensions else None
     
-    # Extract purpose/room context
-    purpose_patterns = ['dining', 'office', 'bedroom', 'living room', 'kitchen', 'storage', 'work']
-    purpose_match = next((p for p in purpose_patterns if p in prompt_lower), None)
+    # Enhanced purpose extraction
+    purpose_patterns = {
+        'dining': ['dining', 'eat'],
+        'office': ['office', 'work', 'desk'],
+        'bedroom': ['bedroom', 'sleep'],
+        'living room': ['living room', 'lounge'],
+        'kitchen': ['kitchen', 'cook'],
+        'storage': ['storage', 'organize'],
+        'library': ['library', 'book', 'read'],
+        'medical': ['medical', 'surgical', 'hospital']
+    }
+    
+    purpose_match = None
+    for purpose, patterns in purpose_patterns.items():
+        if any(pattern in prompt_lower for pattern in patterns):
+            purpose_match = purpose
+            break
     
     # Return structured dictionary with extracted fields
     return {

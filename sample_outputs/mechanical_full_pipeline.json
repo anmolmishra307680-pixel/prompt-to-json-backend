@@ -1,62 +1,51 @@
 {
-  "timestamp": "2025-09-10T12:31:46.514542",
+  "timestamp": "2025-09-10T13:08:15.672069",
   "prompt": "Create a lightweight drone body using carbon fiber",
   "extracted_fields": {
-    "type": null,
-    "material": null,
+    "type": "drone",
+    "material": "carbon fiber",
     "color": null,
     "dimensions": null,
-    "purpose": null
+    "purpose": "dining"
   },
   "spec": {
-    "type": "unknown",
-    "material": "unspecified",
+    "type": "drone",
+    "material": "carbon fiber",
     "color": "default",
     "dimensions": "standard",
-    "purpose": "general"
+    "purpose": "dining"
   },
   "spec_path": "spec_outputs/mechanical_spec.json",
   "evaluation": {
-    "critic_feedback": "Type specification is missing or unclear. Material not specified. Dimensions are missing (provide specific measurements). Purpose or intended use not specified.",
+    "critic_feedback": "Dimensions are missing (provide specific measurements).",
     "issues": [
-      "type_missing",
-      "material_missing",
-      "dimensions_missing",
-      "purpose_missing"
+      "dimensions_missing"
     ],
-    "severity": "major"
+    "severity": "minor"
   },
   "scoring": {
-    "format_score": 0.0,
-    "completeness_score": 0,
-    "material_realism_score": 0,
+    "format_score": 7.0,
+    "completeness_score": 3,
+    "material_realism_score": 3,
     "dimension_validity_score": 0,
-    "type_match_score": 0,
+    "type_match_score": 1,
     "explanations": [
-      "Missing or default value for type",
-      "Missing or default value for material",
       "Missing or default value for dimensions",
-      "Missing or default value for purpose",
-      "No material specified",
       "Dimensions not parseable or missing"
     ]
   },
-  "reward": -0.0,
+  "reward": 0.13999999999999999,
   "dashboard": {
     "prompt": "Create a lightweight drone body using carbon fiber",
-    "spec_score": 0.0,
-    "completeness_score": 0,
-    "material_realism_score": 0,
+    "spec_score": 7.0,
+    "completeness_score": 3,
+    "material_realism_score": 3,
     "dimension_validity_score": 0,
-    "type_match_score": 0,
-    "critic": "Type specification is missing or unclear. Material not specified. Dimensions are missing (provide specific measurements). Purpose or intended use not specified.",
-    "reward": -0.0,
+    "type_match_score": 1,
+    "critic": "Dimensions are missing (provide specific measurements).",
+    "reward": 0.13999999999999999,
     "explanations": [
-      "Missing or default value for type",
-      "Missing or default value for material",
       "Missing or default value for dimensions",
-      "Missing or default value for purpose",
-      "No material specified",
       "Dimensions not parseable or missing"
     ]
   }

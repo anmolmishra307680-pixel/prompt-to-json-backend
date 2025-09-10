@@ -1,7 +1,7 @@
 {
-  "type": "unknown",
+  "type": "throne",
   "material": "wood",
-  "color": "default",
+  "color": "gold",
   "dimensions": "standard",
   "purpose": "general"
 }
