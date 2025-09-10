@@ -26,6 +26,5 @@ sample_outputs/*.json
 # Keep important sample files
 !sample_outputs/pipeline_summary.json
 
-# Development files (optional for production)
-advanced_demo.py
-test_multi_material.py
+# Avoid duplicates - keep only one copy of each file
+production/
