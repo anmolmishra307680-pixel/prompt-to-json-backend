@@ -1,0 +1,35 @@
+{
+  "prompt": "Design a wooden dining table",
+  "spec_path": "",
+  "timestamp": "2025-09-10T15:14:15.972465",
+  "critic_feedback": "Specification looks complete and well-defined.",
+  "issues": [],
+  "severity": "none",
+  "recommendations": [],
+  "quality_scores": {
+    "completeness_score": 4,
+    "material_realism_score": 3,
+    "dimension_validity_score": 2,
+    "type_match_score": 1,
+    "format_score": 10.0,
+    "explanations": [
+      "type specified",
+      "material specified",
+      "dimensions provided",
+      "purpose specified",
+      "all materials recognized",
+      "single material appropriate",
+      "materials compatible with type",
+      "dimensions have units and numeric values",
+      "dimensions appear reasonable",
+      "type matches prompt"
+    ]
+  },
+  "spec_summary": {
+    "type": "table",
+    "material_count": 1,
+    "has_dimensions": true,
+    "has_purpose": true,
+    "completeness_score": 10
+  }
+}

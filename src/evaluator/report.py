@@ -27,6 +27,16 @@ except ImportError:
         generate_recommendations
     )
 
+# Import data scorer
+try:
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).parent.parent))
+    from data_scorer import score_spec
+except ImportError:
+    def score_spec(spec, prompt=""):
+        return {"format_score": 5.0, "explanations": ["scorer unavailable"]}
+
 def create_slug(text: str) -> str:
     """Create URL-friendly slug from text."""
     slug = re.sub(r'[^\w\s-]', '', text.lower())
@@ -83,6 +93,9 @@ def evaluate_spec(prompt: str, spec: dict, spec_path: str = "") -> dict:
     # Generate recommendations
     recommendations = generate_recommendations(issues, spec, prompt)
     
+    # Get quality scores from data scorer
+    quality_scores = score_spec(spec, prompt)
+    
     # Create comprehensive report
     report = {
         "prompt": prompt,
@@ -92,6 +105,7 @@ def evaluate_spec(prompt: str, spec: dict, spec_path: str = "") -> dict:
         "issues": issues,
         "severity": severity,
         "recommendations": recommendations,
+        "quality_scores": quality_scores,
         "spec_summary": {
             "type": spec.get('type', 'unspecified'),
             "material_count": len(spec.get('material', [])) if isinstance(spec.get('material'), list) else (1 if spec.get('material') else 0),
@@ -119,7 +133,7 @@ def calculate_completeness_score(spec: dict) -> float:
             else:
                 score += 2
     
-    return min(score, 10)
+    return min(score, 10.0)
 
 def save_report(report: dict, output_dir: str = "evaluations") -> tuple:
     """Save report as both JSON and human-readable text."""
@@ -175,6 +189,18 @@ def generate_human_report(report: dict) -> str:
     lines.append(f"Completeness Score: {summary.get('completeness_score', 0)}/10")
     lines.append("")
     
+    # Quality Scores
+    quality_scores = report.get('quality_scores', {})
+    if quality_scores:
+        lines.append("QUALITY SCORES")
+        lines.append("-" * 30)
+        lines.append(f"Overall Format Score: {quality_scores.get('format_score', 0)}/10")
+        lines.append(f"Completeness: {quality_scores.get('completeness_score', 0)}/4")
+        lines.append(f"Material Realism: {quality_scores.get('material_realism_score', 0)}/3")
+        lines.append(f"Dimension Validity: {quality_scores.get('dimension_validity_score', 0)}/2")
+        lines.append(f"Type Match: {quality_scores.get('type_match_score', 0)}/1")
+        lines.append("")
+    
     # Evaluation Results
     lines.append("EVALUATION RESULTS")
     lines.append("-" * 30)
@@ -202,6 +228,15 @@ def generate_human_report(report: dict) -> str:
         lines.append("-" * 30)
         for i, rec in enumerate(report['recommendations'], 1):
             lines.append(f"{i}. {rec}")
+        lines.append("")
+    
+    # Quality Explanations
+    quality_scores = report.get('quality_scores', {})
+    if quality_scores.get('explanations'):
+        lines.append("QUALITY ANALYSIS")
+        lines.append("-" * 30)
+        for i, explanation in enumerate(quality_scores['explanations'], 1):
+            lines.append(f"{i}. {explanation}")
         lines.append("")
     
     # Footer

@@ -1,0 +1,38 @@
+{
+  "prompt": "Create a steel office chair with wheels",
+  "spec_path": "",
+  "timestamp": "2025-09-10T15:14:15.973827",
+  "critic_feedback": "Dimensions are missing.",
+  "issues": [
+    "dimensions_invalid"
+  ],
+  "severity": "minor",
+  "recommendations": [
+    "Add dimensions appropriate for chair (length, width, height)"
+  ],
+  "quality_scores": {
+    "completeness_score": 3,
+    "material_realism_score": 3,
+    "dimension_validity_score": 0,
+    "type_match_score": 1,
+    "format_score": 6.7,
+    "explanations": [
+      "type specified",
+      "material specified",
+      "dimensions missing",
+      "purpose specified",
+      "all materials recognized",
+      "single material appropriate",
+      "materials compatible with type",
+      "no dimensions provided",
+      "type matches prompt"
+    ]
+  },
+  "spec_summary": {
+    "type": "chair",
+    "material_count": 1,
+    "has_dimensions": false,
+    "has_purpose": true,
+    "completeness_score": 8
+  }
+}

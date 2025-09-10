@@ -205,7 +205,7 @@ def score_type_match(spec: Dict[str, Any], prompt: str) -> Tuple[int, List[str]]
     score = 0
     explanations = []
     
-    spec_type = str(spec.get('type', '')).lower()
+    spec_type = spec.get('type', '').lower()
     prompt_lower = prompt.lower()
     
     if not spec_type or spec_type in ['unknown', 'unspecified']:
