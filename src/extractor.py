@@ -23,10 +23,10 @@ def extract_basic_fields(prompt):
             type_match = main_type
             break
     
-    # Enhanced material extraction
+    # Enhanced multi-material extraction
     material_patterns = {
         'wood': ['wood', 'wooden', 'oak', 'pine', 'mahogany'],
-        'metal': ['metal', 'steel', 'aluminum', 'iron'],
+        'metal': ['metal', 'steel', 'aluminum', 'iron', 'stainless steel'],
         'glass': ['glass', 'crystal'],
         'plastic': ['plastic', 'polymer'],
         'fabric': ['fabric', 'cloth', 'textile'],
@@ -35,11 +35,19 @@ def extract_basic_fields(prompt):
         'carbon fiber': ['carbon fiber', 'carbon fibre', 'composite']
     }
     
-    material_match = None
+    # Find all matching materials
+    material_matches = []
     for material, patterns in material_patterns.items():
         if any(pattern in prompt_lower for pattern in patterns):
-            material_match = material
-            break
+            material_matches.append(material)
+    
+    # Return primary material or combined materials
+    if len(material_matches) > 1:
+        material_match = ', '.join(material_matches)
+    elif material_matches:
+        material_match = material_matches[0]
+    else:
+        material_match = None
     
     # Enhanced color extraction
     color_patterns = ['red', 'blue', 'green', 'black', 'white', 'brown', 'gray', 'grey', 'yellow', 'gold', 'silver']
@@ -63,23 +71,36 @@ def extract_basic_fields(prompt):
     
     dimension_str = ', '.join(dimension_matches) if dimension_matches else None
     
-    # Enhanced purpose extraction
+    # Enhanced purpose extraction with type-aware context
     purpose_patterns = {
-        'dining': ['dining', 'eat'],
-        'office': ['office', 'work', 'desk'],
-        'bedroom': ['bedroom', 'sleep'],
-        'living room': ['living room', 'lounge'],
-        'kitchen': ['kitchen', 'cook'],
+        'dining': ['dining', 'eat', 'meal'],
+        'office': ['office', 'work', 'workspace'],
+        'bedroom': ['bedroom', 'sleep', 'rest'],
+        'living room': ['living room', 'lounge', 'family room'],
+        'kitchen': ['kitchen', 'cook', 'culinary'],
         'storage': ['storage', 'organize'],
-        'library': ['library', 'book', 'read'],
-        'medical': ['medical', 'surgical', 'hospital']
+        'library': ['library', 'book', 'read', 'study'],
+        'medical': ['medical', 'surgical', 'hospital', 'clinic'],
+        'aerial': ['aerial', 'photography', 'cinematography', 'flying'],
+        'ceremonial': ['medieval', 'throne', 'royal', 'ceremonial']
     }
     
+    # Find purpose with type context awareness
     purpose_match = None
     for purpose, patterns in purpose_patterns.items():
         if any(pattern in prompt_lower for pattern in patterns):
             purpose_match = purpose
             break
+    
+    # Type-specific purpose inference
+    if not purpose_match and type_match:
+        type_purpose_map = {
+            'drone': 'aerial',
+            'throne': 'ceremonial',
+            'library': 'library',
+            'cabinet': 'storage'
+        }
+        purpose_match = type_purpose_map.get(type_match)
     
     # Return structured dictionary with extracted fields
     return {
