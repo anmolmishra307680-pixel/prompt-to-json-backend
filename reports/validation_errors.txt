@@ -47,3 +47,17 @@ type
     For further information visit https://errors.pydantic.dev/2.9/v/missing
 Timestamp: 2025-09-10T15:38:17.201260
 
+Validation failed for spec: {'type': 'unknown', 'material': 'unspecified', 'color': 'none', 'dimensions': {'floors': None, 'area_m2': None, 'raw': None}, 'purpose': 'general'}
+Errors: 1 validation error for DesignSpec
+material
+  Input should be a valid list [type=list_type, input_value='unspecified', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.9/v/list_type
+Timestamp: 2025-09-10T15:47:34.871064
+
+Validation failed for spec: {'type': 'unknown', 'material': 'unspecified', 'color': 'none', 'dimensions': {'floors': None, 'area_m2': None, 'raw': None}, 'purpose': 'general'}
+Errors: 1 validation error for DesignSpec
+material
+  Input should be a valid list [type=list_type, input_value='unspecified', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.9/v/list_type
+Timestamp: 2025-09-10T15:47:52.714330
+
