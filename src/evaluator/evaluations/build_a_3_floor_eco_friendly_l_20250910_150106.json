@@ -1,0 +1,20 @@
+{
+  "prompt": "Build a 3-floor eco-friendly library",
+  "spec_path": "",
+  "timestamp": "2025-09-10T15:01:06.058797",
+  "critic_feedback": "No mention of energy efficiency or sustainable features.",
+  "issues": [
+    "energy_source_missing"
+  ],
+  "severity": "minor",
+  "recommendations": [
+    "Add sustainable or energy-efficient features as requested"
+  ],
+  "spec_summary": {
+    "type": "building",
+    "material_count": 2,
+    "has_dimensions": true,
+    "has_purpose": true,
+    "completeness_score": 8
+  }
+}
