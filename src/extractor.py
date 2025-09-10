@@ -45,10 +45,23 @@ def extract_basic_fields(prompt):
     color_patterns = ['red', 'blue', 'green', 'black', 'white', 'brown', 'gray', 'grey', 'yellow', 'gold', 'silver']
     color_match = next((c for c in color_patterns if c in prompt_lower), None)
     
-    # Enhanced dimension extraction
-    dimension_pattern = r'(\d+(?:\.\d+)?)\s*(?:x\s*(\d+(?:\.\d+)?))?\s*(feet|ft|cm|m|inches|in|floor)'
-    dimensions = re.findall(dimension_pattern, prompt_lower)
-    dimension_str = ', '.join([f"{d[0]}{f'x{d[1]}' if d[1] else ''} {d[2]}" for d in dimensions]) if dimensions else None
+    # Enhanced dimension extraction with descriptive terms
+    dimension_patterns = [
+        r'(\d+(?:\.\d+)?)\s*(?:x\s*(\d+(?:\.\d+)?))?\s*(feet|ft|cm|m|inches|in)',
+        r'(\d+)[-\s]*floor',
+        r'(small|medium|large|compact|lightweight|massive)'
+    ]
+    
+    dimension_matches = []
+    for pattern in dimension_patterns:
+        matches = re.findall(pattern, prompt_lower)
+        if matches:
+            if isinstance(matches[0], tuple):
+                dimension_matches.extend([' '.join(filter(None, match)) for match in matches])
+            else:
+                dimension_matches.extend(matches)
+    
+    dimension_str = ', '.join(dimension_matches) if dimension_matches else None
     
     # Enhanced purpose extraction
     purpose_patterns = {
@@ -77,17 +90,25 @@ def extract_basic_fields(prompt):
         'purpose': purpose_match
     }
 
-# Test with sample prompts
+# Enhanced test with complex prompts
 if __name__ == "__main__":
     test_prompts = [
         "Create a wooden dining table that is 6 feet long and brown in color",
-        "I need a black metal office chair for my workspace",
-        "Design a white plastic storage shelf 5x3 feet for the kitchen",
-        "Make a red fabric sofa for the living room"
+        "Design a lightweight carbon fiber drone body for aerial photography",
+        "Build a 2-floor eco-friendly library with glass walls",
+        "Make a compact steel surgical instrument cabinet for hospital use",
+        "Create a medieval wooden throne with gold accents"
     ]
     
+    print("Enhanced Extraction Test Results:")
+    print("=" * 60)
+    
     for i, prompt in enumerate(test_prompts, 1):
-        print(f"Prompt {i}: {prompt}")
+        print(f"\nPrompt {i}: {prompt}")
         result = extract_basic_fields(prompt)
         print(f"Extracted: {result}")
+        
+        # Show extraction success rate
+        filled_fields = sum(1 for v in result.values() if v is not None)
+        print(f"Fields extracted: {filled_fields}/5 ({filled_fields*20}% complete)")
         print("-" * 50)
