@@ -4,8 +4,8 @@ import argparse
 import hashlib
 from datetime import datetime
 
-# Known materials list
-KNOWN_MATERIALS = ["steel", "aluminum", "wood", "concrete", "glass", "carbon fiber", "plastic", "metal", "fabric", "leather"]
+# Known materials list (supports multi-material specs)
+KNOWN_MATERIALS = ["steel", "aluminum", "wood", "concrete", "glass", "carbon fiber", "plastic", "metal", "fabric", "leather", "stainless steel", "oak", "pine"]
 
 def load_spec(path):
     """Read JSON spec from file."""
@@ -27,7 +27,7 @@ def evaluate_spec(prompt, spec):
     if not material or material in ['unspecified', 'default']:
         issues.append("material_missing")
         critic_parts.append("Material not specified")
-    elif material not in [m.lower() for m in KNOWN_MATERIALS]:
+    elif not any(known.lower() in material for known in KNOWN_MATERIALS):
         issues.append("material_unrecognized")
         critic_parts.append(f"Material '{material}' not recognized")
     

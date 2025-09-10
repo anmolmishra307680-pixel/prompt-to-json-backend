@@ -1,7 +1,7 @@
 """Unified utility functions for the prompt-to-json system."""
 
 def apply_fallbacks(extracted_fields):
-    """Apply consistent fallback values for missing fields with smart defaults."""
+    """Apply consistent fallback values with context-aware smart defaults."""
     # Smart purpose fallback based on type
     purpose = extracted_fields.get('purpose')
     if not purpose:
@@ -9,17 +9,35 @@ def apply_fallbacks(extracted_fields):
         smart_purpose_map = {
             'drone': 'aerial',
             'throne': 'ceremonial', 
-            'library': 'library',
+            'library': 'study',
             'cabinet': 'storage',
             'table': 'dining',
-            'chair': 'office'
+            'chair': 'seating',
+            'shelf': 'storage',
+            'sofa': 'seating',
+            'bed': 'sleeping'
         }
         purpose = smart_purpose_map.get(type_val, 'general')
+    
+    # Smart color defaults based on material/type
+    color = extracted_fields.get('color')
+    if not color:
+        material = extracted_fields.get('material', '')
+        type_val = extracted_fields.get('type')
+        
+        if 'wood' in material.lower():
+            color = 'brown'
+        elif 'metal' in material.lower() or 'steel' in material.lower():
+            color = 'silver'
+        elif type_val == 'throne':
+            color = 'gold'
+        else:
+            color = 'default'
     
     return {
         'type': extracted_fields.get('type') or 'unknown',
         'material': extracted_fields.get('material') or 'unspecified',
-        'color': extracted_fields.get('color') or 'default',
+        'color': color,
         'dimensions': extracted_fields.get('dimensions') or 'standard',
         'purpose': purpose
     }

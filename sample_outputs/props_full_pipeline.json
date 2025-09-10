@@ -1,55 +1,52 @@
 {
-  "timestamp": "2025-09-10T13:08:15.672991",
+  "timestamp": "2025-09-10T13:39:27.079224",
   "prompt": "Build a medieval wooden throne with gold accents",
   "extracted_fields": {
     "type": "throne",
     "material": "wood",
     "color": "gold",
     "dimensions": null,
-    "purpose": null
+    "purpose": "ceremonial"
   },
   "spec": {
     "type": "throne",
     "material": "wood",
     "color": "gold",
     "dimensions": "standard",
-    "purpose": "general"
+    "purpose": "ceremonial"
   },
   "spec_path": "spec_outputs/props_spec.json",
   "evaluation": {
-    "critic_feedback": "Dimensions are missing (provide specific measurements). Purpose or intended use not specified.",
+    "critic_feedback": "Dimensions are missing (provide specific measurements).",
     "issues": [
-      "dimensions_missing",
-      "purpose_missing"
+      "dimensions_missing"
     ],
     "severity": "minor"
   },
   "scoring": {
-    "format_score": 5.0,
-    "completeness_score": 2,
+    "format_score": 6.0,
+    "completeness_score": 3,
     "material_realism_score": 3,
     "dimension_validity_score": 0,
     "type_match_score": 0,
     "explanations": [
       "Missing or default value for dimensions",
-      "Missing or default value for purpose",
       "Dimensions not parseable or missing",
       "Type 'throne' doesn't match prompt context"
     ]
   },
-  "reward": 0.1,
+  "reward": 0.12,
   "dashboard": {
     "prompt": "Build a medieval wooden throne with gold accents",
-    "spec_score": 5.0,
-    "completeness_score": 2,
+    "spec_score": 6.0,
+    "completeness_score": 3,
     "material_realism_score": 3,
     "dimension_validity_score": 0,
     "type_match_score": 0,
-    "critic": "Dimensions are missing (provide specific measurements). Purpose or intended use not specified.",
-    "reward": 0.1,
+    "critic": "Dimensions are missing (provide specific measurements).",
+    "reward": 0.12,
     "explanations": [
       "Missing or default value for dimensions",
-      "Missing or default value for purpose",
       "Dimensions not parseable or missing",
       "Type 'throne' doesn't match prompt context"
     ]

@@ -1,7 +1,7 @@
 {
   "type": "library",
-  "material": "glass",
+  "material": "glass, concrete",
   "color": "default",
-  "dimensions": "standard",
+  "dimensions": "2",
   "purpose": "library"
 }

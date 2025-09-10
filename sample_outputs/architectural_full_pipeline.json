@@ -1,53 +1,53 @@
 {
-  "timestamp": "2025-09-10T13:08:15.670966",
+  "timestamp": "2025-09-10T13:39:27.076856",
   "prompt": "Design a 2-floor eco-friendly library with glass and concrete",
   "extracted_fields": {
     "type": "library",
-    "material": "glass",
+    "material": "glass, concrete",
     "color": null,
-    "dimensions": null,
+    "dimensions": "2",
     "purpose": "library"
   },
   "spec": {
     "type": "library",
-    "material": "glass",
+    "material": "glass, concrete",
     "color": "default",
-    "dimensions": "standard",
+    "dimensions": "2",
     "purpose": "library"
   },
   "spec_path": "spec_outputs/architectural_spec.json",
   "evaluation": {
-    "critic_feedback": "Dimensions are missing (provide specific measurements). No mention of energy efficiency or sustainable features.",
+    "critic_feedback": "Dimensions format unclear or missing units. No mention of energy efficiency or sustainable features.",
     "issues": [
-      "dimensions_missing",
+      "dimensions_unparseable",
       "energy_source_missing"
     ],
     "severity": "minor"
   },
   "scoring": {
-    "format_score": 6.0,
-    "completeness_score": 3,
-    "material_realism_score": 3,
+    "format_score": 5.0,
+    "completeness_score": 4,
+    "material_realism_score": 1,
     "dimension_validity_score": 0,
     "type_match_score": 0,
     "explanations": [
-      "Missing or default value for dimensions",
+      "Material 'glass, concrete' not in known materials list",
       "Dimensions not parseable or missing",
       "Type 'library' doesn't match prompt context"
     ]
   },
-  "reward": 0.12,
+  "reward": 0.1,
   "dashboard": {
     "prompt": "Design a 2-floor eco-friendly library with glass and concrete",
-    "spec_score": 6.0,
-    "completeness_score": 3,
-    "material_realism_score": 3,
+    "spec_score": 5.0,
+    "completeness_score": 4,
+    "material_realism_score": 1,
     "dimension_validity_score": 0,
     "type_match_score": 0,
-    "critic": "Dimensions are missing (provide specific measurements). No mention of energy efficiency or sustainable features.",
-    "reward": 0.12,
+    "critic": "Dimensions format unclear or missing units. No mention of energy efficiency or sustainable features.",
+    "reward": 0.1,
     "explanations": [
-      "Missing or default value for dimensions",
+      "Material 'glass, concrete' not in known materials list",
       "Dimensions not parseable or missing",
       "Type 'library' doesn't match prompt context"
     ]

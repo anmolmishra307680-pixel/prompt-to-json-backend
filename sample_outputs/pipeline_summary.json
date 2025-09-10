@@ -1,29 +1,29 @@
 {
   "total_runs": 5,
-  "timestamp": "2025-09-10T13:08:15.675335",
-  "average_score": 6.4,
-  "average_reward": 0.12799999999999997,
+  "timestamp": "2025-09-10T13:39:27.081506",
+  "average_score": 6.6,
+  "average_reward": 0.132,
   "results_summary": [
     {
       "category": "architectural",
       "prompt": "Design a 2-floor eco-friendly library with glass a...",
-      "score": 6.0,
-      "reward": 0.12,
+      "score": 5.0,
+      "reward": 0.1,
       "issues_count": 2
     },
     {
       "category": "mechanical",
       "prompt": "Create a lightweight drone body using carbon fiber...",
-      "score": 7.0,
-      "reward": 0.13999999999999999,
+      "score": 8.0,
+      "reward": 0.16000000000000003,
       "issues_count": 1
     },
     {
       "category": "props",
       "prompt": "Build a medieval wooden throne with gold accents...",
-      "score": 5.0,
-      "reward": 0.1,
-      "issues_count": 2
+      "score": 6.0,
+      "reward": 0.12,
+      "issues_count": 1
     },
     {
       "category": "scene",

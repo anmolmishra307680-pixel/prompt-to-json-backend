@@ -53,11 +53,12 @@ def extract_basic_fields(prompt):
     color_patterns = ['red', 'blue', 'green', 'black', 'white', 'brown', 'gray', 'grey', 'yellow', 'gold', 'silver']
     color_match = next((c for c in color_patterns if c in prompt_lower), None)
     
-    # Enhanced dimension extraction with descriptive terms
+    # Enhanced dimension extraction with better parsing
     dimension_patterns = [
         r'(\d+(?:\.\d+)?)\s*(?:x\s*(\d+(?:\.\d+)?))?\s*(feet|ft|cm|m|inches|in)',
-        r'(\d+)[-\s]*floor',
-        r'(small|medium|large|compact|lightweight|massive)'
+        r'(\d+)[-\s]*(?:floor|story|level)',
+        r'(\d+(?:\.\d+)?)\s*(?:sq\s*)?(?:m|ft|meter|foot)',
+        r'(small|medium|large|compact|lightweight|massive|tiny|huge)'
     ]
     
     dimension_matches = []
@@ -69,7 +70,16 @@ def extract_basic_fields(prompt):
             else:
                 dimension_matches.extend(matches)
     
-    dimension_str = ', '.join(dimension_matches) if dimension_matches else None
+    # Prioritize numeric dimensions over descriptive ones
+    numeric_dims = [d for d in dimension_matches if any(c.isdigit() for c in str(d))]
+    descriptive_dims = [d for d in dimension_matches if not any(c.isdigit() for c in str(d))]
+    
+    if numeric_dims:
+        dimension_str = ', '.join(numeric_dims)
+    elif descriptive_dims:
+        dimension_str = ', '.join(descriptive_dims)
+    else:
+        dimension_str = None
     
     # Enhanced purpose extraction with type-aware context
     purpose_patterns = {
