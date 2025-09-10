@@ -97,6 +97,23 @@ def save_evaluation(prompt, spec_path, evaluation):
     with open(f"evaluations/{filename}", 'w') as f:
         json.dump(output, f, indent=2)
     
+    # Log evaluation to centralized logger
+    try:
+        import sys
+        from pathlib import Path
+        sys.path.append(str(Path(__file__).parent / 'src'))
+        from logger import log_prompt
+        
+        log_prompt(
+            prompt=prompt,
+            spec_path=spec_path,
+            evaluation_result=evaluation,
+            source="evaluation",
+            timestamp=timestamp
+        )
+    except ImportError:
+        pass  # Skip logging if logger not available
+    
     return filename
 
 def main():

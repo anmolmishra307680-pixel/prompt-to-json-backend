@@ -16,6 +16,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from src.extractor import extract_basic_fields
 from src.schema import save_valid_spec
+from src.logger import log_prompt
 from evaluator_agent import evaluate_spec
 from utils import apply_fallbacks, save_json
 
@@ -84,6 +85,17 @@ def run_pipeline(prompt):
     print(f"Evaluation: {evaluation['severity']} severity")
     print(f"Issues: {len(evaluation['issues'])}")
     print(f"Feedback: {evaluation['critic_feedback']}")
+    
+    # Step 6: Log the complete interaction
+    print("6. Logging interaction...")
+    log_prompt(
+        prompt=prompt,
+        spec_path=spec_path,
+        evaluation=evaluation,
+        validation_passed=spec_path is not None and 'validation_errors' not in str(spec_path),
+        issues_count=len(evaluation['issues']),
+        severity=evaluation['severity']
+    )
     
     return {
         "spec_path": spec_path,

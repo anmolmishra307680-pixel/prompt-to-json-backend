@@ -157,17 +157,28 @@ def validate_spec_structure(spec: dict) -> bool:
 
 def log_llm_interaction(prompt: str, llm_output: str):
     """Log LLM interactions to JSONL file."""
-    os.makedirs("logs", exist_ok=True)
-    
-    log_entry = {
-        "timestamp": datetime.now().isoformat(),
-        "prompt": prompt,
-        "llm_output": llm_output,
-        "model": "distilgpt2"
-    }
-    
-    with open("logs/llm_logs.jsonl", "a", encoding="utf-8") as f:
-        f.write(json.dumps(log_entry) + "\n")
+    try:
+        from logger import log_prompt
+        # Use centralized logger
+        log_prompt(
+            prompt=prompt,
+            llm_output=llm_output,
+            model="distilgpt2",
+            source="llm_generation"
+        )
+    except ImportError:
+        # Fallback to original logging
+        os.makedirs("logs", exist_ok=True)
+        
+        log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "prompt": prompt,
+            "llm_output": llm_output,
+            "model": "distilgpt2"
+        }
+        
+        with open("logs/llm_logs.jsonl", "a", encoding="utf-8") as f:
+            f.write(json.dumps(log_entry) + "\n")
 
 def save_sample_spec(spec: dict, filename: str):
     """Save spec to spec_outputs directory."""
