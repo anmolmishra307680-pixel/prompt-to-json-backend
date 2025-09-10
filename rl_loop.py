@@ -5,6 +5,7 @@ from datetime import datetime
 from src.extractor import extract_basic_fields
 from src.schema import validate_and_save
 from evaluator_agent import evaluate_spec
+from data_scorer import score_spec, create_dashboard
 
 def compute_reward(evaluator_result, spec_score=None):
     """Compute reward based on evaluator result and optional spec score."""
@@ -54,8 +55,15 @@ def rl_iteration(prompt):
     # Evaluate spec
     evaluator_result = evaluate_spec(prompt, spec.dict())
     
-    # Compute reward (no spec_score for now)
-    reward_result = compute_reward(evaluator_result)
+    # Score spec
+    score_result = score_spec(spec.dict(), prompt)
+    spec_score = score_result['format_score']
+    
+    # Compute reward with spec score
+    reward_result = compute_reward(evaluator_result, spec_score)
+    
+    # Create dashboard
+    dashboard = create_dashboard(prompt, spec.dict(), evaluator_result, reward_result.get('reward'))
     
     # Log to RL history
     log_entry = {
@@ -63,8 +71,9 @@ def rl_iteration(prompt):
         "prompt": prompt,
         "spec_path": spec_path,
         "critic_issues": evaluator_result.get('issues', []),
-        "spec_score": reward_result.get('spec_score'),
+        "spec_score": spec_score,
         "reward": reward_result.get('reward'),
+        "dashboard": dashboard,
         "notes": "auto"
     }
     
@@ -112,8 +121,10 @@ def main():
         print(f"\nIteration {i+1}: {prompt}")
         
         result = rl_iteration(prompt)
+        print(f"Spec Score: {result['spec_score']}")
         print(f"Reward: {result['reward']}")
         print(f"Issues: {result['critic_issues']}")
+        print(f"Dashboard: {result['dashboard']['critic'][:50]}...")
     
     print(f"\nCompleted {args.runs} iterations. Check rl_logs/rl_history.json")
 
