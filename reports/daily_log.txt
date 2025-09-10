@@ -55,8 +55,34 @@ DISCIPLINE: Followed TDD approach - wrote tests first, then refined extractor to
 
 GRATITUDE: Appreciated the existing test infrastructure from pytest. The modular design made it easy to add comprehensive test coverage.
 
-NEXT: Day 3 will focus on LLM integration and advanced features.
+Day 3 - January 10, 2025
+------------------------
+Goal: LLaMA / HF integration (model pipeline)
+
+COMPLETED:
+✅ Created src/llama_prompt.py with HuggingFace transformers integration
+✅ Implemented generate_raw_response() using distilgpt2 lightweight model
+✅ Added generate_spec_with_llm() with JSON parsing and fallback logic
+✅ Created logging system to logs/llm_logs.jsonl (5 entries logged)
+✅ Generated 3 sample LLM outputs: llm_sample_01.json, llm_sample_02.json, llm_sample_03.json
+✅ Added transformers, torch, langchain to requirements.txt
+✅ Implemented graceful fallback to rule-based extraction when LLM fails
+
+TECHNICAL IMPLEMENTATION:
+- Model: distilgpt2 (lightweight, fast loading)
+- JSON parsing with regex extraction from LLM output
+- Structured prompting for better spec generation
+- JSONL logging of all LLM interactions
+- Fallback mechanism ensures system always works
+
+HONESTY: The lightweight model (distilgpt2) produces inconsistent JSON output, so the fallback system is essential. Most outputs fell back to rule-based extraction, which is expected for such a small model.
+
+DISCIPLINE: Implemented proper error handling, logging, and fallback mechanisms. The system gracefully degrades when LLM fails rather than crashing.
+
+GRATITUDE: HuggingFace transformers library made model integration straightforward. The existing extractor provided a solid fallback foundation.
+
+NEXT: Day 4 will focus on evaluation improvements and system integration.
 
 Example usage:
-python src/main.py --prompt "Design a 2-floor library using glass and concrete"
-python -m pytest tests/test_extractor.py -v
+python -c "from src.llama_prompt import generate_spec_with_llm; print(generate_spec_with_llm('Design a red gearbox with steel gears'))"
+python src/llama_prompt.py  # Run full demo
