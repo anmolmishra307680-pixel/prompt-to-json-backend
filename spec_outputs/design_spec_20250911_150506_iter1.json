@@ -1,0 +1,33 @@
+{
+  "prompt": "Generic structure (RL iteration 1)",
+  "specification": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "steel",
+        "grade": "standard",
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
+    },
+    "features": [
+      "parking"
+    ],
+    "requirements": [
+      "Generic structure"
+    ],
+    "timestamp": "2025-09-11 15:05:06.925551"
+  },
+  "metadata": {
+    "generated_at": "2025-09-11T15:05:06.925653",
+    "generator": "MainAgent",
+    "iteration": 1,
+    "rl_mode": true
+  }
+}

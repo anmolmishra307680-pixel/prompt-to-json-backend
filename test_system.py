@@ -40,10 +40,10 @@ def test_main_agent():
     assert len(spec.materials) > 0
     assert spec.stories >= 1
     
-    # Test LLM generation (with fallback)
-    llm_spec = agent.generate_spec("Modern office building", use_llm=True)
-    assert llm_spec.building_type in ["office", "general"]
-    assert len(llm_spec.materials) > 0
+    # Test with different prompts
+    spec2 = agent.generate_spec("Warehouse facility")
+    assert spec2.building_type == "warehouse"
+    assert len(spec2.materials) > 0
     
     # Test error handling
     try:

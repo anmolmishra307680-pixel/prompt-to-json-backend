@@ -12,15 +12,15 @@ class MainAgent:
         self.spec_outputs_dir.mkdir(exist_ok=True)
     
     def generate_spec(self, prompt: str, use_llm: bool = False) -> DesignSpec:
-        """Generate design specification from prompt"""
+        """Generate design specification from prompt using rule-based extraction"""
         if not prompt or len(prompt.strip()) < 3:
             raise ValueError("Prompt must be at least 3 characters long")
             
+        if use_llm:
+            print("[WARNING] LLM generation not available, using rule-based extraction")
+            
         try:
-            if use_llm:
-                return self._generate_with_llm(prompt)
-            else:
-                return self._generate_with_rules(prompt)
+            return self._generate_with_rules(prompt)
         except Exception as e:
             raise RuntimeError(f"Failed to generate specification: {str(e)}")
     
@@ -33,43 +33,7 @@ class MainAgent:
         
         return enhanced_spec
     
-    def _generate_with_llm(self, prompt: str) -> DesignSpec:
-        """Generate specification using LLM (EXPERIMENTAL STUB)
-        
-        NOTE: This is a basic implementation using GPT-2 for demonstration.
-        For production use, integrate with larger models like GPT-4, LLaMA, etc.
-        """
-        try:
-            from transformers import pipeline
-            print("[EXPERIMENTAL] Using basic GPT-2 for LLM generation")
-            
-            # Basic GPT-2 pipeline (experimental)
-            generator = pipeline("text-generation", model="gpt2", max_length=100)
-            
-            # Generate enhanced prompt for building extraction
-            llm_prompt = f"Building description: {prompt}. Type:"
-            result = generator(llm_prompt, max_new_tokens=30, pad_token_id=50256)
-            
-            # Parse LLM output and enhance rule-based extraction
-            llm_text = result[0]['generated_text'].lower()
-            spec = self._generate_with_rules(prompt)
-            
-            # Basic LLM-based building type enhancement
-            if "office" in llm_text and spec.building_type == "general":
-                spec.building_type = "office"
-            elif "residential" in llm_text and spec.building_type == "general":
-                spec.building_type = "residential"
-            elif "commercial" in llm_text and spec.building_type == "general":
-                spec.building_type = "commercial"
-                
-            return spec
-            
-        except ImportError:
-            print("[FALLBACK] Transformers not available, using rule-based generation")
-            return self._generate_with_rules(prompt)
-        except Exception as e:
-            print(f"[FALLBACK] LLM error ({str(e)}), using rule-based generation")
-            return self._generate_with_rules(prompt)
+
     
     def _enhance_specification(self, spec: DesignSpec, prompt: str) -> DesignSpec:
         """Enhance specification with additional logic"""
@@ -164,7 +128,16 @@ class MainAgent:
                 
                 elif "features" in suggestion_lower or "feature" in suggestion_lower:
                     if len(improved_spec.features) < 3:
-                        new_features = ['elevator', 'parking', 'balcony']
+                        # Context-aware feature suggestions
+                        if improved_spec.building_type == "office":
+                            new_features = ['elevator', 'parking', 'conference_room']
+                        elif improved_spec.building_type == "residential":
+                            new_features = ['balcony', 'parking', 'garden']
+                        elif improved_spec.building_type == "warehouse":
+                            new_features = ['loading', 'parking', 'security']
+                        else:
+                            new_features = ['elevator', 'parking', 'balcony']
+                            
                         for feature in new_features:
                             if feature not in improved_spec.features:
                                 improved_spec.features.append(feature)

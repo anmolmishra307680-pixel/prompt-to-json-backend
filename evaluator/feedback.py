@@ -96,13 +96,31 @@ class FeedbackLoop:
                             elif "materials" in feedback_item.lower():
                                 suggestions.append("Add specific materials to improve completeness")
         
-        # Add general improvement suggestions if no history
+        # Add nuanced improvement suggestions based on prompt analysis
         if not suggestions:
-            suggestions = [
-                "Consider adding specific building materials",
-                "Specify building type for better evaluation",
-                "Include relevant features for the building type"
-            ]
+            prompt_lower = prompt.lower()
+            
+            # Analyze prompt for specific suggestions
+            if "office" in prompt_lower:
+                suggestions.append("Office buildings benefit from elevator and parking features")
+            elif "residential" in prompt_lower:
+                suggestions.append("Residential buildings should include balcony and parking")
+            elif "warehouse" in prompt_lower or "industrial" in prompt_lower:
+                suggestions.append("Industrial buildings need loading docks and large dimensions")
+            
+            # Material-specific suggestions
+            if "steel" in prompt_lower:
+                suggestions.append("Steel structures allow for larger spans and heights")
+            elif "concrete" in prompt_lower:
+                suggestions.append("Concrete provides excellent durability and fire resistance")
+            
+            # General fallback suggestions
+            if not suggestions:
+                suggestions = [
+                    "Specify exact building type (office, residential, warehouse) for better scoring",
+                    "Include specific materials (steel, concrete, wood) mentioned in requirements",
+                    "Add building-appropriate features (elevator for multi-story, parking for all)"
+                ]
         
         return list(set(suggestions))  # Remove duplicates
     

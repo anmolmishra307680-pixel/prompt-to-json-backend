@@ -6,57 +6,18 @@ from evaluator.feedback import FeedbackLoop
 from schema import DesignSpec
 
 class RLLoop:
-    def __init__(self, max_iterations: int = 3, binary_rewards: bool = False, use_gymnasium: bool = False):
+    def __init__(self, max_iterations: int = 3, binary_rewards: bool = False):
         self.main_agent = MainAgent()
         self.evaluator_agent = EvaluatorAgent()
         self.feedback_loop = FeedbackLoop()
         self.max_iterations = max_iterations
         self.binary_rewards = binary_rewards
-        self.use_gymnasium = use_gymnasium
         
         # Create logs directory
         Path("logs").mkdir(exist_ok=True)
     
     def run_training_loop(self, prompt: str) -> dict:
         """Run reinforcement learning training loop"""
-        if self.use_gymnasium:
-            return self._run_gymnasium_training(prompt)
-        else:
-            return self._run_standard_training(prompt)
-    
-    def _run_gymnasium_training(self, prompt: str) -> dict:
-        """Run training using Gymnasium environment"""
-        try:
-            from gym_environment import create_gym_environment
-            env = create_gym_environment(prompt)
-            if not env:
-                print("Gymnasium not available, falling back to standard training")
-                return self._run_standard_training(prompt)
-            
-            print(f"Starting Gymnasium RL training for prompt: '{prompt}'")
-            obs, _ = env.reset()
-            total_reward = 0
-            
-            for step in range(self.max_iterations):
-                action = env.action_space.sample()
-                obs, reward, done, _, info = env.step(action)
-                total_reward += reward
-                
-                if done:
-                    break
-            
-            return {
-                "prompt": prompt,
-                "gymnasium_training": True,
-                "total_reward": total_reward,
-                "steps": step + 1
-            }
-        except ImportError:
-            print("Gymnasium not installed, using standard training")
-            return self._run_standard_training(prompt)
-    
-    def _run_standard_training(self, prompt: str) -> dict:
-        """Run standard training loop"""
         print(f"Starting RL training loop for prompt: '{prompt}'")
         
         results = {
@@ -149,9 +110,9 @@ class RLLoop:
             current_spec = spec
             previous_score = evaluation.score
             
-            # Continue for at least 2 iterations to generate feedback
-            if evaluation.score >= 95 and iteration > 0:
-                print("Early stopping: High score achieved")
+            # Only allow early stopping after minimum iterations and if score is perfect
+            if evaluation.score >= 100 and iteration >= (self.max_iterations - 1):
+                print("Early stopping: Perfect score achieved")
                 break
         
         results["final_spec"] = current_spec.model_dump() if current_spec else None
@@ -173,10 +134,10 @@ class RLLoop:
         
         print(f"Training results saved to: {log_file}")
     
-    def run_single_iteration(self, prompt: str, use_llm: bool = False) -> dict:
+    def run_single_iteration(self, prompt: str) -> dict:
         """Run a single iteration of the loop"""
         # Generate specification
-        spec = self.main_agent.generate_spec(prompt, use_llm=use_llm)
+        spec = self.main_agent.generate_spec(prompt)
         
         # Evaluate specification
         evaluation = self.evaluator_agent.evaluate_spec(spec, prompt)
@@ -195,30 +156,30 @@ class RLLoop:
         }
     
     def compare_approaches(self, prompt: str) -> dict:
-        """Compare rule-based vs LLM approaches"""
-        print("Comparing rule-based vs LLM approaches...")
+        """Compare different rule-based configurations"""
+        print("Comparing rule-based configurations...")
         
-        # Rule-based approach
-        rule_result = self.run_single_iteration(prompt, use_llm=False)
+        # Standard approach
+        standard_result = self.run_single_iteration(prompt)
         
-        # LLM approach (stub)
-        llm_result = self.run_single_iteration(prompt, use_llm=True)
+        # Enhanced approach (same as standard since LLM removed)
+        enhanced_result = self.run_single_iteration(prompt)
         
         comparison = {
             "prompt": prompt,
-            "rule_based": {
-                "score": rule_result["evaluation"].score,
-                "reward": rule_result["reward"]
+            "standard": {
+                "score": standard_result["evaluation"].score,
+                "reward": standard_result["reward"]
             },
-            "llm_based": {
-                "score": llm_result["evaluation"].score,
-                "reward": llm_result["reward"]
+            "enhanced": {
+                "score": enhanced_result["evaluation"].score,
+                "reward": enhanced_result["reward"]
             },
-            "winner": "rule_based" if rule_result["evaluation"].score > llm_result["evaluation"].score else "llm_based"
+            "result": "Both approaches equivalent (rule-based only)"
         }
         
-        print(f"Rule-based score: {rule_result['evaluation'].score:.2f}")
-        print(f"LLM-based score: {llm_result['evaluation'].score:.2f}")
-        print(f"Winner: {comparison['winner']}")
+        print(f"Standard score: {standard_result['evaluation'].score:.2f}")
+        print(f"Enhanced score: {enhanced_result['evaluation'].score:.2f}")
+        print(f"Result: {comparison['result']}")
         
         return comparison

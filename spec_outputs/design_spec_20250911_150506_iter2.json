@@ -1,5 +1,5 @@
 {
-  "prompt": "Generic building structure (RL iteration 2)",
+  "prompt": "Generic structure (RL iteration 2)",
   "specification": {
     "building_type": "general",
     "stories": 1,
@@ -20,12 +20,12 @@
       "parking"
     ],
     "requirements": [
-      "Generic building structure"
+      "Generic structure"
     ],
-    "timestamp": "2025-09-11 14:32:16.318707"
+    "timestamp": "2025-09-11 15:05:06.925551"
   },
   "metadata": {
-    "generated_at": "2025-09-11T14:32:16.388063",
+    "generated_at": "2025-09-11T15:05:06.927251",
     "generator": "MainAgent",
     "iteration": 2,
     "rl_mode": true

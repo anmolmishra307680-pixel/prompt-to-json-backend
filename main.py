@@ -13,17 +13,17 @@ def main():
     parser.add_argument("--mode", type=str, choices=["single", "rl", "compare"], default="single",
                        help="Execution mode: single iteration, RL training, or comparison")
     parser.add_argument("--iterations", type=int, default=3, help="Number of RL iterations")
-    parser.add_argument("--use-llm", action="store_true", help="Use LLM generation (stub)")
+# LLM option removed - only rule-based generation available
     parser.add_argument("--binary-rewards", action="store_true", help="Use binary reward system (1/-1)")
-    parser.add_argument("--use-gymnasium", action="store_true", help="Use Gymnasium RL environment (requires gymnasium package)")
+
     
     args = parser.parse_args()
     
     try:
         if args.mode == "single":
-            run_single_mode(args.prompt, args.use_llm)
+            run_single_mode(args.prompt)
         elif args.mode == "rl":
-            run_rl_mode(args.prompt, args.iterations, args.binary_rewards, args.use_gymnasium)
+            run_rl_mode(args.prompt, args.iterations, args.binary_rewards)
         elif args.mode == "compare":
             run_compare_mode(args.prompt)
     
@@ -42,7 +42,7 @@ def run_single_mode(prompt: str, use_llm: bool = False):
     """Run single iteration mode"""
     validate_prompt(prompt)
     print(f"Processing prompt: '{prompt}'")
-    print(f"Mode: {'LLM' if use_llm else 'Rule-based'}")
+    print("Mode: Rule-based")
     
     # Initialize agents and logger
     main_agent = MainAgent()
@@ -51,7 +51,7 @@ def run_single_mode(prompt: str, use_llm: bool = False):
     
     # Generate specification
     print("\n1. Generating specification...")
-    spec = main_agent.generate_spec(prompt, use_llm=use_llm)
+    spec = main_agent.generate_spec(prompt)
     
     # Save specification
     spec_path = main_agent.save_spec(spec, prompt)
@@ -84,7 +84,7 @@ def run_single_mode(prompt: str, use_llm: bool = False):
         for suggestion in evaluation.suggestions:
             print(f"  - {suggestion}")
 
-def run_rl_mode(prompt: str, iterations: int, binary_rewards: bool = False, use_gymnasium: bool = False):
+def run_rl_mode(prompt: str, iterations: int, binary_rewards: bool = False):
     """Run reinforcement learning mode"""
     validate_prompt(prompt)
     print(f"Running RL training for {iterations} iterations")
@@ -92,7 +92,7 @@ def run_rl_mode(prompt: str, iterations: int, binary_rewards: bool = False, use_
     # Initialize logger
     prompt_logger = PromptLogger()
     
-    rl_loop = RLLoop(max_iterations=iterations, binary_rewards=binary_rewards, use_gymnasium=use_gymnasium)
+    rl_loop = RLLoop(max_iterations=iterations, binary_rewards=binary_rewards)
     results = rl_loop.run_training_loop(prompt)
     
     # Log RL training result
@@ -124,15 +124,15 @@ def run_rl_mode(prompt: str, iterations: int, binary_rewards: bool = False, use_
 
 def run_compare_mode(prompt: str):
     """Run comparison mode"""
-    print("Comparing rule-based vs LLM approaches")
+    print("Comparing rule-based configurations")
     
     rl_loop = RLLoop()
     comparison = rl_loop.compare_approaches(prompt)
     
     print(f"\n--- Comparison Results ---")
-    print(f"Rule-based approach: {comparison['rule_based']['score']:.2f}")
-    print(f"LLM approach: {comparison['llm_based']['score']:.2f}")
-    print(f"Winner: {comparison['winner']}")
+    print(f"Standard approach: {comparison['standard']['score']:.2f}")
+    print(f"Enhanced approach: {comparison['enhanced']['score']:.2f}")
+    print(f"Result: {comparison['result']}")
 
 def validate_prompt(prompt: str) -> bool:
     """Basic prompt validation - accepts all types of prompts"""

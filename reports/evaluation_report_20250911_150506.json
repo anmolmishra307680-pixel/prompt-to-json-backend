@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-09-11T14:32:16.389194",
-  "prompt": "Generic building structure",
+  "timestamp": "2025-09-11T15:05:06.929692",
+  "prompt": "Generic structure",
   "design_specification": {
     "building_type": "general",
     "stories": 1,
@@ -21,9 +21,9 @@
       "parking"
     ],
     "requirements": [
-      "Generic building structure"
+      "Generic structure"
     ],
-    "timestamp": "2025-09-11 14:32:16.318707"
+    "timestamp": "2025-09-11 15:05:06.925551"
   },
   "evaluation_results": {
     "score": 92.0,
@@ -33,7 +33,7 @@
       "Building type not specified or too generic"
     ],
     "suggestions": [],
-    "timestamp": "2025-09-11 14:32:16.389163"
+    "timestamp": "2025-09-11 15:05:06.929673"
   },
   "summary": {
     "overall_score": 92.0,
