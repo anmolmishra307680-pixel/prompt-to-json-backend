@@ -1,8 +1,0 @@
-{
-  "prompt": "Create a wooden dining table that is 6 feet long and brown in color",
-  "spec_path": "spec_outputs/dining_table_spec.json",
-  "timestamp": "2025-09-10T12:16:25.528627",
-  "critic_feedback": "Specification looks complete and well-defined.",
-  "issues": [],
-  "severity": "none"
-}
