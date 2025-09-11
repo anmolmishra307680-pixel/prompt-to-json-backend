@@ -6,11 +6,12 @@ from evaluator.feedback import FeedbackLoop
 from schema import DesignSpec
 
 class RLLoop:
-    def __init__(self, max_iterations: int = 3):
+    def __init__(self, max_iterations: int = 3, binary_rewards: bool = False):
         self.main_agent = MainAgent()
         self.evaluator_agent = EvaluatorAgent()
         self.feedback_loop = FeedbackLoop()
         self.max_iterations = max_iterations
+        self.binary_rewards = binary_rewards
         
         # Create logs directory
         Path("logs").mkdir(exist_ok=True)
@@ -72,7 +73,7 @@ class RLLoop:
             evaluation = self.evaluator_agent.evaluate_spec(spec, prompt)
             
             # Calculate reward
-            reward = self.feedback_loop.calculate_reward(evaluation, previous_score)
+            reward = self.feedback_loop.calculate_reward(evaluation, previous_score, self.binary_rewards)
             
             # Log iteration (always log, use dummy spec for first iteration)
             if current_spec:
@@ -86,14 +87,20 @@ class RLLoop:
                     prompt, dummy_spec, spec, evaluation, reward, iteration + 1
                 )
             
-            # Store iteration results
+            # Store iteration results with dashboard format
             iteration_result = {
                 "iteration": iteration + 1,
                 "specification": spec.model_dump(),
                 "evaluation": evaluation.model_dump(),
                 "reward": reward,
                 "improvement": evaluation.score - previous_score if iteration > 0 else 0,
-                "spec_file": str(spec_path)
+                "spec_file": str(spec_path),
+                "dashboard": {
+                    "prompt": prompt,
+                    "spec_score": evaluation.score,
+                    "critic": evaluation.feedback + evaluation.suggestions,
+                    "reward": reward
+                }
             }
             results["iterations"].append(iteration_result)
             

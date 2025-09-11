@@ -1,12 +1,12 @@
 [
   {
-    "timestamp": "2025-09-11T13:28:54.077963",
-    "prompt": "Test feedback logging",
+    "timestamp": "2025-09-11T13:35:57.429261",
+    "prompt": "Perfect office building with steel and glass",
     "mode": "rl",
     "result": {
       "training_file": "logs/rl_training_unknown.json",
-      "iterations": 2,
-      "final_score": 92.0
+      "iterations": 1,
+      "final_score": 100.0
     },
     "spec_file": "",
     "score": 0

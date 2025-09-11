@@ -93,8 +93,18 @@ class FeedbackLoop:
         common_words = words1.intersection(words2)
         return len(common_words) / max(len(words1), len(words2)) > 0.3
     
-    def calculate_reward(self, evaluation: EvaluationResult, previous_score: float = 0) -> float:
+    def calculate_reward(self, evaluation: EvaluationResult, previous_score: float = 0, binary_mode: bool = False) -> float:
         """Calculate reward based on evaluation results"""
+        if binary_mode:
+            # Binary reward: 1 if no issues, -1 for critical issues
+            if evaluation.score >= 90 and not evaluation.feedback:
+                return 1.0
+            elif evaluation.score < 60:
+                return -1.0
+            else:
+                return 0.0
+        
+        # Continuous reward (default)
         base_reward = evaluation.score / 100.0  # Normalize to 0-1
         
         # Bonus for improvement

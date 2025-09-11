@@ -15,6 +15,7 @@ def main():
                        help="Execution mode: single iteration, RL training, or comparison")
     parser.add_argument("--iterations", type=int, default=3, help="Number of RL iterations")
     parser.add_argument("--use-llm", action="store_true", help="Use LLM generation (stub)")
+    parser.add_argument("--binary-rewards", action="store_true", help="Use binary reward system (1/-1)")
     
     args = parser.parse_args()
     
@@ -22,7 +23,7 @@ def main():
         if args.mode == "single":
             run_single_mode(args.prompt, args.use_llm)
         elif args.mode == "rl":
-            run_rl_mode(args.prompt, args.iterations)
+            run_rl_mode(args.prompt, args.iterations, args.binary_rewards)
         elif args.mode == "compare":
             run_compare_mode(args.prompt)
     
@@ -83,7 +84,7 @@ def run_single_mode(prompt: str, use_llm: bool = False):
         for suggestion in evaluation.suggestions:
             print(f"  - {suggestion}")
 
-def run_rl_mode(prompt: str, iterations: int):
+def run_rl_mode(prompt: str, iterations: int, binary_rewards: bool = False):
     """Run reinforcement learning mode"""
     validate_prompt(prompt)
     print(f"Running RL training for {iterations} iterations")
@@ -91,7 +92,7 @@ def run_rl_mode(prompt: str, iterations: int):
     # Initialize logger
     prompt_logger = PromptLogger()
     
-    rl_loop = RLLoop(max_iterations=iterations)
+    rl_loop = RLLoop(max_iterations=iterations, binary_rewards=binary_rewards)
     results = rl_loop.run_training_loop(prompt)
     
     # Log RL training result

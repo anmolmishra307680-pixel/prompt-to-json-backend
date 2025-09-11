@@ -1,8 +1,8 @@
 [
   {
     "iteration": 1,
-    "timestamp": "2025-09-11T13:28:54.004032",
-    "prompt": "Test feedback logging",
+    "timestamp": "2025-09-11T13:35:57.426508",
+    "prompt": "Perfect office building with steel and glass",
     "spec_before": {
       "building_type": "initial",
       "stories": 0,
@@ -15,15 +15,20 @@
       },
       "features": [],
       "requirements": [],
-      "timestamp": "2025-09-11 13:28:54.004027"
+      "timestamp": "2025-09-11 13:35:57.426497"
     },
     "spec_after": {
-      "building_type": "general",
+      "building_type": "office",
       "stories": 1,
       "materials": [
         {
           "type": "steel",
-          "grade": "standard",
+          "grade": null,
+          "properties": {}
+        },
+        {
+          "type": "glass",
+          "grade": null,
           "properties": {}
         }
       ],
@@ -34,110 +39,33 @@
         "area": 300.0
       },
       "features": [
+        "elevator",
         "parking"
       ],
       "requirements": [
-        "Test feedback logging"
+        "Perfect office building with steel and glass"
       ],
-      "timestamp": "2025-09-11 13:28:54.001935"
+      "timestamp": "2025-09-11 13:35:57.358515"
     },
     "evaluation": {
-      "score": 92.0,
-      "completeness": 80.0,
+      "score": 100.0,
+      "completeness": 100.0,
       "format_validity": 100.0,
-      "feedback": [
-        "Building type not specified or too generic"
-      ],
+      "feedback": [],
       "suggestions": [],
-      "timestamp": "2025-09-11 13:28:54.003190"
+      "timestamp": "2025-09-11 13:35:57.359779"
     },
-    "reward": 1.84,
+    "reward": 1.0,
     "improvements": {
-      "added_materials": 1,
-      "added_features": 1,
+      "added_materials": 2,
+      "added_features": 2,
       "dimension_changes": {
         "length": {
           "before": null,
           "after": 20.0
         }
       },
-      "evaluation_score": 92.0
-    }
-  },
-  {
-    "iteration": 2,
-    "timestamp": "2025-09-11T13:28:54.075546",
-    "prompt": "Test feedback logging",
-    "spec_before": {
-      "building_type": "general",
-      "stories": 1,
-      "materials": [
-        {
-          "type": "steel",
-          "grade": "standard",
-          "properties": {}
-        }
-      ],
-      "dimensions": {
-        "length": 20.0,
-        "width": 15.0,
-        "height": 3.5,
-        "area": 300.0
-      },
-      "features": [
-        "parking",
-        "elevator",
-        "parking",
-        "balcony"
-      ],
-      "requirements": [
-        "Test feedback logging"
-      ],
-      "timestamp": "2025-09-11 13:28:54.001935"
-    },
-    "spec_after": {
-      "building_type": "general",
-      "stories": 1,
-      "materials": [
-        {
-          "type": "steel",
-          "grade": "standard",
-          "properties": {}
-        }
-      ],
-      "dimensions": {
-        "length": 20.0,
-        "width": 15.0,
-        "height": 3.5,
-        "area": 300.0
-      },
-      "features": [
-        "parking",
-        "elevator",
-        "parking",
-        "balcony"
-      ],
-      "requirements": [
-        "Test feedback logging"
-      ],
-      "timestamp": "2025-09-11 13:28:54.001935"
-    },
-    "evaluation": {
-      "score": 92.0,
-      "completeness": 80.0,
-      "format_validity": 100.0,
-      "feedback": [
-        "Building type not specified or too generic"
-      ],
-      "suggestions": [],
-      "timestamp": "2025-09-11 13:28:54.074082"
-    },
-    "reward": 0.92,
-    "improvements": {
-      "added_materials": 0,
-      "added_features": 0,
-      "dimension_changes": {},
-      "evaluation_score": 92.0
+      "evaluation_score": 100.0
     }
   }
 ]
