@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "type": {"const": "email"},
+    "to": {"type": "string"},
+    "subject": {"type": "string"},
+    "body": {"type": "string"},
+    "tone": {"type": "string"}
+  },
+  "required": ["type", "to", "subject", "body"]
+}
