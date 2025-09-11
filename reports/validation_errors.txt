@@ -5,3 +5,12 @@ type
     For further information visit https://errors.pydantic.dev/2.9/v/missing
 Timestamp: 2025-09-11T09:18:40.380985
 
+
+=== Validation Error 20250911_100528 ===
+Type: email
+Spec: {
+  "type": "email",
+  "to": "test@example.com"
+}
+Errors: ['Missing subject', 'Missing body']
+==================================================
