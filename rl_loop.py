@@ -45,6 +45,29 @@ class RLLoop:
                     evaluation.suggestions + feedback_suggestions
                 )
             
+            # Save specification for each iteration
+            from datetime import datetime
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            spec_filename = f"design_spec_{timestamp}_iter{iteration + 1}.json"
+            spec_path = self.main_agent.spec_outputs_dir / spec_filename
+            
+            output_data = {
+                "prompt": f"{prompt} (RL iteration {iteration + 1})",
+                "specification": spec.model_dump(),
+                "metadata": {
+                    "generated_at": datetime.now().isoformat(),
+                    "generator": "MainAgent",
+                    "iteration": iteration + 1,
+                    "rl_mode": True
+                }
+            }
+            
+            import json
+            with open(spec_path, 'w') as f:
+                json.dump(output_data, f, indent=2, default=str)
+            
+            print(f"Specification saved to: {spec_path}")
+            
             # Evaluate specification
             evaluation = self.evaluator_agent.evaluate_spec(spec, prompt)
             
@@ -69,7 +92,8 @@ class RLLoop:
                 "specification": spec.model_dump(),
                 "evaluation": evaluation.model_dump(),
                 "reward": reward,
-                "improvement": evaluation.score - previous_score if iteration > 0 else 0
+                "improvement": evaluation.score - previous_score if iteration > 0 else 0,
+                "spec_file": str(spec_path)
             }
             results["iterations"].append(iteration_result)
             

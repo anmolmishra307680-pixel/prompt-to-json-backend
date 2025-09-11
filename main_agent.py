@@ -49,9 +49,12 @@ class MainAgent:
                 spec.materials.append(MaterialSpec(type="steel", grade="standard"))
         
         # Estimate dimensions if not provided
-        if not spec.dimensions.length and not spec.dimensions.width:
+        if spec.dimensions.length is None and spec.dimensions.width is None:
             # Default dimensions based on building type and stories
-            if spec.stories <= 2:
+            if spec.building_type == 'warehouse' or spec.building_type == 'industrial':
+                spec.dimensions.length = 40.0
+                spec.dimensions.width = 30.0
+            elif spec.stories <= 2:
                 spec.dimensions.length = 20.0
                 spec.dimensions.width = 15.0
             else:
@@ -65,8 +68,10 @@ class MainAgent:
         if not spec.features:
             if spec.building_type == 'residential':
                 spec.features.extend(['balcony', 'parking'])
-            elif spec.building_type == 'commercial':
+            elif spec.building_type == 'commercial' or spec.building_type == 'office':
                 spec.features.extend(['elevator', 'parking'])
+            elif spec.building_type == 'warehouse' or spec.building_type == 'industrial':
+                spec.features.extend(['parking', 'loading'])
             else:
                 spec.features.append('parking')
         

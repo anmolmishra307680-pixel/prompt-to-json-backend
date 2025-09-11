@@ -13,8 +13,17 @@ class FeedbackLoop:
     def _load_feedback_history(self) -> List[Dict[str, Any]]:
         """Load existing feedback history"""
         if self.feedback_log_path.exists():
-            with open(self.feedback_log_path, 'r') as f:
-                return json.load(f)
+            try:
+                with open(self.feedback_log_path, 'r') as f:
+                    content = f.read().strip()
+                    if not content:
+                        return []
+                    return json.loads(content)
+            except (json.JSONDecodeError, FileNotFoundError):
+                # Reset corrupted file
+                with open(self.feedback_log_path, 'w') as f:
+                    json.dump([], f)
+                return []
         return []
     
     def _save_feedback_history(self):

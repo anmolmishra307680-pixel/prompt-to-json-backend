@@ -1,0 +1,42 @@
+{
+  "timestamp": "2025-09-11T13:10:37.427877",
+  "prompt": "Retail store with glass windows",
+  "design_specification": {
+    "building_type": "retail",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "glass",
+        "grade": null,
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
+    },
+    "features": [
+      "parking"
+    ],
+    "requirements": [
+      "Retail store with glass windows"
+    ],
+    "timestamp": "2025-09-11 13:10:37.426445"
+  },
+  "evaluation_results": {
+    "score": 100.0,
+    "completeness": 100.0,
+    "format_validity": 100.0,
+    "feedback": [],
+    "suggestions": [],
+    "timestamp": "2025-09-11 13:10:37.427841"
+  },
+  "summary": {
+    "overall_score": 100.0,
+    "grade": "A",
+    "key_issues": [],
+    "top_suggestions": []
+  }
+}

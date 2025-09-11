@@ -1,0 +1,33 @@
+{
+  "prompt": "Sports stadium with steel structure (RL iteration 1)",
+  "specification": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "steel",
+        "grade": null,
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
+    },
+    "features": [
+      "parking"
+    ],
+    "requirements": [
+      "Sports stadium with steel structure"
+    ],
+    "timestamp": "2025-09-11 13:09:23.237460"
+  },
+  "metadata": {
+    "generated_at": "2025-09-11T13:09:23.237647",
+    "generator": "MainAgent",
+    "iteration": 1,
+    "rl_mode": true
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "prompt": "Manufacturing facility with concrete walls (RL iteration 2)",
+  "specification": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "concrete",
+        "grade": null,
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
+    },
+    "features": [
+      "parking",
+      "elevator",
+      "parking",
+      "balcony"
+    ],
+    "requirements": [
+      "Manufacturing facility with concrete walls"
+    ],
+    "timestamp": "2025-09-11 13:10:01.037021"
+  },
+  "metadata": {
+    "generated_at": "2025-09-11T13:10:01.041670",
+    "generator": "MainAgent",
+    "iteration": 2,
+    "rl_mode": true
+  }
+}
