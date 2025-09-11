@@ -1,0 +1,7 @@
+Validation failed for spec: {'material': ['wood'], 'color': 'brown'}
+Errors: 1 validation error for DesignSpec
+type
+  Field required [type=missing, input_value={'material': ['wood'], 'color': 'brown'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.9/v/missing
+Timestamp: 2025-09-11T09:18:40.380985
+
