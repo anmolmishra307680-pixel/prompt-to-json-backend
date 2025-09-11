@@ -6,18 +6,57 @@ from evaluator.feedback import FeedbackLoop
 from schema import DesignSpec
 
 class RLLoop:
-    def __init__(self, max_iterations: int = 3, binary_rewards: bool = False):
+    def __init__(self, max_iterations: int = 3, binary_rewards: bool = False, use_gymnasium: bool = False):
         self.main_agent = MainAgent()
         self.evaluator_agent = EvaluatorAgent()
         self.feedback_loop = FeedbackLoop()
         self.max_iterations = max_iterations
         self.binary_rewards = binary_rewards
+        self.use_gymnasium = use_gymnasium
         
         # Create logs directory
         Path("logs").mkdir(exist_ok=True)
     
     def run_training_loop(self, prompt: str) -> dict:
         """Run reinforcement learning training loop"""
+        if self.use_gymnasium:
+            return self._run_gymnasium_training(prompt)
+        else:
+            return self._run_standard_training(prompt)
+    
+    def _run_gymnasium_training(self, prompt: str) -> dict:
+        """Run training using Gymnasium environment"""
+        try:
+            from gym_environment import create_gym_environment
+            env = create_gym_environment(prompt)
+            if not env:
+                print("Gymnasium not available, falling back to standard training")
+                return self._run_standard_training(prompt)
+            
+            print(f"Starting Gymnasium RL training for prompt: '{prompt}'")
+            obs, _ = env.reset()
+            total_reward = 0
+            
+            for step in range(self.max_iterations):
+                action = env.action_space.sample()
+                obs, reward, done, _, info = env.step(action)
+                total_reward += reward
+                
+                if done:
+                    break
+            
+            return {
+                "prompt": prompt,
+                "gymnasium_training": True,
+                "total_reward": total_reward,
+                "steps": step + 1
+            }
+        except ImportError:
+            print("Gymnasium not installed, using standard training")
+            return self._run_standard_training(prompt)
+    
+    def _run_standard_training(self, prompt: str) -> dict:
+        """Run standard training loop"""
         print(f"Starting RL training loop for prompt: '{prompt}'")
         
         results = {

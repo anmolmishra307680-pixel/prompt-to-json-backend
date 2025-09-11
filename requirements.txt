@@ -2,3 +2,6 @@ transformers>=4.30.0
 langchain>=0.0.200
 pydantic>=2.0.0
 torch>=2.0.0
+
+# Optional dependencies
+# gymnasium>=0.29.0  # Uncomment for advanced RL environment

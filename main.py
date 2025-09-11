@@ -15,6 +15,7 @@ def main():
     parser.add_argument("--iterations", type=int, default=3, help="Number of RL iterations")
     parser.add_argument("--use-llm", action="store_true", help="Use LLM generation (stub)")
     parser.add_argument("--binary-rewards", action="store_true", help="Use binary reward system (1/-1)")
+    parser.add_argument("--use-gymnasium", action="store_true", help="Use Gymnasium RL environment (requires gymnasium package)")
     
     args = parser.parse_args()
     
@@ -22,7 +23,7 @@ def main():
         if args.mode == "single":
             run_single_mode(args.prompt, args.use_llm)
         elif args.mode == "rl":
-            run_rl_mode(args.prompt, args.iterations, args.binary_rewards)
+            run_rl_mode(args.prompt, args.iterations, args.binary_rewards, args.use_gymnasium)
         elif args.mode == "compare":
             run_compare_mode(args.prompt)
     
@@ -83,7 +84,7 @@ def run_single_mode(prompt: str, use_llm: bool = False):
         for suggestion in evaluation.suggestions:
             print(f"  - {suggestion}")
 
-def run_rl_mode(prompt: str, iterations: int, binary_rewards: bool = False):
+def run_rl_mode(prompt: str, iterations: int, binary_rewards: bool = False, use_gymnasium: bool = False):
     """Run reinforcement learning mode"""
     validate_prompt(prompt)
     print(f"Running RL training for {iterations} iterations")
@@ -91,7 +92,7 @@ def run_rl_mode(prompt: str, iterations: int, binary_rewards: bool = False):
     # Initialize logger
     prompt_logger = PromptLogger()
     
-    rl_loop = RLLoop(max_iterations=iterations, binary_rewards=binary_rewards)
+    rl_loop = RLLoop(max_iterations=iterations, binary_rewards=binary_rewards, use_gymnasium=use_gymnasium)
     results = rl_loop.run_training_loop(prompt)
     
     # Log RL training result
@@ -134,12 +135,17 @@ def run_compare_mode(prompt: str):
     print(f"Winner: {comparison['winner']}")
 
 def validate_prompt(prompt: str) -> bool:
-    """Validate input prompt"""
-    if not prompt or len(prompt.strip()) < 10:
-        raise ValueError("Prompt must be at least 10 characters long")
+    """Basic prompt validation - accepts all types of prompts"""
+    if not prompt:
+        raise ValueError("Prompt cannot be empty")
+    
+    prompt = prompt.strip()
+    
+    if len(prompt) < 3:
+        raise ValueError(f"Prompt too short ({len(prompt)} chars). Minimum 3 characters required.")
     
     if len(prompt) > 1000:
-        raise ValueError("Prompt too long (max 1000 characters)")
+        raise ValueError(f"Prompt too long ({len(prompt)} chars). Maximum 1000 characters allowed.")
     
     return True
 
