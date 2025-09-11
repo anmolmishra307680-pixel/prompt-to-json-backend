@@ -1,0 +1,44 @@
+============================================================
+DESIGN SPECIFICATION EVALUATION REPORT
+============================================================
+
+Evaluation Date: 2025-01-10T10:00:00
+Prompt: Design a table
+Spec Path: N/A
+
+SPECIFICATION SUMMARY
+------------------------------
+Type: table
+Materials: 0 specified
+Has Dimensions: No
+Has Purpose: No
+Completeness Score: 0/10
+
+QUALITY SCORES
+------------------------------
+Overall Format Score: 7.5/10
+Completeness: 0/4
+Material Realism: 0/3
+Dimension Validity: 0/2
+Type Match: 0/1
+
+EVALUATION RESULTS
+------------------------------
+Overall Severity: MINOR
+Issues Found: 1
+
+CRITIC FEEDBACK
+------------------------------
+Test feedback
+
+ISSUES IDENTIFIED
+------------------------------
+1. Test Issue
+
+RECOMMENDATIONS
+------------------------------
+1. test recommendation
+
+============================================================
+End of Report
+============================================================
