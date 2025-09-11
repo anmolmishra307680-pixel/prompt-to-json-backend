@@ -222,9 +222,9 @@ python cli_tools.py history
 python cli_tools.py stats
 ```
 
-### Daily Reflection
+### System Statistics
 ```bash
-python cli_tools.py daily --honesty "Maintained transparency in all communications" --discipline "Completed all planned tasks" --gratitude "Thankful for team collaboration"
+python cli_tools.py stats
 ```
 
 ## Sample Outputs
@@ -241,10 +241,10 @@ The `sample_outputs/` directory contains example files:
 - **Content**: All prompt-result pairs with timestamps
 - **Usage**: Retrievable via CLI tools
 
-### Daily Logs
-- **Location**: `reports/daily_log.txt`
-- **Content**: Values reflection and system status
-- **Usage**: Manual reflection and system health tracking
+### Testing
+- **Location**: `test_system.py`
+- **Content**: Automated tests for all core functionality
+- **Usage**: `python test_system.py`
 
 ## Contributing
 

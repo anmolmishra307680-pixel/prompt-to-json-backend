@@ -6,7 +6,6 @@ from main_agent import MainAgent
 from evaluator_agent import EvaluatorAgent
 from rl_loop import RLLoop
 from prompt_logger import PromptLogger
-from daily_logger import DailyLogger
 
 def main():
     parser = argparse.ArgumentParser(description="Prompt-to-JSON Agent System")

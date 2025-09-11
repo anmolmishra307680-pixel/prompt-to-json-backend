@@ -18,13 +18,16 @@ class PromptExtractor:
     
     def extract_stories(self, prompt: str) -> int:
         """Extract number of stories from prompt"""
+        if not prompt or not prompt.strip():
+            return 1
+            
         # Handle written numbers first
         number_words = {
             'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5,
             'six': 6, 'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10
         }
         
-        prompt_lower = prompt.lower()
+        prompt_lower = prompt.lower().strip()
         
         # Check for written numbers + story/floor
         for word, num in number_words.items():
@@ -92,8 +95,11 @@ class PromptExtractor:
     
     def extract_building_type(self, prompt: str) -> str:
         """Extract building type from prompt"""
+        if not prompt or not prompt.strip():
+            return 'general'
+            
         building_types = ['residential', 'commercial', 'office', 'warehouse', 'retail', 'industrial']
-        prompt_lower = prompt.lower()
+        prompt_lower = prompt.lower().strip()
         
         for building_type in building_types:
             if building_type in prompt_lower:
@@ -103,11 +109,17 @@ class PromptExtractor:
     
     def extract_spec(self, prompt: str) -> DesignSpec:
         """Extract complete design specification from prompt"""
-        return DesignSpec(
-            building_type=self.extract_building_type(prompt),
-            stories=self.extract_stories(prompt),
-            materials=self.extract_materials(prompt),
-            dimensions=self.extract_dimensions(prompt),
-            features=self.extract_features(prompt),
-            requirements=[prompt.strip()]
-        )
+        if not prompt or not prompt.strip():
+            raise ValueError("Prompt cannot be empty")
+            
+        try:
+            return DesignSpec(
+                building_type=self.extract_building_type(prompt),
+                stories=self.extract_stories(prompt),
+                materials=self.extract_materials(prompt),
+                dimensions=self.extract_dimensions(prompt),
+                features=self.extract_features(prompt),
+                requirements=[prompt.strip()]
+            )
+        except Exception as e:
+            raise ValueError(f"Failed to extract specification: {str(e)}")

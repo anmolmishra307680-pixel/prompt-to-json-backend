@@ -1,7 +1,6 @@
 import argparse
 import json
 from prompt_logger import PromptLogger
-from daily_logger import DailyLogger
 
 def show_prompt_history(args):
     """Show prompt history"""
@@ -23,9 +22,7 @@ def show_prompt_history(args):
 
 def add_daily_reflection(args):
     """Add daily reflection"""
-    daily_logger = DailyLogger()
-    daily_logger.log_daily_reflection(args.honesty, args.discipline, args.gratitude)
-    print("Daily reflection logged successfully!")
+    print("Daily reflection feature removed - focus on core functionality")
 
 def show_system_stats(args):
     """Show system statistics"""
@@ -56,11 +53,8 @@ def main():
     history_parser = subparsers.add_parser('history', help='Show prompt history')
     history_parser.add_argument('--last', type=int, help='Show last N prompts')
     
-    # Daily reflection command
-    daily_parser = subparsers.add_parser('daily', help='Add daily reflection')
-    daily_parser.add_argument('--honesty', required=True, help='Honesty reflection')
-    daily_parser.add_argument('--discipline', required=True, help='Discipline reflection')
-    daily_parser.add_argument('--gratitude', required=True, help='Gratitude reflection')
+    # Daily reflection command (simplified)
+    daily_parser = subparsers.add_parser('daily', help='Daily reflection (removed)')
     
     # Stats command
     subparsers.add_parser('stats', help='Show system statistics')

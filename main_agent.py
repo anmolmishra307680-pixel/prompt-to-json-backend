@@ -13,10 +13,16 @@ class MainAgent:
     
     def generate_spec(self, prompt: str, use_llm: bool = False) -> DesignSpec:
         """Generate design specification from prompt"""
-        if use_llm:
-            return self._generate_with_llm(prompt)
-        else:
-            return self._generate_with_rules(prompt)
+        if not prompt or len(prompt.strip()) < 3:
+            raise ValueError("Prompt must be at least 3 characters long")
+            
+        try:
+            if use_llm:
+                return self._generate_with_llm(prompt)
+            else:
+                return self._generate_with_rules(prompt)
+        except Exception as e:
+            raise RuntimeError(f"Failed to generate specification: {str(e)}")
     
     def _generate_with_rules(self, prompt: str) -> DesignSpec:
         """Generate specification using rule-based extraction"""
