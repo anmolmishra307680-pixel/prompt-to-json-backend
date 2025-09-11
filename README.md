@@ -152,7 +152,7 @@ prompt-to-json-backend/
 - **Content**: Detailed evaluation results and scoring
 
 ### Logs
-- **Feedback Log**: `logs/feedback_log.json` - RL training iterations
+- **Feedback Log**: `logs/feedback_log.json` - RL iteration-by-iteration feedback
 - **Training Results**: `logs/rl_training_*.json` - Complete training sessions
 
 ## Evaluation Criteria
