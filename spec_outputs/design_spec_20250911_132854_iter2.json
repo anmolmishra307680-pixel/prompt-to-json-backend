@@ -1,12 +1,12 @@
 {
-  "prompt": "Manufacturing facility with concrete walls (RL iteration 2)",
+  "prompt": "Test feedback logging (RL iteration 2)",
   "specification": {
     "building_type": "general",
     "stories": 1,
     "materials": [
       {
-        "type": "concrete",
-        "grade": null,
+        "type": "steel",
+        "grade": "standard",
         "properties": {}
       }
     ],
@@ -23,12 +23,12 @@
       "balcony"
     ],
     "requirements": [
-      "Manufacturing facility with concrete walls"
+      "Test feedback logging"
     ],
-    "timestamp": "2025-09-11 13:10:01.037021"
+    "timestamp": "2025-09-11 13:28:54.001935"
   },
   "metadata": {
-    "generated_at": "2025-09-11T13:10:01.041670",
+    "generated_at": "2025-09-11T13:28:54.004899",
     "generator": "MainAgent",
     "iteration": 2,
     "rl_mode": true

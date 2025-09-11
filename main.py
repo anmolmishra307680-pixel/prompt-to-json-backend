@@ -5,6 +5,8 @@ from pathlib import Path
 from main_agent import MainAgent
 from evaluator_agent import EvaluatorAgent
 from rl_loop import RLLoop
+from prompt_logger import PromptLogger
+from daily_logger import DailyLogger
 
 def main():
     parser = argparse.ArgumentParser(description="Prompt-to-JSON Agent System")
@@ -24,18 +26,27 @@ def main():
         elif args.mode == "compare":
             run_compare_mode(args.prompt)
     
+    except ValueError as e:
+        print(f"Input Error: {str(e)}")
+        sys.exit(1)
+    except FileNotFoundError as e:
+        print(f"File Error: {str(e)}")
+        sys.exit(1)
     except Exception as e:
-        print(f"Error: {str(e)}")
+        print(f"Unexpected Error: {str(e)}")
+        print("Please check your input and try again.")
         sys.exit(1)
 
 def run_single_mode(prompt: str, use_llm: bool = False):
     """Run single iteration mode"""
+    validate_prompt(prompt)
     print(f"Processing prompt: '{prompt}'")
     print(f"Mode: {'LLM' if use_llm else 'Rule-based'}")
     
-    # Initialize agents
+    # Initialize agents and logger
     main_agent = MainAgent()
     evaluator_agent = EvaluatorAgent()
+    prompt_logger = PromptLogger()
     
     # Generate specification
     print("\n1. Generating specification...")
@@ -48,6 +59,13 @@ def run_single_mode(prompt: str, use_llm: bool = False):
     # Evaluate specification
     print("\n2. Evaluating specification...")
     evaluation = evaluator_agent.evaluate_spec(spec, prompt)
+    
+    # Log prompt and result
+    result = {
+        "spec_file": spec_path,
+        "evaluation": evaluation.model_dump()
+    }
+    prompt_logger.log_prompt_result(prompt, result, "single")
     
     # Display results
     print(f"\n--- Results ---")
@@ -67,10 +85,22 @@ def run_single_mode(prompt: str, use_llm: bool = False):
 
 def run_rl_mode(prompt: str, iterations: int):
     """Run reinforcement learning mode"""
+    validate_prompt(prompt)
     print(f"Running RL training for {iterations} iterations")
+    
+    # Initialize logger
+    prompt_logger = PromptLogger()
     
     rl_loop = RLLoop(max_iterations=iterations)
     results = rl_loop.run_training_loop(prompt)
+    
+    # Log RL training result
+    result = {
+        "training_file": f"logs/rl_training_{results.get('timestamp', 'unknown')}.json",
+        "iterations": len(results['iterations']),
+        "final_score": results['iterations'][-1]['evaluation']['score'] if results['iterations'] else 0
+    }
+    prompt_logger.log_prompt_result(prompt, result, "rl")
     
     print(f"\n--- RL Training Results ---")
     print(f"Total iterations: {len(results['iterations'])}")

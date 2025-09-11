@@ -1,0 +1,38 @@
+{
+  "prompt": "Design a modern 5-story office building with steel frame and glass facade",
+  "specification": {
+    "building_type": "office",
+    "stories": 5,
+    "materials": [
+      {
+        "type": "steel",
+        "grade": "A36",
+        "properties": {}
+      },
+      {
+        "type": "glass",
+        "grade": null,
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 30.0,
+      "width": 25.0,
+      "height": 17.5,
+      "area": 750.0
+    },
+    "features": [
+      "facade",
+      "elevator",
+      "parking"
+    ],
+    "requirements": [
+      "Design a modern 5-story office building with steel frame and glass facade"
+    ],
+    "timestamp": "2025-09-11 10:00:00.000000"
+  },
+  "metadata": {
+    "generated_at": "2025-09-11T10:00:00.000000",
+    "generator": "MainAgent"
+  }
+}

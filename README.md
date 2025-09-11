@@ -208,12 +208,53 @@ prompt-to-json-backend/
 ### Debug Mode
 Add `--verbose` flag for detailed logging (feature can be added)
 
+## CLI Tools
+
+### Prompt History
+```bash
+# Show last 5 prompts
+python cli_tools.py history --last 5
+
+# Show all prompts
+python cli_tools.py history
+
+# Show system statistics
+python cli_tools.py stats
+```
+
+### Daily Reflection
+```bash
+python cli_tools.py daily --honesty "Maintained transparency in all communications" --discipline "Completed all planned tasks" --gratitude "Thankful for team collaboration"
+```
+
+## Sample Outputs
+
+The `sample_outputs/` directory contains example files:
+- `sample_spec_1.json` - Perfect office building specification
+- `sample_evaluation_1.json` - Complete evaluation report
+- `sample_rl_training.json` - RL training with 2 iterations
+
+## Logging System
+
+### Traditional Logs
+- **Location**: `logs/logs.json`
+- **Content**: All prompt-result pairs with timestamps
+- **Usage**: Retrievable via CLI tools
+
+### Daily Logs
+- **Location**: `reports/daily_log.txt`
+- **Content**: Values reflection and system status
+- **Usage**: Manual reflection and system health tracking
+
 ## Contributing
 
 1. Fork the repository
 2. Create feature branch
 3. Add tests for new functionality
 4. Submit pull request
+
+### Team Gratitude
+Special thanks to all contributors who helped build this comprehensive prompt-to-JSON system with RL capabilities.
 
 ## License
 

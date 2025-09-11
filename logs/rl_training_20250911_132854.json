@@ -1,5 +1,5 @@
 {
-  "prompt": "Sports stadium with steel structure",
+  "prompt": "Test feedback logging",
   "iterations": [
     {
       "iteration": 1,
@@ -9,7 +9,7 @@
         "materials": [
           {
             "type": "steel",
-            "grade": null,
+            "grade": "standard",
             "properties": {}
           }
         ],
@@ -23,9 +23,9 @@
           "parking"
         ],
         "requirements": [
-          "Sports stadium with steel structure"
+          "Test feedback logging"
         ],
-        "timestamp": "2025-09-11 13:09:23.237460"
+        "timestamp": "2025-09-11 13:28:54.001935"
       },
       "evaluation": {
         "score": 92.0,
@@ -35,11 +35,11 @@
           "Building type not specified or too generic"
         ],
         "suggestions": [],
-        "timestamp": "2025-09-11 13:09:23.238821"
+        "timestamp": "2025-09-11 13:28:54.003190"
       },
       "reward": 1.84,
       "improvement": 0,
-      "spec_file": "spec_outputs\\design_spec_20250911_130923_iter1.json"
+      "spec_file": "spec_outputs\\design_spec_20250911_132854_iter1.json"
     },
     {
       "iteration": 2,
@@ -49,7 +49,7 @@
         "materials": [
           {
             "type": "steel",
-            "grade": null,
+            "grade": "standard",
             "properties": {}
           }
         ],
@@ -66,9 +66,9 @@
           "balcony"
         ],
         "requirements": [
-          "Sports stadium with steel structure"
+          "Test feedback logging"
         ],
-        "timestamp": "2025-09-11 13:09:23.237460"
+        "timestamp": "2025-09-11 13:28:54.001935"
       },
       "evaluation": {
         "score": 92.0,
@@ -78,54 +78,11 @@
           "Building type not specified or too generic"
         ],
         "suggestions": [],
-        "timestamp": "2025-09-11 13:09:23.241767"
+        "timestamp": "2025-09-11 13:28:54.074082"
       },
       "reward": 0.92,
       "improvement": 0.0,
-      "spec_file": "spec_outputs\\design_spec_20250911_130923_iter2.json"
-    },
-    {
-      "iteration": 3,
-      "specification": {
-        "building_type": "general",
-        "stories": 1,
-        "materials": [
-          {
-            "type": "steel",
-            "grade": null,
-            "properties": {}
-          }
-        ],
-        "dimensions": {
-          "length": 20.0,
-          "width": 15.0,
-          "height": 3.5,
-          "area": 300.0
-        },
-        "features": [
-          "parking",
-          "elevator",
-          "parking",
-          "balcony"
-        ],
-        "requirements": [
-          "Sports stadium with steel structure"
-        ],
-        "timestamp": "2025-09-11 13:09:23.237460"
-      },
-      "evaluation": {
-        "score": 92.0,
-        "completeness": 80.0,
-        "format_validity": 100.0,
-        "feedback": [
-          "Building type not specified or too generic"
-        ],
-        "suggestions": [],
-        "timestamp": "2025-09-11 13:09:23.245711"
-      },
-      "reward": 0.92,
-      "improvement": 0.0,
-      "spec_file": "spec_outputs\\design_spec_20250911_130923_iter3.json"
+      "spec_file": "spec_outputs\\design_spec_20250911_132854_iter2.json"
     }
   ],
   "final_spec": {
@@ -134,7 +91,7 @@
     "materials": [
       {
         "type": "steel",
-        "grade": null,
+        "grade": "standard",
         "properties": {}
       }
     ],
@@ -151,15 +108,15 @@
       "balcony"
     ],
     "requirements": [
-      "Sports stadium with steel structure"
+      "Test feedback logging"
     ],
-    "timestamp": "2025-09-11 13:09:23.237460"
+    "timestamp": "2025-09-11 13:28:54.001935"
   },
   "learning_insights": {
-    "total_iterations": 3,
+    "total_iterations": 2,
     "average_score": 92.0,
     "score_trend": "declining",
-    "average_reward": 1.2266666666666668,
+    "average_reward": 1.3800000000000001,
     "best_iteration": 1,
     "common_successful_patterns": [
       "Using steel material leads to better results"

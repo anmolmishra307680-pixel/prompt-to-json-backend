@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": "2025-09-11T13:28:54.077963",
+    "prompt": "Test feedback logging",
+    "mode": "rl",
+    "result": {
+      "training_file": "logs/rl_training_unknown.json",
+      "iterations": 2,
+      "final_score": 92.0
+    },
+    "spec_file": "",
+    "score": 0
+  }
+]
