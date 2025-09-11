@@ -1,0 +1,34 @@
+{
+  "prompt": "Test structure (RL iteration 3)",
+  "specification": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "steel",
+        "grade": "standard",
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
+    },
+    "features": [
+      "parking",
+      "elevator",
+      "parking",
+      "balcony"
+    ],
+    "requirements": [
+      "Test structure"
+    ],
+    "timestamp": "2025-09-11 12:29:35.361295"
+  },
+  "metadata": {
+    "generated_at": "2025-09-11T12:29:35.367638",
+    "generator": "MainAgent"
+  }
+}
