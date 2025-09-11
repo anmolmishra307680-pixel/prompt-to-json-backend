@@ -67,5 +67,362 @@
       },
       "evaluation_score": 100.0
     }
+  },
+  {
+    "iteration": 1,
+    "timestamp": "2025-09-11T13:38:16.271273",
+    "prompt": "Warehouse facility with concrete walls",
+    "spec_before": {
+      "building_type": "initial",
+      "stories": 0,
+      "materials": [],
+      "dimensions": {
+        "length": null,
+        "width": null,
+        "height": null,
+        "area": null
+      },
+      "features": [],
+      "requirements": [],
+      "timestamp": "2025-09-11 13:38:16.271268"
+    },
+    "spec_after": {
+      "building_type": "warehouse",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 40.0,
+        "width": 30.0,
+        "height": 3.5,
+        "area": 1200.0
+      },
+      "features": [
+        "parking",
+        "loading"
+      ],
+      "requirements": [
+        "Warehouse facility with concrete walls"
+      ],
+      "timestamp": "2025-09-11 13:38:16.268768"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-11 13:38:16.270213"
+    },
+    "reward": 1.0,
+    "improvements": {
+      "added_materials": 1,
+      "added_features": 2,
+      "dimension_changes": {
+        "length": {
+          "before": null,
+          "after": 40.0
+        }
+      },
+      "evaluation_score": 100.0
+    }
+  },
+  {
+    "iteration": 2,
+    "timestamp": "2025-09-11T13:38:16.274611",
+    "prompt": "Warehouse facility with concrete walls",
+    "spec_before": {
+      "building_type": "warehouse",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 40.0,
+        "width": 30.0,
+        "height": 3.5,
+        "area": 1200.0
+      },
+      "features": [
+        "parking",
+        "loading",
+        "elevator",
+        "parking",
+        "balcony"
+      ],
+      "requirements": [
+        "Warehouse facility with concrete walls"
+      ],
+      "timestamp": "2025-09-11 13:38:16.268768"
+    },
+    "spec_after": {
+      "building_type": "warehouse",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 40.0,
+        "width": 30.0,
+        "height": 3.5,
+        "area": 1200.0
+      },
+      "features": [
+        "parking",
+        "loading",
+        "elevator",
+        "parking",
+        "balcony"
+      ],
+      "requirements": [
+        "Warehouse facility with concrete walls"
+      ],
+      "timestamp": "2025-09-11 13:38:16.268768"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-11 13:38:16.273618"
+    },
+    "reward": 1.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 100.0
+    }
+  },
+  {
+    "iteration": 1,
+    "timestamp": "2025-09-11T13:38:47.395222",
+    "prompt": "Shopping center with mixed materials",
+    "spec_before": {
+      "building_type": "initial",
+      "stories": 0,
+      "materials": [],
+      "dimensions": {
+        "length": null,
+        "width": null,
+        "height": null,
+        "area": null
+      },
+      "features": [],
+      "requirements": [],
+      "timestamp": "2025-09-11 13:38:47.395213"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking"
+      ],
+      "requirements": [
+        "Shopping center with mixed materials"
+      ],
+      "timestamp": "2025-09-11 13:38:47.392852"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-11 13:38:47.394029"
+    },
+    "reward": 1.84,
+    "improvements": {
+      "added_materials": 1,
+      "added_features": 1,
+      "dimension_changes": {
+        "length": {
+          "before": null,
+          "after": 20.0
+        }
+      },
+      "evaluation_score": 92.0
+    }
+  },
+  {
+    "iteration": 2,
+    "timestamp": "2025-09-11T13:38:47.399953",
+    "prompt": "Shopping center with mixed materials",
+    "spec_before": {
+      "building_type": "general",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator",
+        "parking",
+        "balcony"
+      ],
+      "requirements": [
+        "Shopping center with mixed materials"
+      ],
+      "timestamp": "2025-09-11 13:38:47.392852"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator",
+        "parking",
+        "balcony"
+      ],
+      "requirements": [
+        "Shopping center with mixed materials"
+      ],
+      "timestamp": "2025-09-11 13:38:47.392852"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-11 13:38:47.398860"
+    },
+    "reward": 0.92,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 92.0
+    }
+  },
+  {
+    "iteration": 3,
+    "timestamp": "2025-09-11T13:38:47.403894",
+    "prompt": "Shopping center with mixed materials",
+    "spec_before": {
+      "building_type": "general",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator",
+        "parking",
+        "balcony"
+      ],
+      "requirements": [
+        "Shopping center with mixed materials"
+      ],
+      "timestamp": "2025-09-11 13:38:47.392852"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator",
+        "parking",
+        "balcony"
+      ],
+      "requirements": [
+        "Shopping center with mixed materials"
+      ],
+      "timestamp": "2025-09-11 13:38:47.392852"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-11 13:38:47.403042"
+    },
+    "reward": 0.92,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 92.0
+    }
   }
 ]
