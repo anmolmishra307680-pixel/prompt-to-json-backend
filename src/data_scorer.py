@@ -276,8 +276,22 @@ def check_material_type_compatibility(spec_type: str, materials: List[str]) -> b
     suitable_materials = type_materials[spec_type]
     return any(suitable in material_str for suitable in suitable_materials)
 
-def score_spec(spec: Dict[str, Any], prompt: str = "") -> Dict[str, Any]:
+def score_spec(spec: Dict[str, Any], prompt: str = "", spec_type: str = None) -> Dict[str, Any]:
     """Main scoring function that evaluates all aspects of a spec."""
+    
+    # Determine type for scoring
+    if not spec_type:
+        spec_type = spec.get('type', 'design')
+    
+    # Apply type-specific scoring
+    if spec_type == 'email':
+        return score_email_spec(spec, prompt)
+    else:
+        # Default to design scoring for furniture/design types
+        return score_design_spec(spec, prompt)
+
+def score_design_spec(spec: Dict[str, Any], prompt: str = "") -> Dict[str, Any]:
+    """Score design/furniture specifications."""
     
     # Get individual scores
     completeness_score, comp_explanations = score_completeness(spec)
@@ -302,6 +316,77 @@ def score_spec(spec: Dict[str, Any], prompt: str = "") -> Dict[str, Any]:
         "type_match_score": type_match_score,
         "format_score": format_score,
         "explanations": all_explanations
+    }
+
+def score_email_spec(spec: Dict[str, Any], prompt: str = "") -> Dict[str, Any]:
+    """Score email specifications with email-specific metrics."""
+    
+    scores = {}
+    explanations = []
+    
+    # Subject quality (0-2.5)
+    subject = spec.get('subject', '')
+    if not subject:
+        subject_score = 0
+        explanations.append('missing subject')
+    elif len(subject) < 3:
+        subject_score = 0.5
+        explanations.append('subject too short')
+    elif len(subject) > 100:
+        subject_score = 1.5
+        explanations.append('subject too long')
+    else:
+        subject_score = 2.5
+        explanations.append('subject appropriate length')
+    
+    # Body quality (0-2.5)
+    body = spec.get('body', '')
+    if not body:
+        body_score = 0
+        explanations.append('missing body')
+    elif len(body) < 10:
+        body_score = 0.5
+        explanations.append('body too short')
+    else:
+        body_score = 2.5
+        explanations.append('body has content')
+    
+    # Recipient validity (0-2.5)
+    to = spec.get('to', '')
+    if not to:
+        recipient_score = 0
+        explanations.append('missing recipient')
+    elif '@' in to and '.' in to:
+        recipient_score = 2.5
+        explanations.append('valid email recipient')
+    else:
+        recipient_score = 1.5
+        explanations.append('recipient specified')
+    
+    # Tone appropriateness (0-2.5)
+    tone = spec.get('tone', '')
+    if not tone:
+        tone_score = 1.0
+        explanations.append('no tone specified')
+    elif tone.lower() in ['professional', 'formal', 'casual', 'friendly']:
+        tone_score = 2.5
+        explanations.append('appropriate tone')
+    else:
+        tone_score = 1.5
+        explanations.append('tone specified')
+    
+    # Calculate scores
+    format_score = subject_score + body_score + recipient_score + tone_score
+    completeness_score = min(4, sum(1 for score in [subject_score, body_score, recipient_score, tone_score] if score > 1.0))
+    
+    return {
+        "subject_score": subject_score,
+        "body_score": body_score,
+        "recipient_score": recipient_score,
+        "tone_score": tone_score,
+        "format_score": format_score,
+        "completeness_score": completeness_score,
+        "explanations": explanations
     }
 
 if __name__ == "__main__":
