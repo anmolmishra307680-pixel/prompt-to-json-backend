@@ -1,0 +1,62 @@
+{
+  "run_id": "full_run_04",
+  "timestamp": "2025-09-10T15:15:00Z",
+  "prompt": "Create a lightweight carbon fiber drone body for aerial photography",
+  "spec": {
+    "type": "drone",
+    "material": ["carbon fiber"],
+    "color": "black",
+    "dimensions": {
+      "raw": "lightweight design",
+      "width_cm": 35,
+      "height_cm": 12,
+      "floors": null,
+      "area_m2": null
+    },
+    "purpose": "aerial",
+    "metadata": {
+      "generated_by": "extractor_v1",
+      "confidence": 0.88,
+      "specialized_features": ["lightweight", "photography_mount"]
+    }
+  },
+  "evaluation": {
+    "critic_feedback": "Specification includes appropriate materials and purpose. Dimensions could be more specific for drone components.",
+    "issues": ["dimensions_incomplete"],
+    "severity": "minor",
+    "recommendations": [
+      "Add propeller span measurements",
+      "Specify weight limitations",
+      "Include camera mount specifications"
+    ]
+  },
+  "scores": {
+    "format_score": 7.8,
+    "completeness_score": 3,
+    "material_realism_score": 3,
+    "dimension_validity_score": 1,
+    "type_match_score": 1,
+    "explanations": [
+      "Most fields completed appropriately",
+      "Carbon fiber excellent for drone construction",
+      "Basic dimensions provided but incomplete",
+      "Type matches drone specification",
+      "Purpose aligns with aerial photography"
+    ]
+  },
+  "reward": 0.234,
+  "feedback": {
+    "applied": true,
+    "reason": "incomplete_dimensions",
+    "suggestions": [
+      "Add propeller diameter (typically 8-12 inches)",
+      "Specify maximum takeoff weight",
+      "Include battery compartment dimensions"
+    ]
+  },
+  "files_generated": {
+    "spec_path": "spec_outputs/carbon_fiber_drone_20250910_151500.json",
+    "eval_path": "evaluations/eval_carbon_fiber_drone_20250910_151500.json",
+    "report_path": "reports/carbon_fiber_drone_20250910_151500.txt"
+  }
+}

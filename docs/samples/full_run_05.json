@@ -1,0 +1,56 @@
+{
+  "run_id": "full_run_05",
+  "timestamp": "2025-09-10T15:20:00Z",
+  "prompt": "Design a red leather sofa for the living room",
+  "spec": {
+    "type": "sofa",
+    "material": ["leather"],
+    "color": "red",
+    "dimensions": {
+      "raw": "standard living room size",
+      "width_cm": 200,
+      "height_cm": 85,
+      "floors": null,
+      "area_m2": null
+    },
+    "purpose": "seating",
+    "metadata": {
+      "generated_by": "extractor_v1",
+      "confidence": 0.79
+    }
+  },
+  "evaluation": {
+    "critic_feedback": "Well-specified sofa with appropriate materials and dimensions. Color and purpose clearly defined.",
+    "issues": [],
+    "severity": "none",
+    "recommendations": [
+      "Consider adding depth measurement",
+      "Specify leather type (genuine, bonded, etc.)"
+    ]
+  },
+  "scores": {
+    "format_score": 8.1,
+    "completeness_score": 4,
+    "material_realism_score": 3,
+    "dimension_validity_score": 2,
+    "type_match_score": 1,
+    "explanations": [
+      "All major fields completed",
+      "Leather appropriate for sofa construction",
+      "Width and height dimensions provided",
+      "Type matches sofa request exactly",
+      "Color specification clear and realistic"
+    ]
+  },
+  "reward": 0.405,
+  "feedback": {
+    "applied": false,
+    "reason": "good_quality_spec",
+    "suggestions": []
+  },
+  "files_generated": {
+    "spec_path": "spec_outputs/red_leather_sofa_20250910_152000.json",
+    "eval_path": "evaluations/eval_red_leather_sofa_20250910_152000.json",
+    "report_path": "reports/red_leather_sofa_20250910_152000.txt"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "run_id": "full_run_02",
+  "timestamp": "2025-09-10T15:05:00Z",
+  "prompt": "Design a modern steel office chair with wheels",
+  "spec": {
+    "type": "chair",
+    "material": ["metal"],
+    "color": "black",
+    "dimensions": {
+      "raw": null,
+      "width_cm": null,
+      "height_cm": null,
+      "floors": null,
+      "area_m2": null
+    },
+    "purpose": "office",
+    "metadata": {
+      "generated_by": "extractor_v1",
+      "confidence": 0.72
+    }
+  },
+  "evaluation": {
+    "critic_feedback": "Dimensions are missing (provide specific measurements).",
+    "issues": ["dimensions_missing"],
+    "severity": "minor",
+    "recommendations": ["Add specific chair dimensions (height, width, depth)"]
+  },
+  "scores": {
+    "format_score": 6.8,
+    "completeness_score": 3,
+    "material_realism_score": 3,
+    "dimension_validity_score": 0,
+    "type_match_score": 1,
+    "explanations": [
+      "Most required fields present",
+      "Steel is appropriate for office chair",
+      "No dimensional information provided",
+      "Type matches prompt"
+    ]
+  },
+  "reward": 0.136,
+  "feedback": {
+    "applied": true,
+    "reason": "missing_dimensions",
+    "suggestions": [
+      "Add chair height (typically 40-50 inches)",
+      "Specify seat width (typically 18-22 inches)",
+      "Include wheel specifications"
+    ]
+  },
+  "files_generated": {
+    "spec_path": "spec_outputs/steel_office_chair_20250910_150500.json",
+    "eval_path": "evaluations/eval_steel_office_chair_20250910_150500.json",
+    "report_path": "reports/steel_office_chair_20250910_150500.txt"
+  }
+}

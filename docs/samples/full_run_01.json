@@ -1,0 +1,52 @@
+{
+  "run_id": "full_run_01",
+  "timestamp": "2025-09-10T15:00:00Z",
+  "prompt": "Create a wooden dining table with glass top",
+  "spec": {
+    "type": "table",
+    "material": ["wood", "glass"],
+    "color": "brown",
+    "dimensions": {
+      "raw": "6x4 feet",
+      "width_cm": 183,
+      "height_cm": 122,
+      "floors": null,
+      "area_m2": null
+    },
+    "purpose": "dining",
+    "metadata": {
+      "generated_by": "extractor_v1",
+      "confidence": 0.85
+    }
+  },
+  "evaluation": {
+    "critic_feedback": "Specification looks complete and well-defined.",
+    "issues": [],
+    "severity": "none",
+    "recommendations": []
+  },
+  "scores": {
+    "format_score": 8.5,
+    "completeness_score": 4,
+    "material_realism_score": 3,
+    "dimension_validity_score": 2,
+    "type_match_score": 1,
+    "explanations": [
+      "All required fields present",
+      "Materials are realistic for table construction",
+      "Dimensions include specific measurements",
+      "Type matches prompt exactly"
+    ]
+  },
+  "reward": 0.425,
+  "feedback": {
+    "applied": false,
+    "reason": "high_quality_spec",
+    "suggestions": []
+  },
+  "files_generated": {
+    "spec_path": "spec_outputs/wooden_dining_table_20250910_150000.json",
+    "eval_path": "evaluations/eval_wooden_dining_table_20250910_150000.json",
+    "report_path": "reports/wooden_dining_table_20250910_150000.txt"
+  }
+}
