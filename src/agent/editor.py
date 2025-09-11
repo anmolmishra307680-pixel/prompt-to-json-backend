@@ -3,6 +3,92 @@
 import re
 from typing import Dict, List, Any
 
+def create_augmentation(prompt: str, eval_report: Dict[str, Any]) -> str:
+    """Create type-aware prompt augmentation based on evaluation report."""
+    
+    issues = eval_report.get('issues', [])
+    scores = eval_report.get('scores', {})
+    spec_type = eval_report.get('type', 'design')
+    
+    suggestions = []
+    
+    # Type-specific augmentations
+    if spec_type == 'email':
+        suggestions.extend(_get_email_suggestions(prompt, issues, scores))
+    else:
+        suggestions.extend(_get_design_suggestions(prompt, issues, scores))
+    
+    # Apply augmentations
+    if suggestions:
+        augmentation = " -- " + "; ".join(suggestions)
+        return prompt + augmentation
+    
+    return prompt
+
+def _get_email_suggestions(prompt: str, issues: List[str], scores: Dict[str, Any]) -> List[str]:
+    """Get email-specific suggestions."""
+    suggestions = []
+    
+    # Check for missing recipient
+    if any('recipient' in issue.lower() or 'missing' in issue.lower() for issue in issues):
+        if '@' not in prompt and 'to ' not in prompt.lower():
+            suggestions.append("specify recipient email or team name")
+    
+    # Check for missing subject
+    if any('subject' in issue.lower() for issue in issues):
+        if 'about' not in prompt.lower() and 'regarding' not in prompt.lower():
+            suggestions.append("include email subject with 'about' or 'regarding'")
+    
+    # Check for missing date context
+    if 'october' in prompt.lower() or 'oct' in prompt.lower():
+        if not any(word in prompt.lower() for word in ['launch', 'date', 'schedule']):
+            suggestions.append("mention specific launch date 'October 1'")
+    
+    # Check tone requirements
+    if scores.get('tone_score', 0) < 2.0:
+        if not any(tone in prompt.lower() for tone in ['formal', 'professional', 'casual', 'friendly']):
+            suggestions.append("specify tone (formal, professional, casual, or friendly)")
+    
+    # Check body content
+    if scores.get('body_score', 0) < 2.0:
+        suggestions.append("provide more context for email content")
+    
+    return suggestions
+
+def _get_design_suggestions(prompt: str, issues: List[str], scores: Dict[str, Any]) -> List[str]:
+    """Get design-specific suggestions."""
+    suggestions = []
+    
+    # Check completeness
+    if scores.get('completeness_score', 0) < 3:
+        if not any(dim in prompt.lower() for dim in ['feet', 'cm', 'meter', 'inch', 'size']):
+            suggestions.append("specify dimensions with units (e.g., 6 feet, 120 cm)")
+        
+        if not any(mat in prompt.lower() for mat in ['wood', 'metal', 'glass', 'plastic', 'concrete']):
+            suggestions.append("specify material (wood, metal, glass, etc.)")
+    
+    # Check material realism
+    if scores.get('material_realism_score', 0) < 2:
+        suggestions.append("use standard materials like wood, steel, or glass")
+    
+    # Check dimensions
+    if scores.get('dimension_validity_score', 0) < 1:
+        object_type = 'furniture'
+        if 'table' in prompt.lower():
+            suggestions.append("add table dimensions (length x width x height)")
+        elif 'chair' in prompt.lower():
+            suggestions.append("add chair dimensions (seat height, width)")
+        elif 'building' in prompt.lower():
+            suggestions.append("add building size (floors, area)")
+        else:
+            suggestions.append("add specific measurements")
+    
+    # Check type clarity
+    if scores.get('type_match_score', 0) < 1:
+        suggestions.append("clearly specify the type of object to create")
+    
+    return suggestions
+
 def apply_feedback_to_prompt(original_prompt: str, feedback: Dict[str, Any]) -> str:
     """Apply feedback to prompt by augmenting it with specific instructions."""
     
@@ -183,34 +269,28 @@ def generate_improvement_suggestions(original_spec: Dict[str, Any], improved_spe
     return suggestions
 
 if __name__ == "__main__":
-    # Test feedback application
-    test_prompt = "Design a table"
-    test_feedback = {
-        "feedback_text": "Add dimensional measurements (length, width, height)",
-        "actions": ["add_dimensional_measurements", "specify_purpose"],
-        "severity": "minor"
+    # Test type-aware augmentation
+    test_email_prompt = "Write email to team about launch"
+    test_email_report = {
+        "issues": ["Missing subject", "Missing date"],
+        "scores": {"subject_score": 0, "body_score": 1.5},
+        "type": "email"
     }
     
-    enhanced_prompt = apply_feedback_to_prompt(test_prompt, test_feedback)
+    augmented_email = create_augmentation(test_email_prompt, test_email_report)
+    print("Email augmentation:")
+    print(f"Original: {test_email_prompt}")
+    print(f"Augmented: {augmented_email}")
     
-    print("Original prompt:", test_prompt)
-    print("Enhanced prompt:", enhanced_prompt)
-    
-    # Test direct spec editing
-    test_spec = {
-        "type": "table",
-        "material": ["unknown_material"],
-        "color": "brown"
+    # Test design augmentation
+    test_design_prompt = "Create a table"
+    test_design_report = {
+        "issues": ["Missing dimensions"],
+        "scores": {"completeness_score": 2, "dimension_validity_score": 0},
+        "type": "design"
     }
     
-    test_feedback_2 = {
-        "actions": ["use_standard_materials", "add_dimensional_measurements", "specify_purpose"]
-    }
-    
-    edited_spec = apply_direct_spec_edits(test_spec, test_feedback_2)
-    
-    print("\nOriginal spec:", test_spec)
-    print("Edited spec:", edited_spec)
-    
-    suggestions = generate_improvement_suggestions(test_spec, edited_spec)
-    print("Improvements:", suggestions)
+    augmented_design = create_augmentation(test_design_prompt, test_design_report)
+    print("\nDesign augmentation:")
+    print(f"Original: {test_design_prompt}")
+    print(f"Augmented: {augmented_design}")
