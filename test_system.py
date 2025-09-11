@@ -34,11 +34,16 @@ def test_main_agent():
     """Test main agent functionality"""
     agent = MainAgent()
     
-    # Test valid prompt
+    # Test rule-based generation
     spec = agent.generate_spec("Modern office building with steel frame")
     assert spec.building_type == "office"
     assert len(spec.materials) > 0
     assert spec.stories >= 1
+    
+    # Test LLM generation (with fallback)
+    llm_spec = agent.generate_spec("Modern office building", use_llm=True)
+    assert llm_spec.building_type in ["office", "general"]
+    assert len(llm_spec.materials) > 0
     
     # Test error handling
     try:

@@ -1,32 +1,36 @@
 [
   {
-    "timestamp": "2025-09-11T14:04:30.358443",
-    "prompt": "I want to buy a car with good music system",
-    "mode": "single",
-    "result": {
-      "spec_file": "spec_outputs\\design_spec_20250911_140430.json",
-      "evaluation": {
-        "score": 92.0,
-        "completeness": 80.0,
-        "format_validity": 100.0,
-        "feedback": [
-          "Building type not specified or too generic"
-        ],
-        "suggestions": [],
-        "timestamp": "2025-09-11 14:04:30.357192"
-      }
-    },
-    "spec_file": "spec_outputs\\design_spec_20250911_140430.json",
-    "score": 92.0
-  },
-  {
-    "timestamp": "2025-09-11T14:04:47.218892",
-    "prompt": "I want to buy a car with good music system",
+    "timestamp": "2025-09-11T14:16:32.114981",
+    "prompt": "Luxury hotel with spa and pool",
     "mode": "rl",
     "result": {
       "training_file": "logs/rl_training_unknown.json",
       "iterations": 2,
       "final_score": 92.0
+    },
+    "spec_file": "",
+    "score": 0
+  },
+  {
+    "timestamp": "2025-09-11T14:16:45.780851",
+    "prompt": "Large manufacturing plant with steel structure",
+    "mode": "rl",
+    "result": {
+      "training_file": "logs/rl_training_unknown.json",
+      "iterations": 3,
+      "final_score": 92.0
+    },
+    "spec_file": "",
+    "score": 0
+  },
+  {
+    "timestamp": "2025-09-11T14:17:02.910054",
+    "prompt": "Residential apartment complex with concrete structure",
+    "mode": "rl",
+    "result": {
+      "training_file": "logs/rl_training_unknown.json",
+      "iterations": 2,
+      "final_score": 100.0
     },
     "spec_file": "",
     "score": 0

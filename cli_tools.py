@@ -20,9 +20,7 @@ def show_prompt_history(args):
         print(f"   Score: {entry['score']}")
         print(f"   File: {entry['spec_file']}")
 
-def add_daily_reflection(args):
-    """Add daily reflection"""
-    print("Daily reflection feature removed - focus on core functionality")
+
 
 def show_system_stats(args):
     """Show system statistics"""
@@ -53,8 +51,7 @@ def main():
     history_parser = subparsers.add_parser('history', help='Show prompt history')
     history_parser.add_argument('--last', type=int, help='Show last N prompts')
     
-    # Daily reflection command (simplified)
-    daily_parser = subparsers.add_parser('daily', help='Daily reflection (removed)')
+
     
     # Stats command
     subparsers.add_parser('stats', help='Show system statistics')
@@ -63,8 +60,7 @@ def main():
     
     if args.command == 'history':
         show_prompt_history(args)
-    elif args.command == 'daily':
-        add_daily_reflection(args)
+
     elif args.command == 'stats':
         show_system_stats(args)
     else:

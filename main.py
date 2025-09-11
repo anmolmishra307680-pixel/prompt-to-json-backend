@@ -150,12 +150,4 @@ def validate_prompt(prompt: str) -> bool:
     return True
 
 if __name__ == "__main__":
-    # Example usage if run directly
-    if len(sys.argv) == 1:
-        print("Example usage:")
-        print("python main.py --prompt 'Design a two-story steel building with glass facade'")
-        print("python main.py --prompt 'Modern office building' --mode rl --iterations 5")
-        print("python main.py --prompt 'Residential complex' --mode compare")
-        sys.exit(0)
-    
     main()

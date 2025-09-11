@@ -34,14 +34,37 @@ class MainAgent:
         return enhanced_spec
     
     def _generate_with_llm(self, prompt: str) -> DesignSpec:
-        """Generate specification using LLM (stub implementation)"""
-        # Stub LLM implementation - in real scenario, use transformers pipeline
-        base_spec = self.extractor.extract_spec(prompt)
-        
-        # Simulate LLM enhancement
-        llm_enhanced = self._simulate_llm_enhancement(base_spec, prompt)
-        
-        return llm_enhanced
+        """Generate specification using LLM"""
+        try:
+            from transformers import pipeline
+            
+            # Initialize text generation pipeline
+            generator = pipeline("text-generation", model="gpt2", max_length=100)
+            
+            # Generate enhanced prompt for building extraction
+            llm_prompt = f"Building description: {prompt}. Type:"
+            result = generator(llm_prompt, max_new_tokens=30, pad_token_id=50256)
+            
+            # Parse LLM output and enhance rule-based extraction
+            llm_text = result[0]['generated_text'].lower()
+            spec = self._generate_with_rules(prompt)
+            
+            # LLM-based building type enhancement
+            if "office" in llm_text and spec.building_type == "general":
+                spec.building_type = "office"
+            elif "residential" in llm_text and spec.building_type == "general":
+                spec.building_type = "residential"
+            elif "commercial" in llm_text and spec.building_type == "general":
+                spec.building_type = "commercial"
+                
+            return spec
+            
+        except ImportError:
+            # Fallback to rule-based if transformers not available
+            return self._generate_with_rules(prompt)
+        except Exception:
+            # Fallback on any LLM error
+            return self._generate_with_rules(prompt)
     
     def _enhance_specification(self, spec: DesignSpec, prompt: str) -> DesignSpec:
         """Enhance specification with additional logic"""
@@ -83,20 +106,7 @@ class MainAgent:
         
         return spec
     
-    def _simulate_llm_enhancement(self, spec: DesignSpec, prompt: str) -> DesignSpec:
-        """Simulate LLM enhancement (placeholder for actual LLM integration)"""
-        # This would be replaced with actual LLM calls
-        enhanced_spec = spec.model_copy()
-        
-        # Simulate intelligent material selection
-        if 'modern' in prompt.lower() or 'contemporary' in prompt.lower():
-            enhanced_spec.materials.append(MaterialSpec(type="glass", properties={"transparency": "high"}))
-        
-        # Simulate feature enhancement
-        if 'luxury' in prompt.lower() or 'premium' in prompt.lower():
-            enhanced_spec.features.extend(['elevator', 'terrace', 'garden'])
-        
-        return enhanced_spec
+
     
     def save_spec(self, spec: DesignSpec, prompt: str = "") -> str:
         """Save specification to file"""
