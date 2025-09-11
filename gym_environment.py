@@ -1,4 +1,11 @@
-"""Optional Gymnasium RL Environment for advanced RL training"""
+"""Optional Gymnasium RL Environment for advanced RL training
+
+WARNING: This module requires external dependencies:
+- gymnasium>=0.29.0
+- numpy>=1.21.0
+
+Install with: pip install gymnasium numpy
+"""
 
 try:
     import gymnasium as gym
@@ -7,6 +14,7 @@ try:
     GYMNASIUM_AVAILABLE = True
 except ImportError:
     GYMNASIUM_AVAILABLE = False
+    print("[WARNING] Gymnasium not available. Install with: pip install gymnasium numpy")
 
 from main_agent import MainAgent
 from evaluator_agent import EvaluatorAgent

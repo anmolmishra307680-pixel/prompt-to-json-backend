@@ -1,36 +1,12 @@
 [
   {
-    "timestamp": "2025-09-11T14:16:32.114981",
-    "prompt": "Luxury hotel with spa and pool",
+    "timestamp": "2025-09-11T14:32:16.392354",
+    "prompt": "Generic building structure",
     "mode": "rl",
     "result": {
       "training_file": "logs/rl_training_unknown.json",
       "iterations": 2,
       "final_score": 92.0
-    },
-    "spec_file": "",
-    "score": 0
-  },
-  {
-    "timestamp": "2025-09-11T14:16:45.780851",
-    "prompt": "Large manufacturing plant with steel structure",
-    "mode": "rl",
-    "result": {
-      "training_file": "logs/rl_training_unknown.json",
-      "iterations": 3,
-      "final_score": 92.0
-    },
-    "spec_file": "",
-    "score": 0
-  },
-  {
-    "timestamp": "2025-09-11T14:17:02.910054",
-    "prompt": "Residential apartment complex with concrete structure",
-    "mode": "rl",
-    "result": {
-      "training_file": "logs/rl_training_unknown.json",
-      "iterations": 2,
-      "final_score": 100.0
     },
     "spec_file": "",
     "score": 0

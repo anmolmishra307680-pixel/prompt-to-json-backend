@@ -1,7 +1,11 @@
-transformers>=4.30.0
-langchain>=0.0.200
+# Core dependencies
 pydantic>=2.0.0
-torch>=2.0.0
 
-# Optional dependencies
-# gymnasium>=0.29.0  # Uncomment for advanced RL environment
+# LLM dependencies (for experimental LLM features)
+transformers>=4.30.0
+torch>=2.0.0
+langchain>=0.0.200
+
+# Optional dependencies (uncomment as needed)
+# gymnasium>=0.29.0  # For advanced RL environment
+# numpy>=1.21.0      # Required if using gymnasium

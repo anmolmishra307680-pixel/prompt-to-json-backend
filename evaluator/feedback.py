@@ -68,19 +68,41 @@ class FeedbackLoop:
         return improvements
     
     def get_feedback_for_prompt(self, prompt: str) -> List[str]:
-        """Get feedback suggestions based on similar prompts"""
+        """Get dynamic feedback suggestions based on evaluation patterns"""
         suggestions = []
         
         # Find similar prompts in history
         for entry in self.feedback_history:
             if self._is_similar_prompt(prompt, entry["prompt"]):
-                if entry["evaluation"]["score"] > 80:
+                evaluation = entry["evaluation"]
+                spec = entry["spec_after"]
+                
+                # Dynamic suggestions based on evaluation scores
+                if evaluation["score"] > 90:
                     # Extract successful patterns
-                    spec = entry["spec_after"]
                     if spec["materials"]:
-                        suggestions.append(f"Consider using {spec['materials'][0]['type']} material")
-                    if spec["features"]:
-                        suggestions.append(f"Add features like {', '.join(spec['features'][:2])}")
+                        material_type = spec['materials'][0]['type']
+                        suggestions.append(f"High-scoring specs often use {material_type} material")
+                    
+                    if spec["building_type"] != "general":
+                        suggestions.append(f"Specify building type as '{spec['building_type']}' for better scores")
+                        
+                elif evaluation["score"] < 70:
+                    # Learn from low-scoring patterns to avoid
+                    if evaluation.get("feedback"):
+                        for feedback_item in evaluation["feedback"]:
+                            if "generic" in feedback_item.lower():
+                                suggestions.append("Avoid generic building types - be more specific")
+                            elif "materials" in feedback_item.lower():
+                                suggestions.append("Add specific materials to improve completeness")
+        
+        # Add general improvement suggestions if no history
+        if not suggestions:
+            suggestions = [
+                "Consider adding specific building materials",
+                "Specify building type for better evaluation",
+                "Include relevant features for the building type"
+            ]
         
         return list(set(suggestions))  # Remove duplicates
     

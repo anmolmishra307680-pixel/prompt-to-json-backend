@@ -34,11 +34,16 @@ class MainAgent:
         return enhanced_spec
     
     def _generate_with_llm(self, prompt: str) -> DesignSpec:
-        """Generate specification using LLM"""
+        """Generate specification using LLM (EXPERIMENTAL STUB)
+        
+        NOTE: This is a basic implementation using GPT-2 for demonstration.
+        For production use, integrate with larger models like GPT-4, LLaMA, etc.
+        """
         try:
             from transformers import pipeline
+            print("[EXPERIMENTAL] Using basic GPT-2 for LLM generation")
             
-            # Initialize text generation pipeline
+            # Basic GPT-2 pipeline (experimental)
             generator = pipeline("text-generation", model="gpt2", max_length=100)
             
             # Generate enhanced prompt for building extraction
@@ -49,7 +54,7 @@ class MainAgent:
             llm_text = result[0]['generated_text'].lower()
             spec = self._generate_with_rules(prompt)
             
-            # LLM-based building type enhancement
+            # Basic LLM-based building type enhancement
             if "office" in llm_text and spec.building_type == "general":
                 spec.building_type = "office"
             elif "residential" in llm_text and spec.building_type == "general":
@@ -60,10 +65,10 @@ class MainAgent:
             return spec
             
         except ImportError:
-            # Fallback to rule-based if transformers not available
+            print("[FALLBACK] Transformers not available, using rule-based generation")
             return self._generate_with_rules(prompt)
-        except Exception:
-            # Fallback on any LLM error
+        except Exception as e:
+            print(f"[FALLBACK] LLM error ({str(e)}), using rule-based generation")
             return self._generate_with_rules(prompt)
     
     def _enhance_specification(self, spec: DesignSpec, prompt: str) -> DesignSpec:
@@ -129,22 +134,47 @@ class MainAgent:
         return str(filepath)
     
     def improve_spec_with_feedback(self, spec: DesignSpec, feedback: list, suggestions: list) -> DesignSpec:
-        """Improve specification based on feedback"""
-        improved_spec = spec.model_copy()
-        
-        # Apply improvements based on feedback
-        for suggestion in suggestions:
-            if "materials" in suggestion.lower():
-                if not improved_spec.materials:
-                    improved_spec.materials.append(MaterialSpec(type="steel"))
+        """Improve specification based on feedback with enhanced error handling"""
+        try:
+            improved_spec = spec.model_copy()
             
-            elif "dimensions" in suggestion.lower():
-                if not improved_spec.dimensions.length:
-                    improved_spec.dimensions.length = 25.0
-                    improved_spec.dimensions.width = 20.0
+            # Validate inputs
+            if not isinstance(feedback, list) or not isinstance(suggestions, list):
+                raise ValueError("Feedback and suggestions must be lists")
             
-            elif "features" in suggestion.lower():
-                if len(improved_spec.features) < 3:
-                    improved_spec.features.extend(['elevator', 'parking', 'balcony'])
-        
-        return improved_spec
+            # Apply improvements based on feedback
+            improvements_applied = 0
+            for suggestion in suggestions:
+                if not isinstance(suggestion, str):
+                    continue
+                    
+                suggestion_lower = suggestion.lower()
+                
+                if "materials" in suggestion_lower or "material" in suggestion_lower:
+                    if not improved_spec.materials:
+                        improved_spec.materials.append(MaterialSpec(type="steel"))
+                        improvements_applied += 1
+                
+                elif "dimensions" in suggestion_lower or "size" in suggestion_lower:
+                    if not improved_spec.dimensions.length:
+                        improved_spec.dimensions.length = 25.0
+                        improved_spec.dimensions.width = 20.0
+                        improved_spec.dimensions.area = 500.0
+                        improvements_applied += 1
+                
+                elif "features" in suggestion_lower or "feature" in suggestion_lower:
+                    if len(improved_spec.features) < 3:
+                        new_features = ['elevator', 'parking', 'balcony']
+                        for feature in new_features:
+                            if feature not in improved_spec.features:
+                                improved_spec.features.append(feature)
+                        improvements_applied += 1
+            
+            if improvements_applied == 0:
+                print("[INFO] No applicable improvements found in suggestions")
+            
+            return improved_spec
+            
+        except Exception as e:
+            print(f"[ERROR] Failed to improve spec: {str(e)}")
+            return spec  # Return original spec on error

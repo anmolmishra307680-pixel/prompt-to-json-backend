@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-09-11T14:16:32.111746",
-  "prompt": "Luxury hotel with spa and pool",
+  "timestamp": "2025-09-11T14:32:16.389194",
+  "prompt": "Generic building structure",
   "design_specification": {
     "building_type": "general",
     "stories": 1,
@@ -18,15 +18,12 @@
       "area": 300.0
     },
     "features": [
-      "pool",
-      "elevator",
-      "parking",
-      "balcony"
+      "parking"
     ],
     "requirements": [
-      "Luxury hotel with spa and pool"
+      "Generic building structure"
     ],
-    "timestamp": "2025-09-11 14:16:32.106911"
+    "timestamp": "2025-09-11 14:32:16.318707"
   },
   "evaluation_results": {
     "score": 92.0,
@@ -36,7 +33,7 @@
       "Building type not specified or too generic"
     ],
     "suggestions": [],
-    "timestamp": "2025-09-11 14:16:32.111705"
+    "timestamp": "2025-09-11 14:32:16.389163"
   },
   "summary": {
     "overall_score": 92.0,
