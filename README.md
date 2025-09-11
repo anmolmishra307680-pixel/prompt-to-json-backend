@@ -1,286 +1,220 @@
-# Prompt to JSON Agent with Evaluator & RL System
+# Prompt-to-JSON Agent Backend
 
-A comprehensive Python project for converting natural language prompts into structured JSON specifications with AI-powered evaluation, scoring, and reinforcement learning feedback loops.
+A comprehensive system that converts natural language prompts into structured JSON design specifications using rule-based extraction, evaluation, and reinforcement learning feedback loops.
 
-## Architecture Overview
+## Features
 
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   User Input    │───▶│   Extractor      │───▶│   Schema        │
-│   (Prompt)      │    │   Pattern Match  │    │   Validation    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                                         │
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   RL Loop       │◀───│   Data Scorer    │◀───│   JSON Spec     │
-│   Feedback      │    │   Quality (0-10) │    │   Output        │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-         ▲                       ▲                       │
-         │                       │                       ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Agent Editor  │    │   Evaluator      │◀───│   Critic        │
-│   Improvements  │    │   Report Gen     │    │   Analysis      │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-```
+- **Prompt Interpretation**: Extract building specifications from natural language
+- **Multi-mode Generation**: Rule-based and LLM-based (stub) generation
+- **Comprehensive Evaluation**: Scoring based on completeness, format validity, and feasibility
+- **Reinforcement Learning**: Iterative improvement through feedback loops
+- **Detailed Reporting**: JSON reports and summaries
+- **CLI Interface**: Easy-to-use command-line interface
 
-## Core Features
+## Installation
 
-1. **Enhanced Extraction** - Multi-material detection, improved dimension parsing (60-100% field detection)
-2. **Evaluator Agent** - Rule-based critique with human-readable feedback  
-3. **Data Scorer** - Quality rating system (0-10 scale)
-4. **RL Loop** - Reward-based improvement tracking
-5. **CLI & Web Interface** - Command-line and Streamlit demo applications
-6. **Comprehensive Testing** - 75+ tests with CI/CD pipeline
-
-## Quick Start
-
+1. Clone the repository:
 ```bash
-# Setup
-git clone https://github.com/anmolmishra307680-pixel/prompt-to-json-backend.git
+git clone <repository-url>
 cd prompt-to-json-backend
+```
+
+2. Create virtual environment:
+```bash
 python -m venv venv
 venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Linux/Mac
+```
+
+3. Install dependencies:
+```bash
 pip install -r requirements.txt
-
-# CLI Usage
-python src/main.py --prompt "Create a wooden dining table" --save-report --run-rl
-
-# Web Demo
-streamlit run src/web_app.py
-
-# Run Tests
-python -m pytest tests/ -v
 ```
 
 ## Usage
 
-### Command Line Interface
+### Basic Usage
+
+Generate a single specification:
 ```bash
-# Basic prompt processing
-python src/main.py --prompt "Create a wooden table"
-
-# Process from file with full pipeline
-echo "Design a modern steel chair" > prompt.txt
-python src/main.py --prompt-file prompt.txt --save-report --run-rl
-
-# Generate detailed evaluation reports
-python src/main.py --prompt "Build a glass desk" --save-report
+python main.py --prompt "Design a two-story steel building with glass facade"
 ```
 
-### Web Application
+### Advanced Usage
+
+Run reinforcement learning training:
 ```bash
-# Start interactive demo
-streamlit run src/web_app.py
-# Open http://localhost:8501 in browser
+python main.py --prompt "Modern office building" --mode rl --iterations 5
 ```
 
-### Individual Components
+Compare rule-based vs LLM approaches:
 ```bash
-# Test extraction and validation
-python src/extractor.py
-python src/schema.py
-
-# Run evaluation and scoring
-python evaluator_agent.py --prompt "Create a wooden table" --spec spec_outputs/sample.json
-python data_scorer.py
-
-# RL training and feedback
-python src/rl/rl_loop.py
+python main.py --prompt "Residential complex" --mode compare
 ```
+
+Use LLM generation (stub):
+```bash
+python main.py --prompt "Luxury hotel" --use-llm
+```
+
+## Examples
+
+### Example 1: Basic Building
+```bash
+python main.py --prompt "Design a two-story steel building with glass facade"
+```
+
+**Expected Output:**
+- Building type: general
+- Stories: 2
+- Materials: steel, glass
+- Features: facade
+- Dimensions: 20m x 15m x 7m
+
+### Example 2: Commercial Building
+```bash
+python main.py --prompt "Modern 5-story commercial office building with parking and elevator"
+```
+
+**Expected Output:**
+- Building type: commercial
+- Stories: 5
+- Materials: steel
+- Features: parking, elevator
+- Dimensions: 30m x 25m x 17.5m
+
+### Example 3: Residential Complex
+```bash
+python main.py --prompt "Luxury residential complex with 3 floors, concrete structure, balconies and garden"
+```
+
+**Expected Output:**
+- Building type: residential
+- Stories: 3
+- Materials: concrete
+- Features: balcony, garden
+- Enhanced features: parking (auto-added)
+
+### Example 4: Industrial Warehouse
+```bash
+python main.py --prompt "Large industrial warehouse with steel frame and 40m x 60m dimensions"
+```
+
+**Expected Output:**
+- Building type: industrial
+- Stories: 1
+- Materials: steel
+- Dimensions: 40m x 60m (extracted from prompt)
+- Features: parking (auto-added)
+
+### Example 5: RL Training
+```bash
+python main.py --prompt "Design a sustainable office building" --mode rl --iterations 3
+```
+
+**Expected Behavior:**
+- Iteration 1: Basic specification generation
+- Iteration 2: Improvement based on evaluation feedback
+- Iteration 3: Further refinement
+- Shows score progression and learning insights
 
 ## Project Structure
 
 ```
 prompt-to-json-backend/
-├── src/
-│   ├── main.py                # CLI entrypoint (robust)
-│   ├── web_app.py             # Streamlit demo
-│   ├── extractor.py           # Enhanced pattern extraction
-│   ├── schema.py              # Pydantic validation
-│   ├── logger.py              # Interaction logging
-│   ├── data_scorer.py         # Quality scoring
-│   ├── agent/
-│   │   └── editor.py          # Automated improvements
-│   ├── evaluator/
-│   │   ├── criteria.py        # Validation rules
-│   │   ├── report.py          # Report generation
-│   │   └── feedback.py        # Feedback generation
-│   └── rl/
-│       └── rl_loop.py         # RL reward system
-├── tests/                     # Comprehensive test suite (75+ tests)
-├── docs/
-│   ├── demo_instructions.md   # Usage guide
-│   └── samples/               # End-to-end examples
-├── spec_outputs/              # Generated JSON specifications
-├── evaluations/               # Evaluation results
-├── reports/                   # Human-readable reports
-├── rl_logs/                   # RL training history
-├── logs/                      # System logs
-└── .github/workflows/         # CI/CD pipeline
+├── main.py                # CLI orchestrator
+├── main_agent.py          # Main generation agent
+├── evaluator_agent.py     # Evaluation agent
+├── rl_loop.py             # Reinforcement learning loop
+├── extractor.py           # Rule-based field extraction
+├── schema.py              # Pydantic data models
+├── evaluator/
+│   ├── criteria.py        # Evaluation criteria and scoring
+│   ├── report.py          # Report generation
+│   └── feedback.py        # Feedback loop management
+├── logs/                  # Training and feedback logs
+├── spec_outputs/          # Generated specifications
+├── reports/               # Evaluation reports
+├── requirements.txt       # Python dependencies
+└── README.md             # This file
 ```
 
-## Enhanced Capabilities
+## Output Files
 
-### Advanced Extraction
-- **Multi-Material Support**: "glass, concrete", "wood, metal", "plastic, carbon fiber"
-- **Complex Types**: drone, library, throne, cabinet
-- **Smart Dimensions**: Prioritizes numeric over descriptive (6 feet > lightweight)
-- **Context-Aware Purpose**: drone→aerial, throne→ceremonial, cabinet→storage
-- **Smart Color Defaults**: wood→brown, metal→silver, throne→gold
+### Specifications
+- **Location**: `spec_outputs/`
+- **Format**: `design_spec_YYYYMMDD_HHMMSS.json`
+- **Content**: Complete design specification with metadata
 
-### Performance Metrics
-- **Multi-material detection**: 100% success on complex prompts
-- **Average extraction**: 68-80% field completion
-- **Quality scores**: 6.6-8.0/10 average
-- **Purpose accuracy**: Fixed type-aware assignments
+### Reports
+- **Location**: `reports/`
+- **Format**: `evaluation_report_YYYYMMDD_HHMMSS.json`
+- **Content**: Detailed evaluation results and scoring
 
-## Sample Outputs
+### Logs
+- **Feedback Log**: `logs/feedback_log.json` - RL training iterations
+- **Training Results**: `logs/rl_training_*.json` - Complete training sessions
 
-### Generated Specification
-```json
-{
-  "type": "table",
-  "material": ["wood", "glass"],
-  "color": "brown",
-  "dimensions": {
-    "raw": "6x4 feet",
-    "width_cm": 183,
-    "height_cm": 122
-  },
-  "purpose": "dining",
-  "metadata": {
-    "generated_by": "extractor_v1",
-    "confidence": 0.85
-  }
-}
-```
+## Evaluation Criteria
 
-### Evaluation Report
-```json
-{
-  "prompt": "Create a wooden dining table with glass top",
-  "spec_path": "spec_outputs/wooden_table_20250910_120000.json",
-  "critic_feedback": "Specification looks complete and well-defined.",
-  "issues": [],
-  "severity": "none",
-  "recommendations": [],
-  "scores": {
-    "format_score": 8.5,
-    "completeness_score": 4,
-    "material_realism_score": 3,
-    "dimension_validity_score": 2,
-    "type_match_score": 1
-  },
-  "timestamp": "2025-09-10T12:00:00Z"
-}
-```
+### Completeness (40% weight)
+- Building type specification
+- Number of stories
+- Materials specification
+- Dimensions
+- Special features
 
-### RL History Entry
-```json
-{
-  "timestamp": "2025-09-10T12:05:00Z",
-  "prompt": "Create a wooden dining table with glass top",
-  "spec_path": "spec_outputs/wooden_table_20250910_120000.json",
-  "eval_path": "evaluations/eval_wooden_table_20250910_120000.json",
-  "format_score": 8.5,
-  "reward": 0.425,
-  "editor_action": "no_changes_needed",
-  "notes": "high quality spec generated"
-}
-```
+### Format Validity (30% weight)
+- Schema validation
+- Data type correctness
+- Required field presence
 
-## Development Journey - Day by Day
+### Feasibility (30% weight)
+- Structural feasibility
+- Material compatibility
+- Dimensional reasonableness
 
-### Day 1-5: Foundation
-- **Day 1**: Basic extraction patterns and regex rules
-- **Day 2**: Pydantic schema validation and error handling
-- **Day 3**: Logging system and interaction tracking
-- **Day 4**: Multi-material support and smart fallbacks
-- **Day 5**: LLM integration template and prompt engineering
+## Scoring System
 
-### Day 6-10: Intelligence Layer
-- **Day 6**: Evaluator agent with comprehensive criteria validation
-- **Day 7**: Data scoring system with 4-component quality metrics
-- **Day 8**: Feedback generation and RL reward computation
-- **Day 9**: Automated improvement system with retry logic
-- **Day 10**: Comprehensive testing suite and CI/CD pipeline
+- **A (90-100)**: Excellent specification
+- **B (80-89)**: Good specification with minor issues
+- **C (70-79)**: Acceptable with improvements needed
+- **D (60-69)**: Poor specification requiring major changes
+- **F (<60)**: Inadequate specification
 
-### Day 11-12: Polish & Production
-- **Day 11**: Enhanced CLI with robust error handling and Streamlit demo
-- **Day 12**: Final documentation, sample outputs, and project completion
+## Development Notes
 
-### Values Demonstrated
-- **Honesty**: Transparent reporting of limitations and edge cases
-- **Discipline**: Consistent daily progress with systematic testing
-- **Gratitude**: Appreciation for iterative improvement and learning opportunities
+### Current Implementation
+- Rule-based extraction using regex and keyword matching
+- Stub LLM implementation (ready for HuggingFace integration)
+- Comprehensive evaluation framework
+- Basic reinforcement learning loop
 
-## Testing & Quality Assurance
+### Future Enhancements
+- Integration with actual LLM models (LLaMA, GPT, etc.)
+- Advanced NLP techniques for better extraction
+- More sophisticated reward functions
+- Web interface
+- Database integration
 
-```bash
-# Run comprehensive test suite (75+ tests)
-python -m pytest tests/ -v
+## Troubleshooting
 
-# Run specific test modules
-python -m pytest tests/test_extractor.py -v
-python -m pytest tests/test_evaluator.py -v
-python -m pytest tests/test_rl_loop.py -v
+### Common Issues
 
-# Test CLI functionality
-python test_day11.py
+1. **Import Errors**: Ensure all dependencies are installed
+2. **File Permissions**: Check write permissions for output directories
+3. **Invalid Prompts**: Prompts must be 10-1000 characters long
 
-# Run CI pipeline locally
-python -m pytest tests/ --cov=src --cov-report=html
-```
-
-### Test Coverage
-- **Extractor**: Pattern matching, multi-material detection, edge cases
-- **Schema**: Validation rules, error handling, fallback mechanisms
-- **Evaluator**: Criteria validation, report generation, scoring integration
-- **RL Loop**: Reward computation, feedback application, iteration tracking
-- **Integration**: End-to-end pipeline testing with mocked dependencies
-
-## Dependencies
-
-### Core Requirements
-- `pydantic==2.9.2` - Data validation and schema enforcement
-- `numpy==2.3.2` - Numerical computations for scoring
-- `pytest==7.4.4` - Testing framework
-- `streamlit>=1.28.0` - Web application framework
-
-### Optional Integrations
-- `transformers==4.44.2` - HuggingFace model integration
-- `torch==2.4.1` - PyTorch for ML models
-- `langchain==0.3.7` - LLM orchestration framework
-
-### Development Tools
-- GitHub Actions for CI/CD
-- Multi-Python version testing (3.8, 3.9, 3.10, 3.11)
-- Automated linting and code quality checks
-
-## Performance Metrics
-
-- **Extraction Accuracy**: 68-80% field completion rate
-- **Multi-material Detection**: 100% success on complex prompts
-- **Quality Scoring**: 6.6-8.0/10 average across test cases
-- **Processing Speed**: 1-3 seconds per prompt
-- **Test Coverage**: 75+ tests with 100% pass rate
-- **CI/CD**: Automated testing across multiple Python versions
+### Debug Mode
+Add `--verbose` flag for detailed logging (feature can be added)
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Run tests (`python -m pytest tests/ -v`)
-4. Commit changes (`git commit -m 'Add amazing feature'`)
-5. Push to branch (`git push origin feature/amazing-feature`)
-6. Open a Pull Request
+2. Create feature branch
+3. Add tests for new functionality
+4. Submit pull request
 
 ## License
 
 MIT License - see LICENSE file for details
-
-## Acknowledgments
-
-- Built with systematic daily development approach
-- Comprehensive testing and quality assurance
-- Production-ready architecture with robust error handling
-- Interactive demo for accessibility and user experience

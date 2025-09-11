@@ -1,38 +1,55 @@
-"""Simple evaluator for backward compatibility."""
+from schema import DesignSpec, EvaluationResult
+from evaluator.criteria import EvaluationCriteria
+from evaluator.report import ReportGenerator
 
-def evaluate_spec(prompt, spec):
-    """Evaluate spec against prompt and return critic feedback."""
-    issues = []
-    critic_parts = []
+class EvaluatorAgent:
+    def __init__(self):
+        self.criteria = EvaluationCriteria()
+        self.report_generator = ReportGenerator()
     
-    # Check basic fields
-    if not spec.get('type') or spec.get('type') == 'unknown':
-        issues.append("type_missing")
-        critic_parts.append("Type specification is missing or unclear")
+    def evaluate_spec(self, spec: DesignSpec, prompt: str = "") -> EvaluationResult:
+        """Evaluate a design specification"""
+        evaluation = self.criteria.evaluate(spec)
+        
+        # Generate report
+        report_path = self.report_generator.generate_report(spec, evaluation, prompt)
+        print(f"Evaluation report saved to: {report_path}")
+        
+        return evaluation
     
-    # Check material
-    material = spec.get('material', [])
-    if not material or material == ['unspecified']:
-        issues.append("material_missing")
-        critic_parts.append("Material not specified")
+    def batch_evaluate(self, specs_and_prompts: list) -> list:
+        """Evaluate multiple specifications"""
+        results = []
+        reports_data = []
+        
+        for spec, prompt in specs_and_prompts:
+            evaluation = self.criteria.evaluate(spec)
+            results.append(evaluation)
+            
+            # Collect data for summary report
+            report_data = {
+                "prompt": prompt,
+                "design_specification": spec.model_dump(),
+                "evaluation_results": evaluation.model_dump()
+            }
+            reports_data.append(report_data)
+        
+        # Generate summary report
+        summary_path = self.report_generator.generate_summary_report(reports_data)
+        print(f"Summary report saved to: {summary_path}")
+        
+        return results
     
-    # Check dimensions
-    dimensions = spec.get('dimensions')
-    if not dimensions or not str(dimensions).strip():
-        issues.append("dimensions_missing")
-        critic_parts.append("Dimensions are missing (provide specific measurements)")
-    
-    # Determine severity
-    severity = "major" if len(issues) >= 3 else "minor" if issues else "none"
-    
-    # Generate feedback
-    if not critic_parts:
-        critic_feedback = "Specification looks complete and well-defined."
-    else:
-        critic_feedback = ". ".join(critic_parts) + "."
-    
-    return {
-        "critic_feedback": critic_feedback,
-        "issues": issues,
-        "severity": severity
-    }
+    def get_improvement_suggestions(self, evaluation: EvaluationResult) -> list:
+        """Get specific improvement suggestions based on evaluation"""
+        suggestions = evaluation.suggestions.copy()
+        
+        # Add specific suggestions based on scores
+        if evaluation.completeness < 70:
+            suggestions.append("Add more detailed material specifications")
+            suggestions.append("Include specific building dimensions")
+        
+        if evaluation.format_validity < 80:
+            suggestions.append("Ensure all required fields are properly formatted")
+        
+        return suggestions

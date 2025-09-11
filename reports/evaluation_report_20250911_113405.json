@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-09-11T11:34:05.561747",
+  "prompt": "Residential complex",
+  "design_specification": {
+    "building_type": "residential",
+    "stories": 1,
+    "materials": [],
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "area": null
+    },
+    "features": [],
+    "requirements": [
+      "Residential complex"
+    ],
+    "timestamp": "2025-09-11 11:34:05.561693"
+  },
+  "evaluation_results": {
+    "score": 76.0,
+    "completeness": 40.0,
+    "format_validity": 100.0,
+    "feedback": [
+      "No materials specified",
+      "No dimensions specified",
+      "No special features specified"
+    ],
+    "suggestions": [
+      "Add more detailed specifications"
+    ],
+    "timestamp": "2025-09-11 11:34:05.561733"
+  },
+  "summary": {
+    "overall_score": 76.0,
+    "grade": "C",
+    "key_issues": [
+      "No materials specified",
+      "No dimensions specified",
+      "No special features specified"
+    ],
+    "top_suggestions": [
+      "Add more detailed specifications"
+    ]
+  }
+}

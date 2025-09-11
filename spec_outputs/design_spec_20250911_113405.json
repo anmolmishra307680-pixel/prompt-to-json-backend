@@ -1,0 +1,23 @@
+{
+  "prompt": "Residential complex",
+  "specification": {
+    "building_type": "residential",
+    "stories": 1,
+    "materials": [],
+    "dimensions": {
+      "length": null,
+      "width": null,
+      "height": null,
+      "area": null
+    },
+    "features": [],
+    "requirements": [
+      "Residential complex"
+    ],
+    "timestamp": "2025-09-11 11:34:05.561693"
+  },
+  "metadata": {
+    "generated_at": "2025-09-11T11:34:05.562401",
+    "generator": "MainAgent"
+  }
+}

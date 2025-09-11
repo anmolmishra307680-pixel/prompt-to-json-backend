@@ -1,0 +1,51 @@
+{
+  "timestamp": "2025-09-11T12:10:30.596680",
+  "prompt": "Design a two-story steel building with glass facade",
+  "design_specification": {
+    "building_type": "general",
+    "stories": 2,
+    "materials": [
+      {
+        "type": "steel",
+        "grade": null,
+        "properties": {}
+      },
+      {
+        "type": "glass",
+        "grade": null,
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 7.0,
+      "area": 300.0
+    },
+    "features": [
+      "facade"
+    ],
+    "requirements": [
+      "Design a two-story steel building with glass facade"
+    ],
+    "timestamp": "2025-09-11 12:10:30.595652"
+  },
+  "evaluation_results": {
+    "score": 92.0,
+    "completeness": 80.0,
+    "format_validity": 100.0,
+    "feedback": [
+      "Building type not specified or too generic"
+    ],
+    "suggestions": [],
+    "timestamp": "2025-09-11 12:10:30.596661"
+  },
+  "summary": {
+    "overall_score": 92.0,
+    "grade": "A",
+    "key_issues": [
+      "Building type not specified or too generic"
+    ],
+    "top_suggestions": []
+  }
+}
