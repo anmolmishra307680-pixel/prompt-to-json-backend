@@ -1,2 +1,15 @@
 # Core dependencies
 pydantic>=2.0.0
+
+# Web interface
+streamlit>=1.28.0
+
+# Advanced RL
+numpy>=1.21.0
+
+# Database
+# sqlite3 (built-in with Python)
+
+# Optional for advanced features
+# torch>=2.0.0
+# transformers>=4.30.0

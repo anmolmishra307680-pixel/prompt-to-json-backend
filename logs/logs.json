@@ -1,11 +1,11 @@
 [
   {
-    "timestamp": "2025-09-11T15:05:06.931494",
-    "prompt": "Generic structure",
+    "timestamp": "2025-09-11T15:32:39.225686",
+    "prompt": "Modern hospital",
     "mode": "rl",
     "result": {
       "training_file": "logs/rl_training_unknown.json",
-      "iterations": 3,
+      "iterations": 2,
       "final_score": 92.0
     },
     "spec_file": "",

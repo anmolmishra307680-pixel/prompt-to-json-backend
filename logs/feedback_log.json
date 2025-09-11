@@ -1,8 +1,86 @@
 [
   {
     "iteration": 1,
-    "timestamp": "2025-09-11T15:05:06.926745",
-    "prompt": "Generic structure",
+    "timestamp": "2025-09-11T15:32:02.233308",
+    "prompt": "Smart office",
+    "spec_before": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        },
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking"
+      ],
+      "requirements": [
+        "Smart office"
+      ],
+      "timestamp": "2025-09-11 15:32:02.231679"
+    },
+    "spec_after": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        },
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking"
+      ],
+      "requirements": [
+        "Smart office"
+      ],
+      "timestamp": "2025-09-11 15:32:02.231679"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-11 15:32:02.232854"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 100.0
+    }
+  },
+  {
+    "iteration": 1,
+    "timestamp": "2025-09-11T15:32:39.204439",
+    "prompt": "Modern hospital",
     "spec_before": {
       "building_type": "initial",
       "stories": 0,
@@ -15,7 +93,7 @@
       },
       "features": [],
       "requirements": [],
-      "timestamp": "2025-09-11 15:05:06.926742"
+      "timestamp": "2025-09-11 15:32:39.204436"
     },
     "spec_after": {
       "building_type": "general",
@@ -37,9 +115,9 @@
         "parking"
       ],
       "requirements": [
-        "Generic structure"
+        "Modern hospital"
       ],
-      "timestamp": "2025-09-11 15:05:06.925551"
+      "timestamp": "2025-09-11 15:32:39.202912"
     },
     "evaluation": {
       "score": 92.0,
@@ -49,7 +127,7 @@
         "Building type not specified or too generic"
       ],
       "suggestions": [],
-      "timestamp": "2025-09-11 15:05:06.926248"
+      "timestamp": "2025-09-11 15:32:39.203624"
     },
     "reward": 1.84,
     "improvements": {
@@ -66,8 +144,8 @@
   },
   {
     "iteration": 2,
-    "timestamp": "2025-09-11T15:05:06.928486",
-    "prompt": "Generic structure",
+    "timestamp": "2025-09-11T15:32:39.206110",
+    "prompt": "Modern hospital",
     "spec_before": {
       "building_type": "general",
       "stories": 1,
@@ -88,9 +166,9 @@
         "parking"
       ],
       "requirements": [
-        "Generic structure"
+        "Modern hospital"
       ],
-      "timestamp": "2025-09-11 15:05:06.925551"
+      "timestamp": "2025-09-11 15:32:39.202912"
     },
     "spec_after": {
       "building_type": "general",
@@ -112,9 +190,9 @@
         "parking"
       ],
       "requirements": [
-        "Generic structure"
+        "Modern hospital"
       ],
-      "timestamp": "2025-09-11 15:05:06.925551"
+      "timestamp": "2025-09-11 15:32:39.202912"
     },
     "evaluation": {
       "score": 92.0,
@@ -124,7 +202,7 @@
         "Building type not specified or too generic"
       ],
       "suggestions": [],
-      "timestamp": "2025-09-11 15:05:06.927974"
+      "timestamp": "2025-09-11 15:32:39.205676"
     },
     "reward": 0.92,
     "improvements": {
@@ -135,56 +213,46 @@
     }
   },
   {
-    "iteration": 3,
-    "timestamp": "2025-09-11T15:05:06.930095",
-    "prompt": "Generic structure",
+    "iteration": 1,
+    "timestamp": "2025-09-11T15:35:50.510914",
+    "prompt": "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\"",
     "spec_before": {
-      "building_type": "general",
-      "stories": 1,
-      "materials": [
-        {
-          "type": "steel",
-          "grade": "standard",
-          "properties": {}
-        }
-      ],
+      "building_type": "initial",
+      "stories": 0,
+      "materials": [],
       "dimensions": {
-        "length": 20.0,
-        "width": 15.0,
-        "height": 3.5,
-        "area": 300.0
+        "length": null,
+        "width": null,
+        "height": null,
+        "area": null
       },
-      "features": [
-        "parking"
-      ],
-      "requirements": [
-        "Generic structure"
-      ],
-      "timestamp": "2025-09-11 15:05:06.925551"
+      "features": [],
+      "requirements": [],
+      "timestamp": "2025-09-11 15:35:50.510911"
     },
     "spec_after": {
       "building_type": "general",
-      "stories": 1,
+      "stories": 10,
       "materials": [
         {
-          "type": "steel",
-          "grade": "standard",
+          "type": "concrete",
+          "grade": null,
           "properties": {}
         }
       ],
       "dimensions": {
-        "length": 20.0,
-        "width": 15.0,
-        "height": 3.5,
-        "area": 300.0
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
       },
       "features": [
-        "parking"
+        "pool"
       ],
       "requirements": [
-        "Generic structure"
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
       ],
-      "timestamp": "2025-09-11 15:05:06.925551"
+      "timestamp": "2025-09-11 15:35:50.509455"
     },
     "evaluation": {
       "score": 92.0,
@@ -194,9 +262,564 @@
         "Building type not specified or too generic"
       ],
       "suggestions": [],
-      "timestamp": "2025-09-11 15:05:06.929673"
+      "timestamp": "2025-09-11 15:35:50.510283"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 1,
+      "added_features": 1,
+      "dimension_changes": {
+        "length": {
+          "before": null,
+          "after": 30.0
+        }
+      },
+      "evaluation_score": 92.0
+    }
+  },
+  {
+    "iteration": 2,
+    "timestamp": "2025-09-11T15:35:50.512995",
+    "prompt": "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\"",
+    "spec_before": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:35:50.509455"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:35:50.509455"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-11 15:35:50.512506"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 92.0
+    }
+  },
+  {
+    "iteration": 1,
+    "timestamp": "2025-09-11T15:35:55.217005",
+    "prompt": "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\"",
+    "spec_before": {
+      "building_type": "initial",
+      "stories": 0,
+      "materials": [],
+      "dimensions": {
+        "length": null,
+        "width": null,
+        "height": null,
+        "area": null
+      },
+      "features": [],
+      "requirements": [],
+      "timestamp": "2025-09-11 15:35:55.217001"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:35:55.215665"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-11 15:35:55.216424"
+    },
+    "reward": 1.84,
+    "improvements": {
+      "added_materials": 1,
+      "added_features": 1,
+      "dimension_changes": {
+        "length": {
+          "before": null,
+          "after": 30.0
+        }
+      },
+      "evaluation_score": 92.0
+    }
+  },
+  {
+    "iteration": 2,
+    "timestamp": "2025-09-11T15:35:55.219526",
+    "prompt": "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\"",
+    "spec_before": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:35:55.215665"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:35:55.215665"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-11 15:35:55.218965"
     },
     "reward": 0.92,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 92.0
+    }
+  },
+  {
+    "iteration": 1,
+    "timestamp": "2025-09-11T15:36:16.936298",
+    "prompt": "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\"",
+    "spec_before": {
+      "building_type": "initial",
+      "stories": 0,
+      "materials": [],
+      "dimensions": {
+        "length": null,
+        "width": null,
+        "height": null,
+        "area": null
+      },
+      "features": [],
+      "requirements": [],
+      "timestamp": "2025-09-11 15:36:16.936295"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:36:16.934791"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-11 15:36:16.935670"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 1,
+      "added_features": 1,
+      "dimension_changes": {
+        "length": {
+          "before": null,
+          "after": 30.0
+        }
+      },
+      "evaluation_score": 92.0
+    }
+  },
+  {
+    "iteration": 2,
+    "timestamp": "2025-09-11T15:36:16.939840",
+    "prompt": "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\"",
+    "spec_before": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:36:16.934791"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:36:16.934791"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-11 15:36:16.939226"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 92.0
+    }
+  },
+  {
+    "iteration": 3,
+    "timestamp": "2025-09-11T15:36:16.942504",
+    "prompt": "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\"",
+    "spec_before": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:36:16.934791"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:36:16.934791"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-11 15:36:16.941942"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 92.0
+    }
+  },
+  {
+    "iteration": 4,
+    "timestamp": "2025-09-11T15:36:16.945668",
+    "prompt": "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\"",
+    "spec_before": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:36:16.934791"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:36:16.934791"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-11 15:36:16.945090"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 92.0
+    }
+  },
+  {
+    "iteration": 5,
+    "timestamp": "2025-09-11T15:36:16.948668",
+    "prompt": "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\"",
+    "spec_before": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:36:16.934791"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 10,
+      "materials": [
+        {
+          "type": "concrete",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 35.0,
+        "area": 750.0
+      },
+      "features": [
+        "pool"
+      ],
+      "requirements": [
+        "\"A 10-story apartment building with a concrete frame, a swimming pool, and a gym.\""
+      ],
+      "timestamp": "2025-09-11 15:36:16.934791"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-11 15:36:16.948136"
+    },
+    "reward": 0.0,
     "improvements": {
       "added_materials": 0,
       "added_features": 0,
