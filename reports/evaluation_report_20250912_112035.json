@@ -1,8 +1,8 @@
 {
-  "timestamp": "2025-09-12T11:13:16.891804",
-  "prompt": "Office building",
+  "timestamp": "2025-09-12T11:20:35.095639",
+  "prompt": "Smart warehouse with automation",
   "design_specification": {
-    "building_type": "office",
+    "building_type": "warehouse",
     "stories": 1,
     "materials": [
       {
@@ -12,19 +12,19 @@
       }
     ],
     "dimensions": {
-      "length": 20.0,
-      "width": 15.0,
+      "length": 40.0,
+      "width": 30.0,
       "height": 3.5,
-      "area": 300.0
+      "area": 1200.0
     },
     "features": [
       "parking",
       "elevator"
     ],
     "requirements": [
-      "Office building"
+      "Smart warehouse with automation"
     ],
-    "timestamp": "2025-09-12 11:13:16.873113"
+    "timestamp": "2025-09-12 11:20:35.089546"
   },
   "evaluation_results": {
     "score": 100.0,
@@ -32,7 +32,7 @@
     "format_validity": 100.0,
     "feedback": [],
     "suggestions": [],
-    "timestamp": "2025-09-12 11:13:16.891776"
+    "timestamp": "2025-09-12 11:20:35.095605"
   },
   "summary": {
     "overall_score": 100.0,

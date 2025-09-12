@@ -18,6 +18,8 @@ def main():
     parser.add_argument("--use-db", action="store_true", help="Use database storage")
     parser.add_argument("--validate-json", action="store_true", help="Enable deep JSON validation")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
+    parser.add_argument("--cleanup", action="store_true", help="Clean old files before running")
+    parser.add_argument("--final-only", action="store_true", help="Save only final results (not intermediate steps)")
 
     
     args = parser.parse_args()
@@ -25,6 +27,10 @@ def main():
     # Check if prompt is required
     if args.mode != "web" and not args.prompt:
         parser.error("--prompt is required for all modes except web")
+    
+    # Cleanup old files if requested
+    if args.cleanup:
+        cleanup_old_files()
     
     try:
         if args.mode == "single":

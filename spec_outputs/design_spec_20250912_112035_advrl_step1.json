@@ -1,7 +1,7 @@
 {
-  "prompt": "Office building (Advanced RL step 3)",
+  "prompt": "Smart warehouse with automation (Advanced RL step 1)",
   "specification": {
-    "building_type": "office",
+    "building_type": "warehouse",
     "stories": 1,
     "materials": [
       {
@@ -11,24 +11,24 @@
       }
     ],
     "dimensions": {
-      "length": 20.0,
-      "width": 15.0,
+      "length": 40.0,
+      "width": 30.0,
       "height": 3.5,
-      "area": 300.0
+      "area": 1200.0
     },
     "features": [
       "parking",
       "elevator"
     ],
     "requirements": [
-      "Office building"
+      "Smart warehouse with automation"
     ],
-    "timestamp": "2025-09-12 11:13:16.873113"
+    "timestamp": "2025-09-12 11:20:35.089546"
   },
   "metadata": {
-    "generated_at": "2025-09-12T11:13:16.897699",
+    "generated_at": "2025-09-12T11:20:35.093414",
     "generator": "AdvancedRL",
-    "step": 3,
+    "step": 1,
     "action": 1,
     "reward": 0.0
   }

@@ -1,12 +1,12 @@
 {
-  "prompt": "Test office building",
+  "prompt": "Smart warehouse with automation",
   "algorithm": "REINFORCE",
   "steps": [
     {
       "step": 1,
       "specification": {
-        "building_type": "office",
-        "stories": 2,
+        "building_type": "warehouse",
+        "stories": 1,
         "materials": [
           {
             "type": "steel",
@@ -15,18 +15,19 @@
           }
         ],
         "dimensions": {
-          "length": 20.0,
-          "width": 15.0,
-          "height": 7.0,
-          "area": 300.0
+          "length": 40.0,
+          "width": 30.0,
+          "height": 3.5,
+          "area": 1200.0
         },
         "features": [
-          "parking"
+          "parking",
+          "elevator"
         ],
         "requirements": [
-          "Test office building"
+          "Smart warehouse with automation"
         ],
-        "timestamp": "2025-09-12 11:12:45.899655"
+        "timestamp": "2025-09-12 11:20:35.089546"
       },
       "evaluation": {
         "score": 100.0,
@@ -34,17 +35,17 @@
         "format_validity": 100.0,
         "feedback": [],
         "suggestions": [],
-        "timestamp": "2025-09-12 11:12:45.905722"
+        "timestamp": "2025-09-12 11:20:35.091640"
       },
-      "action": 2,
+      "action": 1,
       "reward": 0.0,
-      "spec_file": "spec_outputs\\design_spec_20250912_111245_advrl_step1.json"
+      "spec_file": "spec_outputs\\design_spec_20250912_112035_advrl_step1.json"
     },
     {
       "step": 2,
       "specification": {
-        "building_type": "office",
-        "stories": 3,
+        "building_type": "warehouse",
+        "stories": 1,
         "materials": [
           {
             "type": "steel",
@@ -53,18 +54,19 @@
           }
         ],
         "dimensions": {
-          "length": 20.0,
-          "width": 15.0,
-          "height": 10.5,
-          "area": 300.0
+          "length": 40.0,
+          "width": 30.0,
+          "height": 3.5,
+          "area": 1200.0
         },
         "features": [
-          "parking"
+          "parking",
+          "elevator"
         ],
         "requirements": [
-          "Test office building"
+          "Smart warehouse with automation"
         ],
-        "timestamp": "2025-09-12 11:12:45.899655"
+        "timestamp": "2025-09-12 11:20:35.089546"
       },
       "evaluation": {
         "score": 100.0,
@@ -72,16 +74,16 @@
         "format_validity": 100.0,
         "feedback": [],
         "suggestions": [],
-        "timestamp": "2025-09-12 11:12:45.914760"
+        "timestamp": "2025-09-12 11:20:35.095605"
       },
-      "action": 2,
+      "action": 1,
       "reward": 0.0,
-      "spec_file": "spec_outputs\\design_spec_20250912_111245_advrl_step2.json"
+      "spec_file": "spec_outputs\\design_spec_20250912_112035_advrl_step2.json"
     }
   ],
   "final_spec": {
-    "building_type": "office",
-    "stories": 3,
+    "building_type": "warehouse",
+    "stories": 1,
     "materials": [
       {
         "type": "steel",
@@ -90,28 +92,29 @@
       }
     ],
     "dimensions": {
-      "length": 20.0,
-      "width": 15.0,
-      "height": 10.5,
-      "area": 300.0
+      "length": 40.0,
+      "width": 30.0,
+      "height": 3.5,
+      "area": 1200.0
     },
     "features": [
-      "parking"
+      "parking",
+      "elevator"
     ],
     "requirements": [
-      "Test office building"
+      "Smart warehouse with automation"
     ],
-    "timestamp": "2025-09-12 11:12:45.899655"
+    "timestamp": "2025-09-12 11:20:35.089546"
   },
   "total_reward": 0.0,
   "learning_insights": {
-    "total_iterations": 14,
-    "average_score": 93.71428571428571,
+    "total_iterations": 2,
+    "average_score": 100.0,
     "score_trend": "declining",
-    "average_reward": 0.3942857142857143,
+    "average_reward": 0.0,
     "best_iteration": 1,
     "common_successful_patterns": [
-      "Using concrete material leads to better results"
+      "Using steel material leads to better results"
     ]
   }
 }
