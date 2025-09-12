@@ -17,6 +17,7 @@ def main():
     parser.add_argument("--binary-rewards", action="store_true", help="Use binary reward system (1/-1)")
     parser.add_argument("--use-db", action="store_true", help="Use database storage")
     parser.add_argument("--validate-json", action="store_true", help="Enable deep JSON validation")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
 
     
     args = parser.parse_args()
@@ -176,16 +177,17 @@ def run_compare_mode(prompt: str):
     rl_loop = RLLoop()
     comparison = rl_loop.compare_approaches(prompt)
     
-    print(f"\n--- Comparison Results ---")
-    print(f"Standard approach: {comparison['standard']['score']:.2f}")
-    print(f"Enhanced approach: {comparison['enhanced']['score']:.2f}")
-    print(f"Result: {comparison['result']}")
 
-def validate_prompt(prompt: str, use_deep_validation: bool = False) -> bool:
+
+def validate_prompt(prompt: str, use_deep_validation: bool = False, verbose: bool = False) -> bool:
     """Prompt validation with optional deep validation"""
     if use_deep_validation:
         from json_validator import InputSanitizer
+        if verbose:
+            print(f"[VERBOSE] Applying deep validation to prompt: '{prompt[:50]}...'")
         prompt = InputSanitizer.sanitize_prompt(prompt)
+        if verbose:
+            print(f"[VERBOSE] Sanitized prompt: '{prompt[:50]}...'")
     
     if not prompt:
         raise ValueError("Prompt cannot be empty")

@@ -1,7 +1,7 @@
 {
-  "prompt": "Modern hospital (RL iteration 1)",
+  "prompt": "Office building",
   "specification": {
-    "building_type": "general",
+    "building_type": "office",
     "stories": 1,
     "materials": [
       {
@@ -20,14 +20,12 @@
       "parking"
     ],
     "requirements": [
-      "Modern hospital"
+      "Office building"
     ],
-    "timestamp": "2025-09-11 15:32:39.202912"
+    "timestamp": "2025-09-12 11:13:16.738575"
   },
   "metadata": {
-    "generated_at": "2025-09-11T15:32:39.203021",
-    "generator": "MainAgent",
-    "iteration": 1,
-    "rl_mode": true
+    "generated_at": "2025-09-12T11:13:16.739833",
+    "generator": "MainAgent"
   }
 }

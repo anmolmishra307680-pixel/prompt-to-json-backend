@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-09-11T15:32:39.205694",
-  "prompt": "Modern hospital",
+  "timestamp": "2025-09-12T11:13:04.446866",
+  "prompt": "Test building",
   "design_specification": {
     "building_type": "general",
     "stories": 1,
@@ -21,9 +21,9 @@
       "parking"
     ],
     "requirements": [
-      "Modern hospital"
+      "Test building"
     ],
-    "timestamp": "2025-09-11 15:32:39.202912"
+    "timestamp": "2025-09-12 11:13:04.445352"
   },
   "evaluation_results": {
     "score": 92.0,
@@ -33,7 +33,7 @@
       "Building type not specified or too generic"
     ],
     "suggestions": [],
-    "timestamp": "2025-09-11 15:32:39.205676"
+    "timestamp": "2025-09-12 11:13:04.446815"
   },
   "summary": {
     "overall_score": 92.0,

@@ -1,0 +1,33 @@
+{
+  "prompt": "Test building (RL iteration 1)",
+  "specification": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "steel",
+        "grade": "standard",
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
+    },
+    "features": [
+      "parking"
+    ],
+    "requirements": [
+      "Test building"
+    ],
+    "timestamp": "2025-09-12 11:13:04.445352"
+  },
+  "metadata": {
+    "generated_at": "2025-09-12T11:13:04.445454",
+    "generator": "MainAgent",
+    "iteration": 1,
+    "rl_mode": true
+  }
+}

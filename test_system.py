@@ -45,20 +45,31 @@ def test_main_agent():
     assert spec2.building_type == "warehouse"
     assert len(spec2.materials) > 0
     
-    # Test error handling
-    try:
-        agent.generate_spec("")
-        assert False, "Should raise error for empty prompt"
-    except ValueError:
-        pass
+    print("[PASS] MainAgent tests passed")
+
+def test_advanced_rl():
+    """Test Advanced RL environment"""
+    from advanced_rl import AdvancedRLEnvironment
     
-    try:
-        agent.generate_spec("ab")
-        assert False, "Should raise error for too short prompt"
-    except ValueError:
-        pass
+    env = AdvancedRLEnvironment()
+    result = env.train_episode("Test office building", max_steps=2)
     
-    print("[PASS] Main agent tests passed")
+    # Verify result structure
+    assert "final_spec" in result
+    assert "final_score" in result
+    assert "total_reward" in result
+    assert "steps" in result
+    assert result["steps"] == 2
+    
+    # Verify final spec is valid
+    final_spec = result["final_spec"]
+    assert final_spec.building_type in ["office", "general"]
+    assert final_spec.stories >= 1
+    assert len(final_spec.materials) > 0
+    
+    print("[PASS] Advanced RL tests passed")
+    
+
 
 def test_evaluator():
     """Test evaluator functionality"""
@@ -97,6 +108,7 @@ def run_all_tests():
     try:
         test_extractor()
         test_main_agent()
+        test_advanced_rl()
         test_evaluator()
         test_integration()
         

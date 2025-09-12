@@ -1,39 +1,34 @@
 {
-  "prompt": "Smart office (Advanced RL step 1)",
+  "prompt": "Test office building (Advanced RL step 2)",
   "specification": {
     "building_type": "office",
-    "stories": 1,
+    "stories": 3,
     "materials": [
       {
         "type": "steel",
         "grade": "standard",
-        "properties": {}
-      },
-      {
-        "type": "concrete",
-        "grade": null,
         "properties": {}
       }
     ],
     "dimensions": {
       "length": 20.0,
       "width": 15.0,
-      "height": 3.5,
+      "height": 10.5,
       "area": 300.0
     },
     "features": [
       "parking"
     ],
     "requirements": [
-      "Smart office"
+      "Test office building"
     ],
-    "timestamp": "2025-09-11 15:32:02.231679"
+    "timestamp": "2025-09-12 11:12:45.899655"
   },
   "metadata": {
-    "generated_at": "2025-09-11T15:32:02.233779",
+    "generated_at": "2025-09-12T11:12:45.919114",
     "generator": "AdvancedRL",
-    "step": 1,
-    "action": 0,
+    "step": 2,
+    "action": 2,
     "reward": 0.0
   }
 }

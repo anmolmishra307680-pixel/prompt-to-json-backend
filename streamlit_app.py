@@ -16,11 +16,13 @@ main_agent, evaluator_agent, rl_loop = get_agents()
 
 # Input
 prompt = st.text_area("Enter building description:", placeholder="Modern office building with glass facade")
-mode = st.selectbox("Mode:", ["Single Generation", "RL Training", "Compare"])
+mode = st.selectbox("Mode:", ["Single Generation", "RL Training", "Advanced RL", "Compare"])
 
-if mode == "RL Training":
+if mode in ["RL Training", "Advanced RL"]:
     iterations = st.slider("Iterations:", 1, 5, 3)
-    binary_rewards = st.checkbox("Binary Rewards")
+    if mode == "RL Training":
+        binary_rewards = st.checkbox("Binary Rewards")
+    use_db = st.checkbox("Use Database Storage")
 
 if st.button("Generate"):
     if prompt:
@@ -39,12 +41,18 @@ if st.button("Generate"):
                 st.success(f"Training completed: {len(results['iterations'])} iterations")
                 for i, iteration in enumerate(results['iterations']):
                     st.write(f"**Iteration {i+1}**: Score {iteration['evaluation']['score']}")
+                    
+            elif mode == "Advanced RL":
+                from advanced_rl import AdvancedRLEnvironment
+                env = AdvancedRLEnvironment()
+                result = env.train_episode(prompt, max_steps=iterations)
                 
-            elif mode == "Compare":
-                comparison = rl_loop.compare_approaches(prompt)
-                st.write("**Comparison Results:**")
-                st.write(f"Standard: {comparison['standard']['score']}")
-                st.write(f"Enhanced: {comparison['enhanced']['score']}")
+                st.success(f"Advanced RL completed: {result['steps']} steps")
+                st.write(f"**Final Score**: {result['final_score']}")
+                st.write(f"**Total Reward**: {result['total_reward']:.3f}")
+                st.json(result['final_spec'].model_dump())
+                
+
                 
         except Exception as e:
             st.error(f"Error: {str(e)}")

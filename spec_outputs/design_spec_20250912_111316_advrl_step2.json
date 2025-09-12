@@ -1,7 +1,7 @@
 {
-  "prompt": "Modern hospital (RL iteration 2)",
+  "prompt": "Office building (Advanced RL step 2)",
   "specification": {
-    "building_type": "general",
+    "building_type": "office",
     "stories": 1,
     "materials": [
       {
@@ -17,17 +17,19 @@
       "area": 300.0
     },
     "features": [
-      "parking"
+      "parking",
+      "elevator"
     ],
     "requirements": [
-      "Modern hospital"
+      "Office building"
     ],
-    "timestamp": "2025-09-11 15:32:39.202912"
+    "timestamp": "2025-09-12 11:13:16.873113"
   },
   "metadata": {
-    "generated_at": "2025-09-11T15:32:39.205112",
-    "generator": "MainAgent",
-    "iteration": 2,
-    "rl_mode": true
+    "generated_at": "2025-09-12T11:13:16.889158",
+    "generator": "AdvancedRL",
+    "step": 2,
+    "action": 1,
+    "reward": 0.0
   }
 }

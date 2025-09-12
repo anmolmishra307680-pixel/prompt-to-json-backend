@@ -1,6 +1,6 @@
 {
-  "timestamp": "2025-09-11T15:32:02.232869",
-  "prompt": "Smart office",
+  "timestamp": "2025-09-12T11:13:16.891804",
+  "prompt": "Office building",
   "design_specification": {
     "building_type": "office",
     "stories": 1,
@@ -8,11 +8,6 @@
       {
         "type": "steel",
         "grade": "standard",
-        "properties": {}
-      },
-      {
-        "type": "concrete",
-        "grade": null,
         "properties": {}
       }
     ],
@@ -23,12 +18,13 @@
       "area": 300.0
     },
     "features": [
-      "parking"
+      "parking",
+      "elevator"
     ],
     "requirements": [
-      "Smart office"
+      "Office building"
     ],
-    "timestamp": "2025-09-11 15:32:02.231679"
+    "timestamp": "2025-09-12 11:13:16.873113"
   },
   "evaluation_results": {
     "score": 100.0,
@@ -36,7 +32,7 @@
     "format_validity": 100.0,
     "feedback": [],
     "suggestions": [],
-    "timestamp": "2025-09-11 15:32:02.232854"
+    "timestamp": "2025-09-12 11:13:16.891776"
   },
   "summary": {
     "overall_score": 100.0,

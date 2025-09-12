@@ -1,0 +1,42 @@
+{
+  "timestamp": "2025-09-12T11:12:45.914787",
+  "prompt": "Test office building",
+  "design_specification": {
+    "building_type": "office",
+    "stories": 3,
+    "materials": [
+      {
+        "type": "steel",
+        "grade": "standard",
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 10.5,
+      "area": 300.0
+    },
+    "features": [
+      "parking"
+    ],
+    "requirements": [
+      "Test office building"
+    ],
+    "timestamp": "2025-09-12 11:12:45.899655"
+  },
+  "evaluation_results": {
+    "score": 100.0,
+    "completeness": 100.0,
+    "format_validity": 100.0,
+    "feedback": [],
+    "suggestions": [],
+    "timestamp": "2025-09-12 11:12:45.914760"
+  },
+  "summary": {
+    "overall_score": 100.0,
+    "grade": "A",
+    "key_issues": [],
+    "top_suggestions": []
+  }
+}

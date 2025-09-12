@@ -826,5 +826,556 @@
       "dimension_changes": {},
       "evaluation_score": 92.0
     }
+  },
+  {
+    "iteration": 1,
+    "timestamp": "2025-09-12T11:12:45.906814",
+    "prompt": "Test office building",
+    "spec_before": {
+      "building_type": "office",
+      "stories": 2,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 7.0,
+        "area": 300.0
+      },
+      "features": [
+        "parking"
+      ],
+      "requirements": [
+        "Test office building"
+      ],
+      "timestamp": "2025-09-12 11:12:45.899655"
+    },
+    "spec_after": {
+      "building_type": "office",
+      "stories": 2,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 7.0,
+        "area": 300.0
+      },
+      "features": [
+        "parking"
+      ],
+      "requirements": [
+        "Test office building"
+      ],
+      "timestamp": "2025-09-12 11:12:45.899655"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-12 11:12:45.905722"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 100.0
+    }
+  },
+  {
+    "iteration": 2,
+    "timestamp": "2025-09-12T11:12:45.915491",
+    "prompt": "Test office building",
+    "spec_before": {
+      "building_type": "office",
+      "stories": 3,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 10.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking"
+      ],
+      "requirements": [
+        "Test office building"
+      ],
+      "timestamp": "2025-09-12 11:12:45.899655"
+    },
+    "spec_after": {
+      "building_type": "office",
+      "stories": 3,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 10.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking"
+      ],
+      "requirements": [
+        "Test office building"
+      ],
+      "timestamp": "2025-09-12 11:12:45.899655"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-12 11:12:45.914760"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 100.0
+    }
+  },
+  {
+    "iteration": 1,
+    "timestamp": "2025-09-12T11:13:04.396358",
+    "prompt": "Test office building",
+    "spec_before": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator"
+      ],
+      "requirements": [
+        "Test office building"
+      ],
+      "timestamp": "2025-09-12 11:13:04.392494"
+    },
+    "spec_after": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator"
+      ],
+      "requirements": [
+        "Test office building"
+      ],
+      "timestamp": "2025-09-12 11:13:04.392494"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-12 11:13:04.395004"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 100.0
+    }
+  },
+  {
+    "iteration": 2,
+    "timestamp": "2025-09-12T11:13:04.404037",
+    "prompt": "Test office building",
+    "spec_before": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator"
+      ],
+      "requirements": [
+        "Test office building"
+      ],
+      "timestamp": "2025-09-12 11:13:04.392494"
+    },
+    "spec_after": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator"
+      ],
+      "requirements": [
+        "Test office building"
+      ],
+      "timestamp": "2025-09-12 11:13:04.392494"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-12 11:13:04.403191"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 100.0
+    }
+  },
+  {
+    "iteration": 1,
+    "timestamp": "2025-09-12T11:13:04.448145",
+    "prompt": "Test building",
+    "spec_before": {
+      "building_type": "initial",
+      "stories": 0,
+      "materials": [],
+      "dimensions": {
+        "length": null,
+        "width": null,
+        "height": null,
+        "area": null
+      },
+      "features": [],
+      "requirements": [],
+      "timestamp": "2025-09-12 11:13:04.448135"
+    },
+    "spec_after": {
+      "building_type": "general",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking"
+      ],
+      "requirements": [
+        "Test building"
+      ],
+      "timestamp": "2025-09-12 11:13:04.445352"
+    },
+    "evaluation": {
+      "score": 92.0,
+      "completeness": 80.0,
+      "format_validity": 100.0,
+      "feedback": [
+        "Building type not specified or too generic"
+      ],
+      "suggestions": [],
+      "timestamp": "2025-09-12 11:13:04.446815"
+    },
+    "reward": 1.84,
+    "improvements": {
+      "added_materials": 1,
+      "added_features": 1,
+      "dimension_changes": {
+        "length": {
+          "before": null,
+          "after": 20.0
+        }
+      },
+      "evaluation_score": 92.0
+    }
+  },
+  {
+    "iteration": 1,
+    "timestamp": "2025-09-12T11:13:16.876177",
+    "prompt": "Office building",
+    "spec_before": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator"
+      ],
+      "requirements": [
+        "Office building"
+      ],
+      "timestamp": "2025-09-12 11:13:16.873113"
+    },
+    "spec_after": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator"
+      ],
+      "requirements": [
+        "Office building"
+      ],
+      "timestamp": "2025-09-12 11:13:16.873113"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-12 11:13:16.875336"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 100.0
+    }
+  },
+  {
+    "iteration": 2,
+    "timestamp": "2025-09-12T11:13:16.884509",
+    "prompt": "Office building",
+    "spec_before": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator"
+      ],
+      "requirements": [
+        "Office building"
+      ],
+      "timestamp": "2025-09-12 11:13:16.873113"
+    },
+    "spec_after": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator"
+      ],
+      "requirements": [
+        "Office building"
+      ],
+      "timestamp": "2025-09-12 11:13:16.873113"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-12 11:13:16.883637"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 100.0
+    }
+  },
+  {
+    "iteration": 3,
+    "timestamp": "2025-09-12T11:13:16.892600",
+    "prompt": "Office building",
+    "spec_before": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator"
+      ],
+      "requirements": [
+        "Office building"
+      ],
+      "timestamp": "2025-09-12 11:13:16.873113"
+    },
+    "spec_after": {
+      "building_type": "office",
+      "stories": 1,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": "standard",
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 20.0,
+        "width": 15.0,
+        "height": 3.5,
+        "area": 300.0
+      },
+      "features": [
+        "parking",
+        "elevator"
+      ],
+      "requirements": [
+        "Office building"
+      ],
+      "timestamp": "2025-09-12 11:13:16.873113"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-12 11:13:16.891776"
+    },
+    "reward": 0.0,
+    "improvements": {
+      "added_materials": 0,
+      "added_features": 0,
+      "dimension_changes": {},
+      "evaluation_score": 100.0
+    }
   }
 ]

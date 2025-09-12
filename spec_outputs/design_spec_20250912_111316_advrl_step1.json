@@ -1,0 +1,35 @@
+{
+  "prompt": "Office building (Advanced RL step 1)",
+  "specification": {
+    "building_type": "office",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "steel",
+        "grade": "standard",
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
+    },
+    "features": [
+      "parking",
+      "elevator"
+    ],
+    "requirements": [
+      "Office building"
+    ],
+    "timestamp": "2025-09-12 11:13:16.873113"
+  },
+  "metadata": {
+    "generated_at": "2025-09-12T11:13:16.880821",
+    "generator": "AdvancedRL",
+    "step": 1,
+    "action": 1,
+    "reward": 0.0
+  }
+}

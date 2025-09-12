@@ -156,30 +156,32 @@ class RLLoop:
         }
     
     def compare_approaches(self, prompt: str) -> dict:
-        """Compare different rule-based configurations"""
-        print("Comparing rule-based configurations...")
+        """Compare rule-based vs advanced RL approaches"""
+        print("Comparing rule-based vs Advanced RL...")
         
-        # Standard approach
+        # Standard rule-based approach
         standard_result = self.run_single_iteration(prompt)
         
-        # Enhanced approach (same as standard since LLM removed)
-        enhanced_result = self.run_single_iteration(prompt)
+        # Advanced RL approach
+        from advanced_rl import AdvancedRLEnvironment
+        env = AdvancedRLEnvironment()
+        rl_result = env.train_episode(prompt, max_steps=3)
         
         comparison = {
             "prompt": prompt,
-            "standard": {
+            "rule_based": {
                 "score": standard_result["evaluation"].score,
                 "reward": standard_result["reward"]
             },
-            "enhanced": {
-                "score": enhanced_result["evaluation"].score,
-                "reward": enhanced_result["reward"]
+            "advanced_rl": {
+                "score": rl_result["final_score"],
+                "reward": rl_result["total_reward"]
             },
-            "result": "Both approaches equivalent (rule-based only)"
+            "winner": "rule_based" if standard_result["evaluation"].score > rl_result["final_score"] else "advanced_rl"
         }
         
-        print(f"Standard score: {standard_result['evaluation'].score:.2f}")
-        print(f"Enhanced score: {enhanced_result['evaluation'].score:.2f}")
-        print(f"Result: {comparison['result']}")
+        print(f"Rule-based score: {standard_result['evaluation'].score:.2f}")
+        print(f"Advanced RL score: {rl_result['final_score']:.2f}")
+        print(f"Winner: {comparison['winner']}")
         
         return comparison

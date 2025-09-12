@@ -1,21 +1,15 @@
 {
-  "prompt": "Smart office",
-  "algorithm": "REINFORCE",
-  "steps": [
+  "prompt": "Test building",
+  "iterations": [
     {
-      "step": 1,
+      "iteration": 1,
       "specification": {
-        "building_type": "office",
+        "building_type": "general",
         "stories": 1,
         "materials": [
           {
             "type": "steel",
             "grade": "standard",
-            "properties": {}
-          },
-          {
-            "type": "concrete",
-            "grade": null,
             "properties": {}
           }
         ],
@@ -29,35 +23,40 @@
           "parking"
         ],
         "requirements": [
-          "Smart office"
+          "Test building"
         ],
-        "timestamp": "2025-09-11 15:32:02.231679"
+        "timestamp": "2025-09-12 11:13:04.445352"
       },
       "evaluation": {
-        "score": 100.0,
-        "completeness": 100.0,
+        "score": 92.0,
+        "completeness": 80.0,
         "format_validity": 100.0,
-        "feedback": [],
+        "feedback": [
+          "Building type not specified or too generic"
+        ],
         "suggestions": [],
-        "timestamp": "2025-09-11 15:32:02.232854"
+        "timestamp": "2025-09-12 11:13:04.446815"
       },
-      "action": 0,
-      "reward": 0.0,
-      "spec_file": "spec_outputs\\design_spec_20250911_153202_advrl_step1.json"
+      "reward": 1.84,
+      "improvement": 0,
+      "spec_file": "spec_outputs\\design_spec_20250912_111304_iter1.json",
+      "dashboard": {
+        "prompt": "Test building",
+        "spec_score": 92.0,
+        "critic": [
+          "Building type not specified or too generic"
+        ],
+        "reward": 1.84
+      }
     }
   ],
   "final_spec": {
-    "building_type": "office",
+    "building_type": "general",
     "stories": 1,
     "materials": [
       {
         "type": "steel",
         "grade": "standard",
-        "properties": {}
-      },
-      {
-        "type": "concrete",
-        "grade": null,
         "properties": {}
       }
     ],
@@ -71,16 +70,15 @@
       "parking"
     ],
     "requirements": [
-      "Smart office"
+      "Test building"
     ],
-    "timestamp": "2025-09-11 15:32:02.231679"
+    "timestamp": "2025-09-12 11:13:04.445352"
   },
-  "total_reward": 0.0,
   "learning_insights": {
-    "total_iterations": 1,
-    "average_score": 100.0,
+    "total_iterations": 17,
+    "average_score": 94.3529411764706,
     "score_trend": "declining",
-    "average_reward": 0.0,
+    "average_reward": 0.4329411764705883,
     "best_iteration": 1,
     "common_successful_patterns": [
       "Using concrete material leads to better results"
