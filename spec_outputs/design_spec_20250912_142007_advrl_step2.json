@@ -1,12 +1,12 @@
 {
-  "prompt": "Build a virtual reality fitness training platform (Advanced RL step 2)",
+  "prompt": "Final advanced test (Advanced RL step 2)",
   "specification": {
-    "building_type": "software",
+    "building_type": "general",
     "stories": 1,
     "materials": [
       {
-        "type": "interface",
-        "grade": "standard",
+        "type": "concrete",
+        "grade": null,
         "properties": {}
       },
       {
@@ -22,16 +22,15 @@
       "area": 1.0
     },
     "features": [
-      "basic_functionality",
-      "elevator"
+      "basic_functionality"
     ],
     "requirements": [
-      "Build a virtual reality fitness training platform"
+      "Final advanced test"
     ],
-    "timestamp": "2025-09-12 13:09:36.540362"
+    "timestamp": "2025-09-12 14:20:07.243234"
   },
   "metadata": {
-    "generated_at": "2025-09-12T13:09:36.546502",
+    "generated_at": "2025-09-12T14:20:07.252415",
     "generator": "AdvancedRL",
     "step": 2,
     "action": 0,

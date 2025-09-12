@@ -1,17 +1,27 @@
 # Core dependencies
 pydantic>=2.0.0
+numpy>=1.21.0
 
 # Web interface
 streamlit>=1.28.0
-openai>=1.0.0
-transformers>=4.30.0
 
-# Advanced RL
-numpy>=1.21.0
+# API server
+flask>=2.3.0
+flask-cors>=4.0.0
+flask-limiter>=3.5.0
+gunicorn>=21.2.0
+
+# Performance monitoring
+psutil>=5.9.0
+requests>=2.31.0
 
 # Database
-# sqlite3 (built-in with Python)
+sqlalchemy>=2.0.0
 
-# Optional for advanced features
-# torch>=2.0.0
+# File watching
+watchdog>=3.0.0
+
+# Optional LLM features
+# openai>=1.0.0
 # transformers>=4.30.0
+# torch>=2.0.0

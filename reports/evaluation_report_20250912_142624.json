@@ -1,29 +1,29 @@
 {
-  "timestamp": "2025-09-12T13:14:18.081098",
-  "prompt": "Build an e-commerce recommendation engine",
+  "timestamp": "2025-09-12T14:26:24.987858",
+  "prompt": "Test building",
   "design_specification": {
     "building_type": "general",
     "stories": 1,
     "materials": [
       {
-        "type": "interface",
+        "type": "steel",
         "grade": "standard",
         "properties": {}
       }
     ],
     "dimensions": {
-      "length": 1.0,
-      "width": 1.0,
-      "height": 1.0,
-      "area": 1.0
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
     },
     "features": [
-      "basic_functionality"
+      "parking"
     ],
     "requirements": [
-      "Build an e-commerce recommendation engine"
+      "Test building"
     ],
-    "timestamp": "2025-09-12 13:14:18.078205"
+    "timestamp": "2025-09-12 14:26:24.986802"
   },
   "evaluation_results": {
     "score": 92.0,
@@ -33,7 +33,7 @@
       "Building type not specified or too generic"
     ],
     "suggestions": [],
-    "timestamp": "2025-09-12 13:14:18.081081"
+    "timestamp": "2025-09-12 14:26:24.987823"
   },
   "summary": {
     "overall_score": 92.0,

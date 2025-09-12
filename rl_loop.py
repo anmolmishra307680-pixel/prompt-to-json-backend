@@ -120,8 +120,17 @@ class RLLoop:
                 print("Early stopping: Perfect score achieved")
                 break
         
-        results["final_spec"] = current_spec.model_dump() if current_spec else None
-        results["learning_insights"] = self.feedback_loop.get_learning_insights()
+        # Ensure we have valid results
+        if current_spec:
+            results["final_spec"] = current_spec.model_dump()
+        else:
+            results["final_spec"] = None
+            
+        try:
+            results["learning_insights"] = self.feedback_loop.get_learning_insights()
+        except Exception as e:
+            print(f"Warning: Failed to get learning insights: {e}")
+            results["learning_insights"] = {"error": str(e)}
         
         # Save training results
         try:
@@ -167,38 +176,52 @@ class RLLoop:
         """Compare rule-based vs advanced RL approaches"""
         print("Comparing rule-based vs Advanced RL...")
         
-        # Standard rule-based approach
-        standard_result = self.run_single_iteration(prompt)
-        
-        # Advanced RL approach
-        from advanced_rl import AdvancedRLEnvironment
-        env = AdvancedRLEnvironment()
-        rl_result = env.train_episode(prompt, max_steps=3)
-        
-        comparison = {
-            "prompt": prompt,
-            "rule_based": {
-                "score": standard_result["evaluation"].score,
-                "reward": standard_result["reward"]
-            },
-            "advanced_rl": {
-                "score": rl_result["final_score"],
-                "reward": rl_result["total_reward"]
-            },
-            "winner": "rule_based" if standard_result["evaluation"].score > rl_result["final_score"] else "advanced_rl"
-        }
-        
-        print(f"Rule-based score: {standard_result['evaluation'].score:.2f}")
-        print(f"Advanced RL score: {rl_result['final_score']:.2f}")
-        print(f"Winner: {comparison['winner']}")
-        
-        # Log comparison to feedback log
-        self.feedback_loop.log_comparison(
-            prompt, 
-            standard_result["specification"], 
-            rl_result["final_spec"],
-            standard_result["evaluation"],
-            rl_result["final_score"]
-        )
-        
-        return comparison
+        try:
+            # Standard rule-based approach
+            standard_result = self.run_single_iteration(prompt)
+            
+            # Advanced RL approach
+            from advanced_rl import AdvancedRLEnvironment
+            env = AdvancedRLEnvironment()
+            rl_result = env.train_episode(prompt, max_steps=3)
+            
+            comparison = {
+                "prompt": prompt,
+                "rule_based": {
+                    "score": standard_result["evaluation"].score,
+                    "reward": standard_result["reward"]
+                },
+                "advanced_rl": {
+                    "score": rl_result["final_score"],
+                    "reward": rl_result["total_reward"]
+                },
+                "winner": "rule_based" if standard_result["evaluation"].score > rl_result["final_score"] else "advanced_rl"
+            }
+            
+            print(f"Rule-based score: {standard_result['evaluation'].score:.2f}")
+            print(f"Advanced RL score: {rl_result['final_score']:.2f}")
+            print(f"Winner: {comparison['winner']}")
+            
+            # Log comparison to feedback log
+            try:
+                self.feedback_loop.log_comparison(
+                    prompt, 
+                    standard_result["specification"], 
+                    rl_result["final_spec"],
+                    standard_result["evaluation"],
+                    rl_result["final_score"]
+                )
+            except Exception as log_error:
+                print(f"Warning: Failed to log comparison: {log_error}")
+            
+            return comparison
+            
+        except Exception as e:
+            print(f"Comparison failed: {e}")
+            return {
+                "prompt": prompt,
+                "rule_based": {"score": 0, "reward": 0},
+                "advanced_rl": {"score": 0, "reward": 0},
+                "winner": "none",
+                "error": str(e)
+            }

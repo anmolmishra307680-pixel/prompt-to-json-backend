@@ -30,6 +30,10 @@ def main():
     parser.add_argument("--cli-tools", action="store_true", help="Launch CLI tools interface")
     parser.add_argument("--score-only", action="store_true", help="Use data scorer for quick scoring")
     parser.add_argument("--examples", action="store_true", help="Show sample outputs and examples")
+    parser.add_argument("--api", action="store_true", help="Launch REST API server")
+    parser.add_argument("--benchmark", action="store_true", help="Run performance benchmarks")
+    parser.add_argument("--stress-test", type=int, metavar="SECONDS", help="Run stress test for N seconds")
+    parser.add_argument("--analytics", action="store_true", help="Show performance analytics")
 
     
     args = parser.parse_args()
@@ -46,6 +50,18 @@ def main():
         return
     if args.examples:
         show_sample_outputs()
+        return
+    if args.api:
+        run_api_server()
+        return
+    if args.benchmark:
+        run_benchmark_suite()
+        return
+    if args.stress_test:
+        run_stress_test(args.stress_test)
+        return
+    if args.analytics:
+        show_analytics()
         return
     
     # Check if prompt is required for other modes
@@ -206,65 +222,75 @@ def run_rl_mode(prompt: str, iterations: int, binary_rewards: bool = False, use_
     
     # Log RL training result (with error handling)
     try:
-        result = {
-            "training_file": f"logs/rl_training_{results.get('timestamp', 'unknown')}.json",
-            "iterations": len(results['iterations']),
-            "final_score": results['iterations'][-1]['evaluation']['score'] if results['iterations'] else 0
-        }
-        prompt_logger.log_prompt_result(prompt, result, "rl")
+        if results and 'iterations' in results and results['iterations']:
+            result = {
+                "training_file": f"logs/rl_training_{results.get('timestamp', 'unknown')}.json",
+                "iterations": len(results['iterations']),
+                "final_score": results['iterations'][-1]['evaluation']['score']
+            }
+            prompt_logger.log_prompt_result(prompt, result, "rl")
+        else:
+            print("Warning: No RL results to log")
     except Exception as e:
         print(f"Warning: Failed to log RL result: {e}")
     
     # Also log to main logs.json (with error handling)
     try:
-        from pathlib import Path
-        logs_dir = Path("logs")
-        logs_file = logs_dir / "logs.json"
-        
-        log_entry = {
-            "timestamp": datetime.now().isoformat(),
-            "prompt": prompt,
-            "mode": "rl",
-            "iterations": len(results['iterations']),
-            "final_score": results['iterations'][-1]['evaluation']['score'] if results['iterations'] else 0,
-            "training_file": f"logs/rl_training_{results.get('timestamp', 'unknown')}.json"
-        }
-        
-        logs = []
-        if logs_file.exists():
-            with open(logs_file, 'r') as f:
-                try:
-                    logs = json.load(f)
-                except:
-                    logs = []
-        
-        logs.append(log_entry)
-        
-        with open(logs_file, 'w') as f:
-            json.dump(logs, f, indent=2, default=str)
-        
-        print(f"RL training logged to: {logs_file}")
+        if results and 'iterations' in results:
+            from pathlib import Path
+            logs_dir = Path("logs")
+            logs_file = logs_dir / "logs.json"
+            
+            log_entry = {
+                "timestamp": datetime.now().isoformat(),
+                "prompt": prompt,
+                "mode": "rl",
+                "iterations": len(results['iterations']),
+                "final_score": results['iterations'][-1]['evaluation']['score'] if results['iterations'] else 0,
+                "training_file": f"logs/rl_training_{results.get('timestamp', 'unknown')}.json"
+            }
+            
+            logs = []
+            if logs_file.exists():
+                with open(logs_file, 'r') as f:
+                    try:
+                        logs = json.load(f)
+                    except:
+                        logs = []
+            
+            logs.append(log_entry)
+            
+            with open(logs_file, 'w') as f:
+                json.dump(logs, f, indent=2, default=str)
+            
+            print(f"RL training logged to: {logs_file}")
+        else:
+            print("Warning: No RL results to log to main logs")
     except Exception as e:
         print(f"Warning: Failed to log to main logs.json: {e}")
     
-    print(f"\n--- RL Training Results ---")
-    print(f"Total iterations: {len(results['iterations'])}")
-    
-    if results['iterations']:
-        final_score = results['iterations'][-1]['evaluation']['score']
-        initial_score = results['iterations'][0]['evaluation']['score']
-        improvement = final_score - initial_score
+    if results and 'iterations' in results:
+        print(f"\n--- RL Training Results ---")
+        print(f"Total iterations: {len(results['iterations'])}")
         
-        print(f"Initial score: {initial_score:.2f}")
-        print(f"Final score: {final_score:.2f}")
-        print(f"Improvement: {improvement:+.2f}")
-    
-    if results['learning_insights']:
-        insights = results['learning_insights']
-        print(f"\n--- Learning Insights ---")
-        print(f"Average score: {insights.get('average_score', 0):.2f}")
-        print(f"Score trend: {insights.get('score_trend', 'unknown')}")
-        print(f"Best iteration: {insights.get('best_iteration', 'unknown')}")
+        if results['iterations']:
+            final_score = results['iterations'][-1]['evaluation']['score']
+            initial_score = results['iterations'][0]['evaluation']['score']
+            improvement = final_score - initial_score
+            
+            print(f"Initial score: {initial_score:.2f}")
+            print(f"Final score: {final_score:.2f}")
+            print(f"Improvement: {improvement:+.2f}")
+        
+        if results.get('learning_insights'):
+            insights = results['learning_insights']
+            print(f"\n--- Learning Insights ---")
+            print(f"Average score: {insights.get('average_score', 0):.2f}")
+            print(f"Score trend: {insights.get('score_trend', 'unknown')}")
+            print(f"Best iteration: {insights.get('best_iteration', 'unknown')}")
+    else:
+        print(f"\n--- RL Training Results ---")
+        print("Training completed but no results available")
 
 def run_compare_mode(prompt: str):
     """Run comparison mode"""
@@ -687,6 +713,74 @@ def run_web_mode():
         print("\nStreamlit app stopped by user.")
     except Exception as e:
         print(f"Failed to launch web interface: {str(e)}")
+
+def run_api_server():
+    """Launch REST API server"""
+    print("Launching REST API server...")
+    try:
+        import api_server
+    except ImportError:
+        print("API dependencies not installed. Install with: pip install flask flask-cors flask-limiter")
+    except Exception as e:
+        print(f"Failed to launch API server: {str(e)}")
+
+def run_benchmark_suite():
+    """Run comprehensive benchmark suite"""
+    print("Running benchmark suite...")
+    try:
+        from benchmark import BenchmarkSuite
+        suite = BenchmarkSuite()
+        results = suite.run_full_benchmark()
+        suite.print_results(results)
+    except Exception as e:
+        print(f"Benchmark failed: {str(e)}")
+
+def run_stress_test(duration: int):
+    """Run stress test for specified duration"""
+    print(f"Running stress test for {duration} seconds...")
+    try:
+        from benchmark import BenchmarkSuite
+        suite = BenchmarkSuite()
+        results = suite.run_stress_test(duration)
+        suite.print_results({'stress_test': results['stats']})
+    except Exception as e:
+        print(f"Stress test failed: {str(e)}")
+
+def show_analytics():
+    """Show performance analytics"""
+    print("Performance Analytics")
+    try:
+        from performance_monitor import monitor
+        analytics = monitor.get_analytics()
+        
+        if 'error' in analytics:
+            print(f"Error: {analytics['error']}")
+            return
+        
+        if 'message' in analytics:
+            print(analytics['message'])
+            return
+        
+        print(f"\nOverall Statistics:")
+        print(f"   Total Runs: {analytics['total_runs']}")
+        print(f"   Success Rate: {analytics['success_rate']:.1f}%")
+        print(f"   Avg Execution Time: {analytics['avg_execution_time']}s")
+        print(f"   Avg Score: {analytics['avg_score']}/100")
+        
+        print(f"\nMode Statistics:")
+        for mode, stats in analytics['mode_statistics'].items():
+            print(f"   {mode}: {stats['count']} runs, {stats['avg_time']:.3f}s avg, {stats['avg_score']:.1f} avg score")
+        
+        print(f"\nLast Updated: {analytics['last_updated']}")
+        
+        health = monitor.get_system_health()
+        print(f"\nSystem Health:")
+        print(f"   CPU Usage: {health['cpu_usage']:.1f}%")
+        print(f"   Memory Usage: {health['memory_usage']:.1f}%")
+        print(f"   Disk Usage: {health['disk_usage']:.1f}%")
+        
+    except Exception as e:
+        print(f"Analytics failed: {str(e)}")
 
 if __name__ == "__main__":
     main()

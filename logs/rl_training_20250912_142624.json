@@ -1,0 +1,80 @@
+{
+  "prompt": "Test building",
+  "iterations": [
+    {
+      "iteration": 1,
+      "specification": {
+        "building_type": "general",
+        "stories": 1,
+        "materials": [
+          {
+            "type": "steel",
+            "grade": "standard",
+            "properties": {}
+          }
+        ],
+        "dimensions": {
+          "length": 20.0,
+          "width": 15.0,
+          "height": 3.5,
+          "area": 300.0
+        },
+        "features": [
+          "parking"
+        ],
+        "requirements": [
+          "Test building"
+        ],
+        "timestamp": "2025-09-12 14:26:24.986802"
+      },
+      "evaluation": {
+        "score": 92.0,
+        "completeness": 80.0,
+        "format_validity": 100.0,
+        "feedback": [
+          "Building type not specified or too generic"
+        ],
+        "suggestions": [],
+        "timestamp": "2025-09-12 14:26:24.987823"
+      },
+      "reward": 1.84,
+      "improvement": 0,
+      "spec_file": "spec_outputs\\design_spec_20250912_142624_iter1.json",
+      "dashboard": {
+        "prompt": "Test building",
+        "spec_score": 92.0,
+        "critic": [
+          "Building type not specified or too generic"
+        ],
+        "reward": 1.84
+      }
+    }
+  ],
+  "final_spec": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "steel",
+        "grade": "standard",
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
+    },
+    "features": [
+      "parking"
+    ],
+    "requirements": [
+      "Test building"
+    ],
+    "timestamp": "2025-09-12 14:26:24.986802"
+  },
+  "learning_insights": {
+    "error": "'evaluation'"
+  }
+}
