@@ -6,6 +6,11 @@ from main_agent import MainAgent
 from evaluator_agent import EvaluatorAgent
 from rl_loop import RLLoop
 from prompt_logger import PromptLogger
+from universal_agent import UniversalAgent
+from universal_evaluator import UniversalEvaluator
+from universal_schema import UniversalSpec
+import json
+from datetime import datetime
 
 def main():
     parser = argparse.ArgumentParser(description="Prompt-to-JSON Agent System")
@@ -20,6 +25,7 @@ def main():
     parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
     parser.add_argument("--cleanup", action="store_true", help="Clean old files before running")
     parser.add_argument("--final-only", action="store_true", help="Save only final results (not intermediate steps)")
+    parser.add_argument("--universal", action="store_true", help="Use universal agent for any prompt type")
 
     
     args = parser.parse_args()
@@ -34,7 +40,10 @@ def main():
     
     try:
         if args.mode == "single":
-            run_single_mode(args.prompt, use_db=args.use_db)
+            if args.universal:
+                run_universal_mode(args.prompt, use_db=args.use_db)
+            else:
+                run_single_mode(args.prompt, use_db=args.use_db)
         elif args.mode == "rl":
             run_rl_mode(args.prompt, args.iterations, args.binary_rewards, args.use_db)
         elif args.mode == "compare":
@@ -234,6 +243,91 @@ def run_advanced_rl_mode(prompt: str, iterations: int, use_db: bool = False):
     print(f"\n--- Advanced RL Results ---")
     print(f"Final score: {result['final_score']:.2f}")
     print(f"Training file: {result['training_file']}")
+
+def run_universal_mode(prompt: str, use_db: bool = False):
+    """Run universal mode for any prompt type"""
+    print(f"Processing prompt: '{prompt}'")
+    print("Mode: Universal (Any Prompt Type)")
+    
+    # Initialize universal agents
+    universal_agent = UniversalAgent()
+    universal_evaluator = UniversalEvaluator()
+    prompt_logger = PromptLogger()
+    
+    # Generate universal specification
+    print("\n1. Generating universal specification...")
+    spec = universal_agent.generate_spec(prompt)
+    
+    # Save specification
+    spec_path = universal_agent.save_spec(spec, prompt)
+    print(f"Universal specification saved to: {spec_path}")
+    
+    # Evaluate specification
+    print("\n2. Evaluating specification...")
+    evaluation = universal_evaluator.evaluate_spec(spec, prompt)
+    
+    # Save evaluation report
+    from evaluator.report import ReportGenerator
+    report_generator = ReportGenerator()
+    # Create dummy spec for report compatibility
+    from schema import DesignSpec, MaterialSpec, DimensionSpec
+    dummy_spec = DesignSpec(
+        building_type=spec.prompt_type,
+        stories=1,
+        materials=[],
+        dimensions=DimensionSpec(length=1, width=1, height=1, area=1),
+        features=[],
+        requirements=spec.requirements
+    )
+    report_path = report_generator.generate_report(dummy_spec, evaluation, prompt)
+    print(f"Evaluation report saved to: {report_path}")
+    
+    # Save to logs
+    from pathlib import Path
+    logs_dir = Path("logs")
+    logs_dir.mkdir(exist_ok=True)
+    logs_file = logs_dir / "logs.json"
+    
+    log_entry = {
+        "timestamp": datetime.now().isoformat(),
+        "prompt": prompt,
+        "mode": "universal",
+        "prompt_type": spec.prompt_type,
+        "score": evaluation.score,
+        "spec_file": spec_path,
+        "report_file": report_path
+    }
+    
+    # Append to logs
+    logs = []
+    if logs_file.exists():
+        with open(logs_file, 'r') as f:
+            try:
+                logs = json.load(f)
+            except:
+                logs = []
+    
+    logs.append(log_entry)
+    
+    with open(logs_file, 'w') as f:
+        json.dump(logs, f, indent=2, default=str)
+    
+    print(f"Log entry saved to: {logs_file}")
+    
+    # Log result
+    result = {
+        "spec_file": spec_path,
+        "evaluation": evaluation.model_dump(),
+        "prompt_type": spec.prompt_type
+    }
+    prompt_logger.log_prompt_result(prompt, result, "universal")
+    
+    # Display results
+    print(f"\n--- Universal Results ---")
+    print(f"Prompt Type: {spec.prompt_type}")
+    print(f"Overall Score: {evaluation.score:.2f}/100")
+    print(f"Components: {len(spec.components)}")
+    print(f"Confidence: {spec.metadata.get('confidence', 'N/A')}")
 
 def run_web_mode():
     """Launch Streamlit web interface"""

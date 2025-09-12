@@ -1,0 +1,46 @@
+{
+  "prompt": "Design a web platform for online learning with video streaming",
+  "specification": {
+    "prompt_type": "product",
+    "title": "Product Specification",
+    "description": "Design a web platform for online learning with video streaming",
+    "components": [
+      {
+        "type": "hardware",
+        "value": "product"
+      },
+      {
+        "type": "features",
+        "list": []
+      },
+      {
+        "type": "interface",
+        "value": "user interface"
+      }
+    ],
+    "properties": {
+      "category": "product",
+      "smart_features": 0,
+      "connectivity": "wired"
+    },
+    "requirements": [
+      "Design a web platform for online learning with video streaming"
+    ],
+    "metadata": {
+      "confidence": 0.9999999999999999,
+      "extraction_method": "rule_based",
+      "prompt_analysis": {
+        "word_count": 10,
+        "complexity": "medium",
+        "has_dates": false,
+        "has_specifics": false
+      }
+    },
+    "timestamp": "2025-09-12 11:56:25.053356"
+  },
+  "metadata": {
+    "generated_at": "2025-09-12T11:56:25.053536",
+    "generator": "UniversalAgent",
+    "schema_version": "2.0"
+  }
+}
