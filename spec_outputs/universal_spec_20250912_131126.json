@@ -1,0 +1,46 @@
+{
+  "prompt": "Write a professional email to schedule a team meeting",
+  "specification": {
+    "prompt_type": "email",
+    "title": "Email to schedule a team meeting",
+    "description": "Write a professional email to schedule a team meeting",
+    "components": [
+      {
+        "type": "recipient",
+        "value": "schedule a team meeting"
+      },
+      {
+        "type": "subject",
+        "value": "Email Communication"
+      },
+      {
+        "type": "body",
+        "value": "email content"
+      }
+    ],
+    "properties": {
+      "format": "professional",
+      "urgency": "normal",
+      "length": "medium"
+    },
+    "requirements": [
+      "Write a professional email to schedule a team meeting"
+    ],
+    "metadata": {
+      "confidence": 0.9999999999999999,
+      "extraction_method": "rule_based",
+      "prompt_analysis": {
+        "word_count": 9,
+        "complexity": "medium",
+        "has_dates": false,
+        "has_specifics": false
+      }
+    },
+    "timestamp": "2025-09-12 13:11:26.205080"
+  },
+  "metadata": {
+    "generated_at": "2025-09-12T13:11:26.205186",
+    "generator": "UniversalAgent",
+    "schema_version": "2.0"
+  }
+}

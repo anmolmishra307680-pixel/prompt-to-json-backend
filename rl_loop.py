@@ -29,6 +29,7 @@ class RLLoop:
         
         current_spec = None
         previous_score = 0
+        evaluation = None
         
         for iteration in range(self.max_iterations):
             print(f"\n--- Iteration {iteration + 1} ---")
@@ -39,12 +40,16 @@ class RLLoop:
                 spec = self.main_agent.generate_spec(prompt)
             else:
                 # Improve based on feedback
-                feedback_suggestions = self.feedback_loop.get_feedback_for_prompt(prompt)
-                spec = self.main_agent.improve_spec_with_feedback(
-                    current_spec, 
-                    evaluation.feedback, 
-                    evaluation.suggestions + feedback_suggestions
-                )
+                try:
+                    feedback_suggestions = self.feedback_loop.get_feedback_for_prompt(prompt)
+                    spec = self.main_agent.improve_spec_with_feedback(
+                        current_spec, 
+                        evaluation.feedback, 
+                        evaluation.suggestions + feedback_suggestions
+                    )
+                except Exception as e:
+                    print(f"[INFO] Using current spec due to improvement error: {e}")
+                    spec = current_spec
             
             # Save specification for each iteration
             from datetime import datetime
@@ -119,7 +124,10 @@ class RLLoop:
         results["learning_insights"] = self.feedback_loop.get_learning_insights()
         
         # Save training results
-        self._save_training_results(results)
+        try:
+            self._save_training_results(results)
+        except Exception as e:
+            print(f"Warning: Failed to save training results: {e}")
         
         return results
     
@@ -183,5 +191,14 @@ class RLLoop:
         print(f"Rule-based score: {standard_result['evaluation'].score:.2f}")
         print(f"Advanced RL score: {rl_result['final_score']:.2f}")
         print(f"Winner: {comparison['winner']}")
+        
+        # Log comparison to feedback log
+        self.feedback_loop.log_comparison(
+            prompt, 
+            standard_result["specification"], 
+            rl_result["final_spec"],
+            standard_result["evaluation"],
+            rl_result["final_score"]
+        )
         
         return comparison

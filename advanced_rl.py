@@ -166,10 +166,13 @@ class AdvancedRLEnvironment:
         with open(log_file, 'w') as f:
             json.dump(training_results, f, indent=2, default=str)
         
+        # Ensure we have a final evaluation
+        final_evaluation = evaluator_agent.evaluate_spec(spec, prompt)
+        
         return {
             "final_spec": spec,
-            "final_score": new_evaluation.score,
-            "total_reward": sum(rewards),
+            "final_score": final_evaluation.score,
+            "total_reward": sum(rewards) if rewards else 0.0,
             "steps": len(states),
             "training_file": str(log_file)
         }

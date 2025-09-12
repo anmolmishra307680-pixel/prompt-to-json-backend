@@ -1,0 +1,31 @@
+{
+  "prompt": "Build a virtual reality fitness training platform",
+  "specification": {
+    "building_type": "software",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "interface",
+        "grade": "standard",
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 1.0,
+      "width": 1.0,
+      "height": 1.0,
+      "area": 1.0
+    },
+    "features": [
+      "basic_functionality"
+    ],
+    "requirements": [
+      "Build a virtual reality fitness training platform"
+    ],
+    "timestamp": "2025-09-12 13:09:36.466938"
+  },
+  "metadata": {
+    "generated_at": "2025-09-12T13:09:36.467811",
+    "generator": "MainAgent"
+  }
+}

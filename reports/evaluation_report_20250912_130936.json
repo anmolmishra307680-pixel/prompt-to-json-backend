@@ -1,0 +1,48 @@
+{
+  "timestamp": "2025-09-12T13:09:36.551754",
+  "prompt": "Build a virtual reality fitness training platform",
+  "design_specification": {
+    "building_type": "software",
+    "stories": 2,
+    "materials": [
+      {
+        "type": "interface",
+        "grade": "standard",
+        "properties": {}
+      },
+      {
+        "type": "concrete",
+        "grade": null,
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 1.0,
+      "width": 1.0,
+      "height": 7.0,
+      "area": 1.0
+    },
+    "features": [
+      "basic_functionality",
+      "elevator"
+    ],
+    "requirements": [
+      "Build a virtual reality fitness training platform"
+    ],
+    "timestamp": "2025-09-12 13:09:36.540362"
+  },
+  "evaluation_results": {
+    "score": 100.0,
+    "completeness": 100.0,
+    "format_validity": 100.0,
+    "feedback": [],
+    "suggestions": [],
+    "timestamp": "2025-09-12 13:09:36.551736"
+  },
+  "summary": {
+    "overall_score": 100.0,
+    "grade": "A",
+    "key_issues": [],
+    "top_suggestions": []
+  }
+}

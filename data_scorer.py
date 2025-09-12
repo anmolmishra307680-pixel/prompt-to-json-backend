@@ -11,15 +11,18 @@ class DataScorer:
     
     def score_completeness(self, spec: DesignSpec) -> float:
         """Score specification completeness"""
-        return self.criteria.evaluate_completeness(spec)
+        score, _ = self.criteria.check_completeness(spec)
+        return score
     
     def score_format_validity(self, spec: DesignSpec) -> float:
         """Score format validity"""
-        return self.criteria.evaluate_format_validity(spec)
+        score, _ = self.criteria.check_format_validity(spec)
+        return score
     
     def score_feasibility(self, spec: DesignSpec) -> float:
         """Score structural feasibility"""
-        return self.criteria.evaluate_feasibility(spec)
+        score, _ = self.criteria.check_feasibility(spec)
+        return score
     
     def calculate_overall_score(self, spec: DesignSpec) -> float:
         """Calculate weighted overall score"""
@@ -27,8 +30,13 @@ class DataScorer:
         format_validity = self.score_format_validity(spec)
         feasibility = self.score_feasibility(spec)
         
-        return self.criteria.calculate_weighted_score(completeness, format_validity, feasibility)
+        # Use same weights as criteria
+        return (
+            completeness * 0.4 +
+            format_validity * 0.3 +
+            feasibility * 0.3
+        )
     
-    def generate_evaluation(self, spec: DesignSpec, prompt: str) -> EvaluationResult:
+    def generate_evaluation(self, spec: DesignSpec, prompt: str = "") -> EvaluationResult:
         """Generate complete evaluation (delegates to criteria)"""
-        return self.criteria.evaluate_specification(spec, prompt)
+        return self.criteria.evaluate(spec)

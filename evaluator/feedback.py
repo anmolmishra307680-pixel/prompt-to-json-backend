@@ -190,3 +190,24 @@ class FeedbackLoop:
                 patterns.append(f"Using {most_common_material} material leads to better results")
         
         return patterns
+    
+    def log_comparison(self, prompt: str, rule_spec: DesignSpec, rl_spec: DesignSpec, 
+                     rule_eval: EvaluationResult, rl_score: float):
+        """Log comparison between rule-based and RL approaches"""
+        comparison_entry = {
+            "type": "comparison",
+            "timestamp": datetime.now().isoformat(),
+            "prompt": prompt,
+            "rule_based": {
+                "specification": rule_spec.model_dump(),
+                "evaluation": rule_eval.model_dump()
+            },
+            "advanced_rl": {
+                "specification": rl_spec.model_dump(),
+                "score": rl_score
+            },
+            "winner": "rule_based" if rule_eval.score > rl_score else "advanced_rl"
+        }
+        
+        self.feedback_history.append(comparison_entry)
+        self._save_feedback_history()

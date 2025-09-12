@@ -101,6 +101,33 @@ def test_integration():
     
     print("[PASS] Integration tests passed")
 
+def test_universal_system():
+    """Test universal system functionality"""
+    from universal_agent import UniversalAgent
+    from universal_evaluator import UniversalEvaluator
+    
+    agent = UniversalAgent()
+    evaluator = UniversalEvaluator()
+    
+    # Test different prompt types
+    test_prompts = [
+        "Write an email to the team",
+        "Create a task management system", 
+        "Design a mobile app",
+        "Build an office building"
+    ]
+    
+    for prompt in test_prompts:
+        spec = agent.generate_spec(prompt)
+        evaluation = evaluator.evaluate_spec(spec, prompt)
+        
+        assert spec.prompt_type in ['email', 'task', 'software', 'building', 'product', 'general']
+        assert len(spec.components) > 0
+        assert evaluation.score >= 0
+        assert evaluation.score <= 100
+    
+    print("[PASS] Universal system tests passed")
+
 def run_all_tests():
     """Run all tests"""
     print("Running prompt-to-JSON system tests...\n")
@@ -110,6 +137,7 @@ def run_all_tests():
         test_main_agent()
         test_advanced_rl()
         test_evaluator()
+        test_universal_system()
         test_integration()
         
         print("\n[SUCCESS] All tests passed successfully!")

@@ -1,0 +1,35 @@
+{
+  "prompt": "Design a smart home security system (Advanced RL step 2)",
+  "specification": {
+    "building_type": "software",
+    "stories": 2,
+    "materials": [
+      {
+        "type": "concrete",
+        "grade": null,
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 1.0,
+      "width": 1.0,
+      "height": 7.0,
+      "area": 1.0
+    },
+    "features": [
+      "automation",
+      "security"
+    ],
+    "requirements": [
+      "Design a smart home security system"
+    ],
+    "timestamp": "2025-09-12 13:14:24.704427"
+  },
+  "metadata": {
+    "generated_at": "2025-09-12T13:14:24.711056",
+    "generator": "AdvancedRL",
+    "step": 2,
+    "action": 2,
+    "reward": 0.0
+  }
+}

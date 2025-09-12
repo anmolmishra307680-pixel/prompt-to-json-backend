@@ -1,0 +1,43 @@
+{
+  "timestamp": "2025-09-12T13:14:24.709285",
+  "prompt": "Design a smart home security system",
+  "design_specification": {
+    "building_type": "software",
+    "stories": 2,
+    "materials": [
+      {
+        "type": "concrete",
+        "grade": null,
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 1.0,
+      "width": 1.0,
+      "height": 7.0,
+      "area": 1.0
+    },
+    "features": [
+      "automation",
+      "security"
+    ],
+    "requirements": [
+      "Design a smart home security system"
+    ],
+    "timestamp": "2025-09-12 13:14:24.704427"
+  },
+  "evaluation_results": {
+    "score": 100.0,
+    "completeness": 100.0,
+    "format_validity": 100.0,
+    "feedback": [],
+    "suggestions": [],
+    "timestamp": "2025-09-12 13:14:24.709270"
+  },
+  "summary": {
+    "overall_score": 100.0,
+    "grade": "A",
+    "key_issues": [],
+    "top_suggestions": []
+  }
+}

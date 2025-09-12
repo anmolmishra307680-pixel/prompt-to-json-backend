@@ -56,15 +56,66 @@ def main():
     # Stats command
     subparsers.add_parser('stats', help='Show system statistics')
     
+    # Database command
+    subparsers.add_parser('db', help='Show database information')
+    
+    # Score command
+    score_parser = subparsers.add_parser('score', help='Quick score a prompt')
+    score_parser.add_argument('prompt', help='Prompt to score')
+    
+    # Examples command
+    subparsers.add_parser('examples', help='Show sample outputs')
+    
     args = parser.parse_args()
     
     if args.command == 'history':
         show_prompt_history(args)
-
     elif args.command == 'stats':
         show_system_stats(args)
+    elif args.command == 'db':
+        show_database_info(args)
+    elif args.command == 'score':
+        quick_score_prompt(args)
+    elif args.command == 'examples':
+        show_examples(args)
     else:
-        parser.print_help()
+        print("Available commands: history, stats, db, score, examples")
+
+def show_examples(args):
+    """Show sample outputs from files"""
+    import subprocess
+    import sys
+    
+    # Use main.py examples function
+    try:
+        result = subprocess.run([sys.executable, 'main.py', '--examples'], 
+                              capture_output=True, text=True)
+        print(result.stdout)
+    except Exception as e:
+        print(f"Failed to show examples: {e}")
+
+def quick_score_prompt(args):
+    """Quick score a prompt using data_scorer"""
+    from main_agent import MainAgent
+    from data_scorer import DataScorer
+    
+    agent = MainAgent()
+    scorer = DataScorer()
+    
+    print(f"Quick scoring: '{args.prompt}'")
+    spec = agent.generate_spec(args.prompt)
+    
+    overall = scorer.calculate_overall_score(spec)
+    print(f"Score: {overall:.1f}/100")
+
+def show_database_info(args):
+    """Show database information"""
+    try:
+        import subprocess
+        result = subprocess.run(['python', 'db_query.py'], capture_output=True, text=True)
+        print(result.stdout)
+    except Exception as e:
+        print(f"Database query failed: {e}")
 
 if __name__ == "__main__":
     main()

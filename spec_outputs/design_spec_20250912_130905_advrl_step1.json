@@ -1,0 +1,29 @@
+{
+  "prompt": "Create an AI-powered financial trading bot (Advanced RL step 1)",
+  "specification": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [],
+    "dimensions": {
+      "length": 1.0,
+      "width": 1.0,
+      "height": 1.0,
+      "area": 1.0
+    },
+    "features": [
+      "basic_functionality",
+      "elevator"
+    ],
+    "requirements": [
+      "Create an AI-powered financial trading bot"
+    ],
+    "timestamp": "2025-09-12 13:09:05.361219"
+  },
+  "metadata": {
+    "generated_at": "2025-09-12T13:09:05.363911",
+    "generator": "AdvancedRL",
+    "step": 1,
+    "action": 1,
+    "reward": 0.0
+  }
+}

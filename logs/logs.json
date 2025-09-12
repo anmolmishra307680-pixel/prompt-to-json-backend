@@ -1,19 +1,91 @@
 [
   {
-    "timestamp": "2025-09-12T11:56:25.056641",
-    "prompt": "Design a web platform for online learning with video streaming",
+    "timestamp": "2025-09-12T13:08:48.895359",
+    "prompt": "Design a cybersecurity threat detection platform",
+    "mode": "rl",
+    "iterations_requested": 2,
+    "status": "started"
+  },
+  {
+    "timestamp": "2025-09-12T13:08:48.901035",
+    "prompt": "Design a cybersecurity threat detection platform",
+    "mode": "rl",
+    "result": {
+      "training_file": "logs/rl_training_unknown.json",
+      "iterations": 2,
+      "final_score": 92.0
+    },
+    "spec_file": "",
+    "score": 0
+  },
+  {
+    "timestamp": "2025-09-12T13:08:48.901630",
+    "prompt": "Design a cybersecurity threat detection platform",
+    "mode": "rl",
+    "iterations": 2,
+    "final_score": 92.0,
+    "training_file": "logs/rl_training_unknown.json"
+  },
+  {
+    "timestamp": "2025-09-12T13:09:05.369314",
+    "prompt": "Create an AI-powered financial trading bot",
+    "mode": "advanced_rl",
+    "steps": 2,
+    "final_score": 92.0,
+    "total_reward": 0.08,
+    "training_file": "logs\\advanced_rl_training_20250912_130905.json"
+  },
+  {
+    "timestamp": "2025-09-12T13:09:36.553158",
+    "prompt": "Build a virtual reality fitness training platform",
+    "mode": "compare",
+    "rule_based_score": 100.0,
+    "advanced_rl_score": 100.0,
+    "winner": "advanced_rl"
+  },
+  {
+    "timestamp": "2025-09-12T13:11:26.206742",
+    "prompt": "Write a professional email to schedule a team meeting",
+    "mode": "universal",
+    "prompt_type": "email",
+    "score": 100.0,
+    "spec_file": "spec_outputs\\universal_spec_20250912_131126.json",
+    "report_file": "reports\\evaluation_report_20250912_131126.json"
+  },
+  {
+    "timestamp": "2025-09-12T13:11:26.208707",
+    "prompt": "Write a professional email to schedule a team meeting",
+    "mode": "universal",
+    "result": {
+      "spec_file": "spec_outputs\\universal_spec_20250912_131126.json",
+      "evaluation": {
+        "score": 100.0,
+        "completeness": 100.0,
+        "format_validity": 100.0,
+        "feedback": [],
+        "suggestions": [],
+        "timestamp": "2025-09-12 13:11:26.205861"
+      },
+      "prompt_type": "email"
+    },
+    "spec_file": "spec_outputs\\universal_spec_20250912_131126.json",
+    "score": 100.0
+  },
+  {
+    "timestamp": "2025-09-12T13:14:05.676409",
+    "prompt": "Create a social media analytics dashboard",
     "mode": "universal",
     "prompt_type": "product",
     "score": 73.33333333333333,
-    "spec_file": "spec_outputs\\universal_spec_20250912_115625.json",
-    "report_file": "reports\\evaluation_report_20250912_115625.json"
+    "spec_file": "spec_outputs\\universal_spec_20250912_131405.json",
+    "report_file": "reports\\evaluation_report_20250912_131405.json"
   },
   {
-    "timestamp": "2025-09-12T11:56:25.057493",
-    "prompt": "Design a web platform for online learning with video streaming",
+    "timestamp": "2025-09-12T13:14:05.678245",
+    "prompt": "Create a social media analytics dashboard",
     "mode": "universal",
     "result": {
-      "spec_file": "spec_outputs\\universal_spec_20250912_115625.json",
+      "spec_file": "spec_outputs\\universal_spec_20250912_131405.json",
       "evaluation": {
         "score": 73.33333333333333,
         "completeness": 100.0,
@@ -22,11 +94,25 @@
           "Specification may not fully match prompt intent"
         ],
         "suggestions": [],
-        "timestamp": "2025-09-12 11:56:25.054727"
+        "timestamp": "2025-09-12 13:14:05.670796"
       },
       "prompt_type": "product"
     },
-    "spec_file": "spec_outputs\\universal_spec_20250912_115625.json",
+    "spec_file": "spec_outputs\\universal_spec_20250912_131405.json",
     "score": 73.33333333333333
+  },
+  {
+    "timestamp": "2025-09-12T13:14:18.076231",
+    "prompt": "Build an e-commerce recommendation engine",
+    "mode": "rl",
+    "iterations_requested": 2,
+    "status": "started"
+  },
+  {
+    "timestamp": "2025-09-12T13:14:24.711746",
+    "prompt": "Design a smart home security system",
+    "mode": "advanced_rl",
+    "status": "failed",
+    "error": "'evaluation'"
   }
 ]
