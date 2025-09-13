@@ -1,6 +1,12 @@
-# Prompt-to-JSON Agent Backend
+# 🚀 Prompt-to-JSON Agent Backend
 
-A comprehensive system that converts natural language prompts into structured JSON specifications using rule-based extraction, evaluation, and reinforcement learning feedback loops. Supports universal prompt types including buildings, software, products, emails, and tasks.
+**BHIV-Ready Backend System** - Modular agents for prompt-to-JSON conversion with reinforcement learning, database integration, and comprehensive API endpoints.
+
+## 🎯 BHIV Integration Ready
+- **Orchestration-Ready Agents**: All agents expose `run()` methods for BHIV Core
+- **Database-First Storage**: PostgreSQL/SQLite with file fallback (BHIV Bucket)
+- **Clean API Contract**: FastAPI endpoints for frontend integration
+- **Detailed Iteration Tracking**: Complete RL logs with before→after specs
 
 ## ✨ Features
 
@@ -17,40 +23,55 @@ A comprehensive system that converts natural language prompts into structured JS
 - **🛠️ Utility Tools**: Testing, CLI tools, quick scoring, and examples
 - **📈 Complete Logging**: All modes log to logs.json and feedback_log.json
 
-## Installation
+## 🚀 Quick Start
 
-1. Clone the repository:
+### Local Development
 ```bash
+# Clone and setup
 git clone <repository-url>
 cd prompt-to-json-backend
-```
-
-2. Create virtual environment:
-```bash
 python -m venv venv
 venv\Scripts\activate  # Windows
-# source venv/bin/activate  # Linux/Mac
-```
-
-3. Install dependencies:
-```bash
 pip install -r requirements.txt
+
+# Run FastAPI server
+python main_api.py
+# Access: http://localhost:8000
+# API Docs: http://localhost:8000/docs
 ```
 
-## Usage
-
-### 🚀 Quick Start
-
-**Universal Mode (Any Prompt Type):**
+### Docker Deployment
 ```bash
-python main.py --prompt "Create a mobile banking app" --mode single --universal
-python main.py --prompt "Write a project proposal email" --mode single --universal
-python main.py --prompt "Design a smart office building" --mode single --universal
+# Build and run
+docker build -t prompt-to-json .
+docker run -p 8000:8000 prompt-to-json
 ```
 
-**Building Mode (Legacy):**
+### Environment Setup
 ```bash
-python main.py --prompt "Design a two-story steel building with glass facade"
+# Copy and configure
+cp .env.example .env
+# Edit DATABASE_URL, OPENAI_API_KEY, etc.
+```
+
+## 📊 API Endpoints
+
+### Core Endpoints
+```bash
+# Generate specification
+curl -X POST "http://localhost:8000/generate" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"Modern office building"}'
+
+# Evaluate specification
+curl -X POST "http://localhost:8000/evaluate" \
+  -H "Content-Type: application/json" \
+  -d '{"spec":{...},"prompt":"Office building"}'
+
+# RL Training (minimum 2 iterations)
+curl -X POST "http://localhost:8000/iterate" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"Smart building","n_iter":3}'
 ```
 
 ### 🔧 Advanced Usage

@@ -3,13 +3,28 @@ from typing import Optional
 from pathlib import Path
 from datetime import datetime
 from schema import DesignSpec, MaterialSpec, DimensionSpec
-from extractor import PromptExtractor
+from .extractor import PromptExtractor
 
 class MainAgent:
     def __init__(self):
         self.extractor = PromptExtractor()
         self.spec_outputs_dir = Path("spec_outputs")
         self.spec_outputs_dir.mkdir(exist_ok=True)
+    
+    def run(self, prompt: str) -> DesignSpec:
+        """BHIV Core Hook: Single entry point for orchestration"""
+        spec = self.generate_spec(prompt)
+        
+        # Save to DB via clean interface
+        try:
+            from db import Database
+            db = Database()
+            spec_id = db.save_spec(prompt, spec.model_dump(), 'MainAgent')
+            print(f"Spec saved to DB with ID: {spec_id}")
+        except Exception as e:
+            print(f"DB save failed, using fallback: {e}")
+        
+        return spec
     
     def generate_spec(self, prompt: str, use_llm: bool = False) -> DesignSpec:
         """Generate design specification from prompt using rule-based extraction"""

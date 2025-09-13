@@ -11,6 +11,15 @@ flask-cors>=4.0.0
 flask-limiter>=3.5.0
 gunicorn>=21.2.0
 
+# FastAPI (BHIV Backend)
+fastapi>=0.104.0
+uvicorn>=0.24.0
+
+# Database (BHIV Bucket)
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+alembic>=1.12.0
+
 # Performance monitoring
 psutil>=5.9.0
 requests>=2.31.0

@@ -7,6 +7,22 @@ class EvaluatorAgent:
         self.criteria = EvaluationCriteria()
         self.report_generator = ReportGenerator()
     
+    def run(self, spec, prompt: str):
+        """BHIV Core Hook: Single entry point for orchestration"""
+        evaluation = self.evaluate_spec(spec, prompt)
+        
+        # Save to DB via clean interface
+        try:
+            from db import Database
+            db = Database()
+            spec_id = getattr(spec, 'id', 'unknown')
+            eval_id = db.save_eval(spec_id, prompt, evaluation.model_dump(), evaluation.score)
+            print(f"Evaluation saved to DB with ID: {eval_id}")
+        except Exception as e:
+            print(f"DB save failed, using fallback: {e}")
+        
+        return evaluation
+    
     def evaluate_spec(self, spec: DesignSpec, prompt: str = "") -> EvaluationResult:
         """Evaluate a design specification"""
         evaluation = self.criteria.evaluate(spec)

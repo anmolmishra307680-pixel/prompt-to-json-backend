@@ -7,6 +7,10 @@ from schema import DesignSpec
 
 class RLLoop:
     def __init__(self, max_iterations: int = 3, binary_rewards: bool = False):
+        from prompt_agent import MainAgent
+        from evaluator import EvaluatorAgent
+        from feedback import FeedbackLoop
+        
         self.main_agent = MainAgent()
         self.evaluator_agent = EvaluatorAgent()
         self.feedback_loop = FeedbackLoop()
@@ -15,6 +19,12 @@ class RLLoop:
         
         # Create logs directory
         Path("logs").mkdir(exist_ok=True)
+    
+    def run(self, prompt: str, n_iter: int = None):
+        """BHIV Core Hook: Single entry point for orchestration"""
+        iterations = n_iter or self.max_iterations
+        self.max_iterations = iterations
+        return self.run_training_loop_with_db(prompt)
     
     def run_training_loop(self, prompt: str) -> dict:
         """Run reinforcement learning training loop"""
@@ -137,6 +147,108 @@ class RLLoop:
             self._save_training_results(results)
         except Exception as e:
             print(f"Warning: Failed to save training results: {e}")
+        
+        return results
+    
+    def run_training_loop_with_db(self, prompt: str) -> dict:
+        """Run RL training loop with DB iteration logging"""
+        print(f"Starting RL training loop for prompt: '{prompt}'")
+        
+        from db import Database
+        from feedback import FeedbackAgent
+        import uuid
+        
+        db = Database()
+        feedback_agent = FeedbackAgent()
+        session_id = str(uuid.uuid4())
+        
+        results = {
+            "session_id": session_id,
+            "prompt": prompt,
+            "iterations": [],
+            "final_spec": None,
+            "learning_insights": None
+        }
+        
+        current_spec = None
+        previous_score = 0
+        
+        for iteration in range(self.max_iterations):
+            print(f"\n--- Iteration {iteration + 1} ---")
+            
+            # Store spec before improvement
+            spec_before = current_spec.model_dump() if current_spec else None
+            score_before = previous_score
+            
+            # Generate or improve specification
+            if iteration == 0:
+                spec = self.main_agent.generate_spec(prompt)
+            else:
+                # Get feedback and improve
+                feedback_data = feedback_agent.run(current_spec, prompt, evaluation)
+                try:
+                    spec = self.main_agent.improve_spec_with_feedback(
+                        current_spec, 
+                        evaluation.feedback, 
+                        feedback_data.get('suggestions', [])
+                    )
+                except Exception as e:
+                    print(f"[INFO] Using current spec due to improvement error: {e}")
+                    spec = current_spec
+            
+            # Evaluate specification
+            evaluation = self.evaluator_agent.evaluate_spec(spec, prompt)
+            
+            # Generate feedback
+            feedback_data = feedback_agent.run(spec, prompt, evaluation)
+            
+            # Calculate reward
+            reward = feedback_agent.calculate_reward(evaluation, previous_score, self.binary_rewards)
+            
+            # Save iteration to DB
+            iteration_id = db.save_iteration_log(
+                session_id=session_id,
+                iteration_number=iteration + 1,
+                prompt=prompt,
+                spec_before=spec_before,
+                spec_after=spec.model_dump(),
+                evaluation_data=evaluation.model_dump(),
+                feedback_data=feedback_data,
+                score_before=score_before,
+                score_after=evaluation.score,
+                reward=reward
+            )
+            
+            # Store iteration results
+            iteration_result = {
+                "iteration": iteration + 1,
+                "iteration_id": iteration_id,
+                "spec_before": spec_before,
+                "spec_after": spec.model_dump(),
+                "evaluation": evaluation.model_dump(),
+                "feedback": feedback_data,
+                "score_before": score_before,
+                "score_after": evaluation.score,
+                "reward": reward,
+                "improvement": evaluation.score - previous_score if iteration > 0 else 0
+            }
+            results["iterations"].append(iteration_result)
+            
+            print(f"Score: {evaluation.score:.2f}, Reward: {reward:.3f}")
+            
+            # Update for next iteration
+            current_spec = spec
+            previous_score = evaluation.score
+        
+        # Finalize results
+        if current_spec:
+            results["final_spec"] = current_spec.model_dump()
+        
+        try:
+            results["learning_insights"] = self.feedback_loop.get_learning_insights()
+        except Exception as e:
+            print(f"Warning: Failed to get learning insights: {e}")
+            results["learning_insights"] = {"error": str(e)}
         
         return results
     
