@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-09-13T12:42:47.593795",
+  "prompt": "Please write a short, professional email to the marketing team announcing the new project launch. Make sure to include the launch date of October 1st. Keep it concise.",
+  "design_specification": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [],
+    "dimensions": {
+      "length": 1.0,
+      "width": 1.0,
+      "height": 1.0,
+      "area": 1.0
+    },
+    "features": [],
+    "requirements": [
+      "Please write a short, professional email to the marketing team announcing the new project launch. Make sure to include the launch date of October 1st. Keep it concise."
+    ],
+    "timestamp": "2025-09-13 12:42:47.593656"
+  },
+  "evaluation_results": {
+    "score": 76.0,
+    "completeness": 40.0,
+    "format_validity": 100.0,
+    "feedback": [
+      "Building type not specified or too generic",
+      "No materials specified",
+      "No special features specified"
+    ],
+    "suggestions": [
+      "Add more detailed specifications"
+    ],
+    "timestamp": "2025-09-13 12:42:47.593749"
+  },
+  "summary": {
+    "overall_score": 76.0,
+    "grade": "C",
+    "key_issues": [
+      "Building type not specified or too generic",
+      "No materials specified",
+      "No special features specified"
+    ],
+    "top_suggestions": [
+      "Add more detailed specifications"
+    ]
+  }
+}

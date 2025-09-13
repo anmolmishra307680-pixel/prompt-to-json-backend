@@ -1,0 +1,16 @@
+{
+  "id": "fb6f89b0-a487-43ff-b33a-f4de4cd733fe",
+  "spec_id": "unknown",
+  "prompt": "string",
+  "eval_data": {
+    "score": 84.0,
+    "completeness": 60.0,
+    "format_validity": 100.0,
+    "feedback": [
+      "Building type not specified or too generic",
+      "No materials specified"
+    ],
+    "suggestions": [
+      "Add more detailed specifications"
+    ],
+    "timestamp": 

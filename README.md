@@ -42,9 +42,12 @@ python main_api.py
 
 ### Docker Deployment
 ```bash
-# Build and run
+# Single container
 docker build -t prompt-to-json .
-docker run -p 8000:8000 prompt-to-json
+docker run -p 8000:8000 -e OPENAI_API_KEY=your_key prompt-to-json
+
+# Full stack with PostgreSQL
+docker-compose up -d
 ```
 
 ### Environment Setup

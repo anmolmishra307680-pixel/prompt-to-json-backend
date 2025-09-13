@@ -1,8 +1,5 @@
 import json
 from pathlib import Path
-from main_agent import MainAgent
-from evaluator_agent import EvaluatorAgent
-from evaluator.feedback import FeedbackLoop
 from schema import DesignSpec
 
 class RLLoop:
@@ -206,18 +203,22 @@ class RLLoop:
             reward = feedback_agent.calculate_reward(evaluation, previous_score, self.binary_rewards)
             
             # Save iteration to DB
-            iteration_id = db.save_iteration_log(
-                session_id=session_id,
-                iteration_number=iteration + 1,
-                prompt=prompt,
-                spec_before=spec_before,
-                spec_after=spec.model_dump(),
-                evaluation_data=evaluation.model_dump(),
-                feedback_data=feedback_data,
-                score_before=score_before,
-                score_after=evaluation.score,
-                reward=reward
-            )
+            try:
+                iteration_id = db.save_iteration_log(
+                    session_id=session_id,
+                    iteration_number=iteration + 1,
+                    prompt=prompt,
+                    spec_before=spec_before,
+                    spec_after=spec.model_dump(),
+                    evaluation_data=evaluation.model_dump(),
+                    feedback_data=feedback_data,
+                    score_before=score_before,
+                    score_after=evaluation.score,
+                    reward=reward
+                )
+            except Exception as e:
+                print(f"DB save failed: {e}")
+                iteration_id = f"fallback_{iteration + 1}"
             
             # Store iteration results
             iteration_result = {

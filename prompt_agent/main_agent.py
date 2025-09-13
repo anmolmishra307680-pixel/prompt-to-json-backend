@@ -176,8 +176,16 @@ class MainAgent:
         """Extract the type of design from prompt"""
         prompt_lower = prompt.lower()
         
+        # Email keywords
+        if any(word in prompt_lower for word in ['email', 'message', 'letter', 'announcement', 'communication']):
+            return "email"
+        
+        # Task/Project keywords
+        elif any(word in prompt_lower for word in ['task', 'project', 'plan', 'timeline', 'schedule', 'launch']):
+            return "task"
+        
         # Building-related keywords
-        if any(word in prompt_lower for word in ['building', 'house', 'office', 'warehouse', 'hospital', 'construction', 'architect']):
+        elif any(word in prompt_lower for word in ['building', 'house', 'office', 'warehouse', 'hospital', 'construction', 'architect']):
             return "building"
         
         # Software/App keywords
@@ -187,10 +195,6 @@ class MainAgent:
         # Product keywords
         elif any(word in prompt_lower for word in ['product', 'device', 'gadget', 'thermostat', 'sensor', 'controller']):
             return "product"
-        
-        # Process keywords
-        elif any(word in prompt_lower for word in ['process', 'workflow', 'procedure', 'method', 'strategy']):
-            return "process"
         
         # Default to general design
         else:
@@ -204,14 +208,25 @@ class MainAgent:
         components = self._extract_components(prompt)
         features = self._extract_general_features(prompt)
         
-        spec = DesignSpec(
-            building_type=design_type,
-            stories=len(components) if components else 1,
-            materials=[MaterialSpec(type=comp, grade="standard") for comp in components[:3]],
-            dimensions=DimensionSpec(length=1, width=1, height=1, area=1),
-            features=features,
-            requirements=[prompt]
-        )
+        # For email/task prompts, create more appropriate specs
+        if design_type in ['email', 'task']:
+            spec = DesignSpec(
+                building_type=design_type,
+                stories=1,
+                materials=[MaterialSpec(type="content", grade="professional")],
+                dimensions=DimensionSpec(length=len(prompt.split()), width=1, height=1, area=len(prompt.split())),
+                features=features + ["professional", "concise"],
+                requirements=[prompt]
+            )
+        else:
+            spec = DesignSpec(
+                building_type=design_type,
+                stories=len(components) if components else 1,
+                materials=[MaterialSpec(type=comp, grade="standard") for comp in components[:3]],
+                dimensions=DimensionSpec(length=1, width=1, height=1, area=1),
+                features=features,
+                requirements=[prompt]
+            )
         
         return spec
     
@@ -243,6 +258,10 @@ class MainAgent:
         
         # Common features across designs
         feature_keywords = {
+            'professional': ['professional', 'business', 'formal'],
+            'concise': ['short', 'brief', 'concise', 'quick'],
+            'announcement': ['announce', 'launch', 'release'],
+            'team_communication': ['team', 'marketing', 'group'],
             'automation': ['auto', 'automatic', 'smart'],
             'security': ['secure', 'security', 'auth', 'login'],
             'mobile': ['mobile', 'phone', 'app'],

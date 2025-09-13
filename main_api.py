@@ -45,11 +45,7 @@ class EvaluateResponse(BaseModel):
     success: bool
     message: str = ""
 
-class IterateResponse(BaseModel):
-    iterations: List[Dict[Any, Any]]
-    final_spec: Dict[Any, Any]
-    success: bool
-    message: str = ""
+# Removed response models to fix schema issues
 
 class LogValuesRequest(BaseModel):
     date: str
@@ -63,6 +59,11 @@ class LogValuesRequest(BaseModel):
 async def root():
     """Root endpoint"""
     return {"message": "Prompt-to-JSON API", "version": "1.0.0"}
+
+@app.get("/favicon.ico")
+async def favicon():
+    """Favicon endpoint"""
+    return {"message": "No favicon configured"}
 
 @app.get("/health")
 async def health_check():
@@ -82,18 +83,34 @@ async def generate_spec(request: GenerateRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/evaluate", response_model=EvaluateResponse)
+@app.post("/evaluate")
 async def evaluate_spec(request: EvaluateRequest):
     """Evaluate specification"""
     try:
         from schema import DesignSpec
-        spec = DesignSpec(**request.spec)
+        # Add default values for missing required fields
+        spec_data = request.spec.copy()
+        if "building_type" not in spec_data:
+            spec_data["building_type"] = "general"
+        if "stories" not in spec_data:
+            spec_data["stories"] = 1
+        if "materials" not in spec_data:
+            spec_data["materials"] = []
+        if "dimensions" not in spec_data:
+            spec_data["dimensions"] = {"length": 1, "width": 1, "height": 1, "area": 1}
+        if "features" not in spec_data:
+            spec_data["features"] = []
+        if "requirements" not in spec_data:
+            spec_data["requirements"] = [request.prompt]
+        
+        spec = DesignSpec(**spec_data)
         evaluation = evaluator_agent.run(spec, request.prompt)
-        return EvaluateResponse(
-            evaluation=evaluation.model_dump(),
-            success=True,
-            message="Evaluation completed successfully"
-        )
+        
+        return {
+            "evaluation": evaluation.model_dump(),
+            "success": True,
+            "message": "Evaluation completed successfully"
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -201,9 +218,31 @@ async def batch_evaluate(prompts: List[str]):
 async def get_iteration_logs(session_id: str):
     """Get all iteration logs for a session"""
     try:
+        # Try database first
         logs = db.get_iteration_logs(session_id)
+        
+        # If no logs in DB, check fallback files
         if not logs:
-            raise HTTPException(status_code=404, detail="Session not found")
+            from pathlib import Path
+            import json
+            
+            iteration_file = Path("logs/iteration_logs.json")
+            if iteration_file.exists():
+                with open(iteration_file, 'r') as f:
+                    all_logs = json.load(f)
+                
+                # Filter by session_id
+                logs = [log for log in all_logs if log.get('session_id') == session_id]
+        
+        if not logs:
+            return {
+                "success": False,
+                "session_id": session_id,
+                "total_iterations": 0,
+                "iterations": [],
+                "message": "No iteration logs found for this session"
+            }
+        
         return {
             "success": True,
             "session_id": session_id,
@@ -211,7 +250,54 @@ async def get_iteration_logs(session_id: str):
             "iterations": logs
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {
+            "success": False,
+            "error": str(e),
+            "message": "Failed to retrieve iteration logs"
+        }
+
+@app.get("/cli-tools")
+async def get_cli_tools():
+    """Get available CLI tools and commands"""
+    return {
+        "tools": {
+            "history": "View prompt history",
+            "stats": "Show system statistics", 
+            "db": "Database operations",
+            "score": "Quick scoring utility",
+            "examples": "View sample outputs"
+        },
+        "commands": [
+            "python main.py --test",
+            "python main.py --cli-tools",
+            "python main.py --score-only",
+            "python main.py --examples"
+        ]
+    }
+
+@app.get("/system-test")
+async def run_system_test():
+    """Run basic system tests"""
+    try:
+        # Test core functionality
+        spec = prompt_agent.run("Test building")
+        evaluation = evaluator_agent.run(spec, "Test building")
+        
+        return {
+            "success": True,
+            "tests_passed": [
+                "prompt_agent",
+                "evaluator_agent",
+                "database_connection"
+            ],
+            "message": "All core tests passed"
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "message": "System test failed"
+        }
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,0 +1,20 @@
+{
+  "id": "270e1f8d-ca94-4bb7-b0f3-9cbbe08523de",
+  "prompt": "Please write a short, professional email to the marketing team announcing the new project launch. Make sure to include the launch date of October 1st. Keep it concise.",
+  "spec_data": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [],
+    "dimensions": {
+      "length": 1.0,
+      "width": 1.0,
+      "height": 1.0,
+      "area": 1.0
+    },
+    "features": [
+      "basic_functionality"
+    ],
+    "requirements": [
+      "Please write a short, professional email to the marketing team announcing the new project launch. Make sure to include the launch date of October 1st. Keep it concise."
+    ],
+    "timestamp": 

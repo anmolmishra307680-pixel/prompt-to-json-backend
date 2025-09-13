@@ -17,29 +17,34 @@ class FeedbackAgent:
             return self._generate_heuristic_feedback(spec, prompt, evaluation)
     
     def _generate_llm_feedback(self, spec: DesignSpec, prompt: str, evaluation: EvaluationResult) -> Dict[str, Any]:
-        """Generate feedback using OpenAI GPT (stub implementation)"""
+        """Generate feedback using OpenAI GPT"""
         try:
-            # Stub for LLM integration
+            import openai
+            openai.api_key = self.openai_api_key
+            
             feedback_prompt = f"""
-            Analyze this design specification and provide improvement feedback:
+            Analyze this design specification and provide 2-3 specific improvement suggestions:
             
             Original Prompt: {prompt}
             Current Spec: {spec.model_dump()}
             Evaluation Score: {evaluation.score if evaluation else 'N/A'}
             
-            Provide specific, actionable feedback for improvement.
+            Provide actionable feedback as a JSON list of strings.
             """
             
-            # TODO: Implement actual OpenAI API call
-            # response = openai.ChatCompletion.create(...)
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": feedback_prompt}],
+                max_tokens=200,
+                temperature=0.7
+            )
+            
+            suggestions = response.choices[0].message.content.strip().split('\n')
             
             return {
                 "feedback_type": "llm",
-                "suggestions": [
-                    "LLM feedback would be generated here",
-                    "Specific improvements based on GPT analysis"
-                ],
-                "confidence": 0.8,
+                "suggestions": suggestions[:3],  # Limit to 3 suggestions
+                "confidence": 0.9,
                 "source": "openai_gpt"
             }
         except Exception as e:

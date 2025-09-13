@@ -1,0 +1,26 @@
+{
+  "id": "f53a5b64-537a-43cd-9aba-934c1bede44a",
+  "prompt": "Test building",
+  "spec_data": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "steel",
+        "grade": "standard",
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
+    },
+    "features": [
+      "parking"
+    ],
+    "requirements": [
+      "Test building"
+    ],
+    "timestamp": 

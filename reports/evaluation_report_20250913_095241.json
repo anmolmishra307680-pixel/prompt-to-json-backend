@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-09-13T09:52:41.122491",
+  "prompt": "string",
+  "design_specification": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [],
+    "dimensions": {
+      "length": 1.0,
+      "width": 1.0,
+      "height": 1.0,
+      "area": 1.0
+    },
+    "features": [
+      "basic_functionality"
+    ],
+    "requirements": [
+      "string"
+    ],
+    "timestamp": "2025-09-13 09:52:41.122142"
+  },
+  "evaluation_results": {
+    "score": 84.0,
+    "completeness": 60.0,
+    "format_validity": 100.0,
+    "feedback": [
+      "Building type not specified or too generic",
+      "No materials specified"
+    ],
+    "suggestions": [
+      "Add more detailed specifications"
+    ],
+    "timestamp": "2025-09-13 09:52:41.122375"
+  },
+  "summary": {
+    "overall_score": 84.0,
+    "grade": "B",
+    "key_issues": [
+      "Building type not specified or too generic",
+      "No materials specified"
+    ],
+    "top_suggestions": [
+      "Add more detailed specifications"
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "9173b7c3-636c-4515-a4f8-8768a7c7e16b",
+  "prompt": "string",
+  "spec_data": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [],
+    "dimensions": {
+      "length": 1.0,
+      "width": 1.0,
+      "height": 1.0,
+      "area": 1.0
+    },
+    "features": [
+      "basic_functionality"
+    ],
+    "requirements": [
+      "string"
+    ],
+    "timestamp": 

@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-09-13T11:55:19.712935",
+  "prompt": "Test building",
+  "design_specification": {
+    "building_type": "general",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "steel",
+        "grade": "standard",
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
+    },
+    "features": [
+      "parking"
+    ],
+    "requirements": [
+      "Test building"
+    ],
+    "timestamp": "2025-09-13 11:55:19.704941"
+  },
+  "evaluation_results": {
+    "score": 92.0,
+    "completeness": 80.0,
+    "format_validity": 100.0,
+    "feedback": [
+      "Building type not specified or too generic"
+    ],
+    "suggestions": [],
+    "timestamp": "2025-09-13 11:55:19.712901"
+  },
+  "summary": {
+    "overall_score": 92.0,
+    "grade": "A",
+    "key_issues": [
+      "Building type not specified or too generic"
+    ],
+    "top_suggestions": []
+  }
+}

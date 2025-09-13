@@ -1,0 +1,31 @@
+{
+  "id": "13f7905a-e1d1-494d-afb7-e3aec05fff68",
+  "prompt": "Please write a short, professional email to the marketing team announcing the new project launch. Make sure to include the launch date of October 1st. Keep it concise.",
+  "spec_data": {
+    "building_type": "email",
+    "stories": 1,
+    "materials": [
+      {
+        "type": "content",
+        "grade": "professional",
+        "properties": {}
+      }
+    ],
+    "dimensions": {
+      "length": 28.0,
+      "width": 1.0,
+      "height": 1.0,
+      "area": 28.0
+    },
+    "features": [
+      "professional",
+      "concise",
+      "announcement",
+      "team_communication",
+      "professional",
+      "concise"
+    ],
+    "requirements": [
+      "Please write a short, professional email to the marketing team announcing the new project launch. Make sure to include the launch date of October 1st. Keep it concise."
+    ],
+    "timestamp": 

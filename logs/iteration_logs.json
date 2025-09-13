@@ -1,0 +1,24 @@
+[
+  {
+    "id": "e97768ad-94ea-44db-8415-a8c3b9c0b315",
+    "session_id": "18c38ff1-548b-4fac-8842-3e49322b8345",
+    "iteration_number": 1,
+    "prompt": "string",
+    "spec_before": null,
+    "spec_after": {
+      "building_type": "general",
+      "stories": 1,
+      "materials": [],
+      "dimensions": {
+        "length": 1.0,
+        "width": 1.0,
+        "height": 1.0,
+        "area": 1.0
+      },
+      "features": [
+        "basic_functionality"
+      ],
+      "requirements": [
+        "string"
+      ],
+      "timestamp": 
