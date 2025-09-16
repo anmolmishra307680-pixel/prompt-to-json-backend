@@ -1,32 +1,29 @@
 {
-  "timestamp": "2025-09-13T09:58:47.657885",
-  "prompt": "string",
+  "timestamp": "2025-09-16T12:32:09.000841",
+  "prompt": "Test building",
   "design_specification": {
     "building_type": "general",
     "stories": 1,
     "materials": [
       {
         "type": "steel",
-        "grade": null,
+        "grade": "standard",
         "properties": {}
       }
     ],
     "dimensions": {
-      "length": 1.0,
-      "width": 1.0,
-      "height": 1.0,
-      "area": 1.0
+      "length": 20.0,
+      "width": 15.0,
+      "height": 3.5,
+      "area": 300.0
     },
     "features": [
-      "basic_functionality",
-      "elevator",
-      "parking",
-      "balcony"
+      "parking"
     ],
     "requirements": [
-      "string"
+      "Test building"
     ],
-    "timestamp": "2025-09-13 09:58:47.641954"
+    "timestamp": "2025-09-16T12:32:08.992102"
   },
   "evaluation_results": {
     "score": 92.0,
@@ -36,7 +33,7 @@
       "Building type not specified or too generic"
     ],
     "suggestions": [],
-    "timestamp": "2025-09-13 09:58:47.657831"
+    "timestamp": "2025-09-16T12:32:09.000801"
   },
   "summary": {
     "overall_score": 92.0,

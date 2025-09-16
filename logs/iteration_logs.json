@@ -1,24 +1,228 @@
 [
   {
-    "id": "e97768ad-94ea-44db-8415-a8c3b9c0b315",
-    "session_id": "18c38ff1-548b-4fac-8842-3e49322b8345",
-    "iteration_number": 1,
-    "prompt": "string",
+    "session_id": "7124e357-9529-4e9c-b5ea-e9861edf8b69",
+    "iteration": 1,
+    "prompt": "Design a modern 5-story office building with steel frame and glass facade",
     "spec_before": null,
     "spec_after": {
-      "building_type": "general",
-      "stories": 1,
-      "materials": [],
+      "building_type": "office",
+      "stories": 5,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": null,
+          "properties": {}
+        },
+        {
+          "type": "glass",
+          "grade": null,
+          "properties": {}
+        }
+      ],
       "dimensions": {
-        "length": 1.0,
-        "width": 1.0,
-        "height": 1.0,
-        "area": 1.0
+        "length": 30.0,
+        "width": 25.0,
+        "height": 17.5,
+        "area": 750.0
       },
       "features": [
-        "basic_functionality"
+        "elevator",
+        "parking"
       ],
       "requirements": [
-        "string"
+        "Design a modern 5-story office building with steel frame and glass facade"
       ],
-      "timestamp": 
+      "timestamp": "2025-09-16T12:28:26.071962"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-16T12:28:26.072037"
+    },
+    "feedback": {
+      "feedback_type": "heuristic",
+      "suggestions": [
+        "Specification looks good"
+      ],
+      "confidence": 0.9,
+      "source": "rule_based"
+    },
+    "score_before": 0,
+    "score_after": 100.0,
+    "reward": 2.0,
+    "timestamp": "2025-09-16T12:28:26.072958"
+  },
+  {
+    "session_id": "7124e357-9529-4e9c-b5ea-e9861edf8b69",
+    "iteration": 2,
+    "prompt": "Design a modern 5-story office building with steel frame and glass facade",
+    "spec_before": {
+      "building_type": "office",
+      "stories": 5,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": null,
+          "properties": {}
+        },
+        {
+          "type": "glass",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 17.5,
+        "area": 750.0
+      },
+      "features": [
+        "elevator",
+        "parking"
+      ],
+      "requirements": [
+        "Design a modern 5-story office building with steel frame and glass facade"
+      ],
+      "timestamp": "2025-09-16T12:28:26.071962"
+    },
+    "spec_after": {
+      "building_type": "office",
+      "stories": 5,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": null,
+          "properties": {}
+        },
+        {
+          "type": "glass",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 17.5,
+        "area": 750.0
+      },
+      "features": [
+        "elevator",
+        "parking"
+      ],
+      "requirements": [
+        "Design a modern 5-story office building with steel frame and glass facade"
+      ],
+      "timestamp": "2025-09-16T12:28:26.071962"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-16T12:28:26.074194"
+    },
+    "feedback": {
+      "feedback_type": "heuristic",
+      "suggestions": [
+        "Specification looks good"
+      ],
+      "confidence": 0.9,
+      "source": "rule_based"
+    },
+    "score_before": 100.0,
+    "score_after": 100.0,
+    "reward": 1.0,
+    "timestamp": "2025-09-16T12:28:26.074973"
+  },
+  {
+    "session_id": "7124e357-9529-4e9c-b5ea-e9861edf8b69",
+    "iteration": 3,
+    "prompt": "Design a modern 5-story office building with steel frame and glass facade",
+    "spec_before": {
+      "building_type": "office",
+      "stories": 5,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": null,
+          "properties": {}
+        },
+        {
+          "type": "glass",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 17.5,
+        "area": 750.0
+      },
+      "features": [
+        "elevator",
+        "parking"
+      ],
+      "requirements": [
+        "Design a modern 5-story office building with steel frame and glass facade"
+      ],
+      "timestamp": "2025-09-16T12:28:26.071962"
+    },
+    "spec_after": {
+      "building_type": "office",
+      "stories": 5,
+      "materials": [
+        {
+          "type": "steel",
+          "grade": null,
+          "properties": {}
+        },
+        {
+          "type": "glass",
+          "grade": null,
+          "properties": {}
+        }
+      ],
+      "dimensions": {
+        "length": 30.0,
+        "width": 25.0,
+        "height": 17.5,
+        "area": 750.0
+      },
+      "features": [
+        "elevator",
+        "parking"
+      ],
+      "requirements": [
+        "Design a modern 5-story office building with steel frame and glass facade"
+      ],
+      "timestamp": "2025-09-16T12:28:26.071962"
+    },
+    "evaluation": {
+      "score": 100.0,
+      "completeness": 100.0,
+      "format_validity": 100.0,
+      "feedback": [],
+      "suggestions": [],
+      "timestamp": "2025-09-16T12:28:26.076981"
+    },
+    "feedback": {
+      "feedback_type": "heuristic",
+      "suggestions": [
+        "Specification looks good"
+      ],
+      "confidence": 0.9,
+      "source": "rule_based"
+    },
+    "score_before": 100.0,
+    "score_after": 100.0,
+    "reward": 1.0,
+    "timestamp": "2025-09-16T12:28:26.077776"
+  }
+]

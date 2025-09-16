@@ -20,12 +20,7 @@ class DesignSpec(BaseModel):
     dimensions: DimensionSpec = Field(default_factory=DimensionSpec, description="Building dimensions")
     features: List[str] = Field(default_factory=list, description="Special features")
     requirements: List[str] = Field(default_factory=list, description="Design requirements")
-    timestamp: datetime = Field(default_factory=datetime.now, description="Generation timestamp")
-    
-    class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+    timestamp: str = Field(default_factory=lambda: datetime.now().isoformat(), description="Generation timestamp")
 
 class EvaluationResult(BaseModel):
     score: float = Field(description="Overall evaluation score (0-100)")
@@ -33,4 +28,4 @@ class EvaluationResult(BaseModel):
     format_validity: float = Field(description="Format validity score (0-100)")
     feedback: List[str] = Field(default_factory=list, description="Feedback comments")
     suggestions: List[str] = Field(default_factory=list, description="Improvement suggestions")
-    timestamp: datetime = Field(default_factory=datetime.now, description="Evaluation timestamp")
+    timestamp: str = Field(default_factory=lambda: datetime.now().isoformat(), description="Evaluation timestamp")

@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 import uvicorn
 from datetime import datetime
 
@@ -45,7 +45,20 @@ class EvaluateResponse(BaseModel):
     success: bool
     message: str = ""
 
-# Removed response models to fix schema issues
+# Response Models
+class StandardResponse(BaseModel):
+    success: bool
+    message: str = ""
+    data: Optional[Dict[Any, Any]] = None
+
+class EvaluationResponse(StandardResponse):
+    evaluation_id: Optional[str] = None
+    evaluation: Optional[Dict[Any, Any]] = None
+
+class IterationResponse(StandardResponse):
+    session_id: Optional[str] = None
+    total_iterations: Optional[int] = None
+    iterations: Optional[List[Dict[Any, Any]]] = None
 
 class LogValuesRequest(BaseModel):
     date: str
@@ -70,16 +83,16 @@ async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "agents": ["prompt", "evaluator", "rl"]}
 
-@app.post("/generate", response_model=GenerateResponse)
+@app.post("/generate")
 async def generate_spec(request: GenerateRequest):
     """Generate specification from prompt"""
     try:
         spec = prompt_agent.run(request.prompt)
-        return GenerateResponse(
-            spec=spec.model_dump(),
-            success=True,
-            message="Specification generated successfully"
-        )
+        return {
+            "spec": spec.model_dump(),
+            "success": True,
+            "message": "Specification generated successfully"
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -106,7 +119,17 @@ async def evaluate_spec(request: EvaluateRequest):
         spec = DesignSpec(**spec_data)
         evaluation = evaluator_agent.run(spec, request.prompt)
         
+        # Save evaluation and get report ID
+        try:
+            spec_id = db.save_spec(request.prompt, spec_data, 'EvaluatorAgent')
+            report_id = db.save_eval(spec_id, request.prompt, evaluation.model_dump(), evaluation.score)
+        except Exception as e:
+            print(f"DB save failed: {e}")
+            import uuid
+            report_id = str(uuid.uuid4())
+        
         return {
+            "report_id": report_id,
             "evaluation": evaluation.model_dump(),
             "success": True,
             "message": "Evaluation completed successfully"
@@ -144,16 +167,38 @@ async def iterate_rl(request: IterateRequest):
                 "improvement": iteration.get("improvement", 0)
             })
         
-        return {
+        # Convert datetime objects to strings
+        import json
+        from datetime import datetime
+        
+        def serialize_datetime(obj):
+            if isinstance(obj, datetime):
+                return obj.isoformat()
+            return obj
+        
+        # Clean all data recursively
+        def clean_data(data):
+            if isinstance(data, dict):
+                return {k: clean_data(v) for k, v in data.items()}
+            elif isinstance(data, list):
+                return [clean_data(item) for item in data]
+            elif isinstance(data, datetime):
+                return data.isoformat()
+            else:
+                return data
+        
+        response_data = {
             "success": True,
             "session_id": results.get("session_id"),
             "prompt": request.prompt,
             "total_iterations": len(detailed_iterations),
-            "iterations": detailed_iterations,
-            "final_spec": results.get("final_spec", {}),
-            "learning_insights": results.get("learning_insights", {}),
+            "iterations": clean_data(detailed_iterations),
+            "final_spec": clean_data(results.get("final_spec", {})),
+            "learning_insights": clean_data(results.get("learning_insights", {})),
             "message": f"RL training completed with {len(detailed_iterations)} iterations"
         }
+        
+        return response_data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -163,15 +208,28 @@ async def get_report(report_id: str):
     try:
         report = db.get_report(report_id)
         if not report:
-            raise HTTPException(status_code=404, detail="Report not found")
-        return report
+            return {
+                "success": False,
+                "report_id": report_id,
+                "message": "Report not found",
+                "error": "No report exists with this ID"
+            }
+        return {
+            "success": True,
+            "report": report
+        }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {
+            "success": False,
+            "error": str(e),
+            "message": "Failed to retrieve report"
+        }
 
 @app.post("/log-values")
 async def log_values(request: LogValuesRequest):
     """Store HIDG values per day"""
     try:
+        # Save to database
         hidg_id = db.save_hidg_log(
             request.date,
             request.day,
@@ -180,10 +238,48 @@ async def log_values(request: LogValuesRequest):
             request.achievements,
             request.technical_notes
         )
+        
+        # Also save to file as backup
+        from pathlib import Path
+        from datetime import datetime
+        import json
+        
+        logs_dir = Path("logs")
+        logs_dir.mkdir(exist_ok=True)
+        
+        values_entry = {
+            "date": request.date,
+            "day": request.day,
+            "task": request.task,
+            "values_reflection": request.values_reflection,
+            "achievements": request.achievements,
+            "technical_notes": request.technical_notes,
+            "timestamp": datetime.now().isoformat(),
+            "hidg_id": hidg_id
+        }
+        
+        values_file = logs_dir / "values_log.json"
+        values_logs = []
+        
+        if values_file.exists():
+            try:
+                with open(values_file, 'r') as f:
+                    values_logs = json.load(f)
+            except:
+                values_logs = []
+        
+        values_logs.append(values_entry)
+        
+        with open(values_file, 'w') as f:
+            json.dump(values_logs, f, indent=2)
+        
+        print(f"Values logged to DB and file: {values_file}")
+        
         return {
             "success": True,
             "hidg_id": hidg_id,
-            "message": "Values logged successfully"
+            "message": "Values logged successfully",
+            "file": str(values_file)
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -298,6 +394,54 @@ async def run_system_test():
             "error": str(e),
             "message": "System test failed"
         }
+
+@app.post("/advanced-rl")
+async def advanced_rl_training(request: IterateRequest):
+    """Run Advanced RL training with policy gradients"""
+    try:
+        from rl_agent.advanced_rl import AdvancedRLEnvironment
+        env = AdvancedRLEnvironment()
+        
+        result = env.train_episode(request.prompt, max_steps=request.n_iter)
+        
+        return {
+            "success": True,
+            "prompt": request.prompt,
+            "steps": result.get("steps", 0),
+            "final_score": result.get("final_score", 0),
+            "total_reward": result.get("total_reward", 0),
+            "training_file": result.get("training_file", ""),
+            "message": "Advanced RL training completed"
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "message": "Advanced RL training failed"
+        }
+
+@app.post("/admin/prune-logs")
+async def prune_logs(retention_days: int = 30):
+    """Prune old logs for production scalability"""
+    try:
+        from db.log_pruning import LogPruner
+        pruner = LogPruner(retention_days=retention_days)
+        results = pruner.prune_all_logs()
+        
+        return {
+            "success": True,
+            "retention_days": retention_days,
+            "results": results,
+            "message": f"Log pruning completed - {results['total_pruned']} entries removed"
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "message": "Log pruning failed"
+        }
+
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

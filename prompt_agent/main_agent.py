@@ -15,6 +15,13 @@ class MainAgent:
         """BHIV Core Hook: Single entry point for orchestration"""
         spec = self.generate_spec(prompt)
         
+        # Always save spec to file
+        try:
+            spec_file = self.save_spec(spec, prompt)
+            print(f"Spec saved to file: {spec_file}")
+        except Exception as e:
+            print(f"Failed to save spec file: {e}")
+        
         # Save to DB via clean interface
         try:
             from db import Database

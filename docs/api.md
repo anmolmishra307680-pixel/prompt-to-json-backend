@@ -206,13 +206,31 @@ POST /batch-evaluate
 GET /iterations/{session_id}
 ```
 
+### 9. Advanced RL Training
+```http
+POST /advanced-rl
+```
+
+**Request:**
+```json
+{
+  "prompt": "Smart building system",
+  "n_iter": 3
+}
+```
+
+### 10. Admin: Prune Logs
+```http
+POST /admin/prune-logs?retention_days=30
+```
+
 **Response:**
 ```json
 {
   "success": true,
-  "session_id": "uuid",
-  "total_iterations": 3,
-  "iterations": [...]
+  "results": {
+    "total_pruned": 150
+  }
 }
 ```
 

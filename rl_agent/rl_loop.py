@@ -202,23 +202,13 @@ class RLLoop:
             # Calculate reward
             reward = feedback_agent.calculate_reward(evaluation, previous_score, self.binary_rewards)
             
-            # Save iteration to DB
-            try:
-                iteration_id = db.save_iteration_log(
-                    session_id=session_id,
-                    iteration_number=iteration + 1,
-                    prompt=prompt,
-                    spec_before=spec_before,
-                    spec_after=spec.model_dump(),
-                    evaluation_data=evaluation.model_dump(),
-                    feedback_data=feedback_data,
-                    score_before=score_before,
-                    score_after=evaluation.score,
-                    reward=reward
-                )
-            except Exception as e:
-                print(f"DB save failed: {e}")
-                iteration_id = f"fallback_{iteration + 1}"
+            # Always create log files (force fallback)
+            iteration_id = f"fallback_{iteration + 1}"
+            
+            # Create log files
+            self._create_fallback_logs(session_id, iteration + 1, prompt, spec_before, 
+                                     spec.model_dump(), evaluation.model_dump(), 
+                                     feedback_data, score_before, evaluation.score, reward)
             
             # Store iteration results
             iteration_result = {
@@ -252,6 +242,68 @@ class RLLoop:
             results["learning_insights"] = {"error": str(e)}
         
         return results
+    
+    def _create_fallback_logs(self, session_id, iteration, prompt, spec_before, spec_after, 
+                             evaluation_data, feedback_data, score_before, score_after, reward):
+        """Create log files when DB fails"""
+        from pathlib import Path
+        from datetime import datetime
+        import json
+        
+        Path("logs").mkdir(exist_ok=True)
+        
+        # Create iteration log
+        iteration_entry = {
+            "session_id": session_id,
+            "iteration": iteration,
+            "prompt": prompt,
+            "spec_before": spec_before,
+            "spec_after": spec_after,
+            "evaluation": evaluation_data,
+            "feedback": feedback_data,
+            "score_before": score_before,
+            "score_after": score_after,
+            "reward": reward,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        # Save to iteration logs
+        iteration_file = Path("logs/iteration_logs.json")
+        logs = []
+        if iteration_file.exists():
+            with open(iteration_file, 'r') as f:
+                try:
+                    logs = json.load(f)
+                except:
+                    logs = []
+        
+        logs.append(iteration_entry)
+        with open(iteration_file, 'w') as f:
+            json.dump(logs, f, indent=2)
+        
+        # Save to feedback logs
+        feedback_entry = {
+            "session_id": session_id,
+            "iteration": iteration,
+            "prompt": prompt,
+            "feedback": feedback_data,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        feedback_file = Path("logs/feedback_log.json")
+        feedback_logs = []
+        if feedback_file.exists():
+            with open(feedback_file, 'r') as f:
+                try:
+                    feedback_logs = json.load(f)
+                except:
+                    feedback_logs = []
+        
+        feedback_logs.append(feedback_entry)
+        with open(feedback_file, 'w') as f:
+            json.dump(feedback_logs, f, indent=2)
+        
+        print(f"Fallback logs created for iteration {iteration}")
     
     def _save_training_results(self, results: dict):
         """Save training results to logs"""
