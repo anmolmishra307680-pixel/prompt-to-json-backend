@@ -444,4 +444,21 @@ async def prune_logs(retention_days: int = 30):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    import os
+    port = int(os.getenv("PORT", 8000))
+    workers = int(os.getenv("MAX_WORKERS", 4))
+    
+    if os.getenv("PRODUCTION_MODE") == "true":
+        # Production configuration for 50+ concurrent users
+        uvicorn.run(
+            "main_api:app",
+            host="0.0.0.0",
+            port=port,
+            workers=workers,
+            worker_connections=1000,
+            backlog=2048,
+            timeout_keep_alive=30
+        )
+    else:
+        # Development configuration
+        uvicorn.run(app, host="0.0.0.0", port=port)
