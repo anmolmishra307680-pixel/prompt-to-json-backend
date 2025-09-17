@@ -1,7 +1,7 @@
 """SQLAlchemy models for BHIV Bucket"""
 
 from sqlalchemy import Column, Integer, String, Text, DateTime, Float, JSON, Boolean
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
 import uuid
 

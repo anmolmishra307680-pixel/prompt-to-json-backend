@@ -5,10 +5,10 @@ import aiohttp
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-async def test_endpoint(session, url, data):
+async def test_endpoint(session, url, data, headers=None):
     """Test single endpoint"""
     try:
-        async with session.post(url, json=data) as response:
+        async with session.post(url, json=data, headers=headers) as response:
             return await response.json()
     except Exception as e:
         return {"error": str(e)}
@@ -17,11 +17,12 @@ async def load_test_50_users():
     """Simulate 50 concurrent users"""
     url = "http://localhost:8000/generate"
     data = {"prompt": "Modern office building"}
+    headers = {"X-API-Key": "bhiv-secret-key-2024"}
     
     async with aiohttp.ClientSession() as session:
         tasks = []
         for i in range(50):
-            task = test_endpoint(session, url, data)
+            task = test_endpoint(session, url, data, headers)
             tasks.append(task)
         
         start_time = time.time()
