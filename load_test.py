@@ -5,7 +5,7 @@ import aiohttp
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-def test_endpoint_function(session, url, data, headers=None):
+async def test_endpoint_function(session, url, data, headers=None):
     """Test single endpoint - renamed to avoid pytest confusion"""
     try:
         async with session.post(url, json=data, headers=headers) as response:
