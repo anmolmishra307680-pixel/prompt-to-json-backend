@@ -5,8 +5,8 @@ import aiohttp
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-async def test_endpoint_function(session, url, data, headers=None):
-    """Test single endpoint - renamed to avoid pytest confusion"""
+async def make_request(session, url, data, headers=None):
+    """Make HTTP request"""
     try:
         async with session.post(url, json=data, headers=headers) as response:
             return await response.json()
@@ -22,7 +22,7 @@ async def load_test_50_users():
     async with aiohttp.ClientSession() as session:
         tasks = []
         for i in range(50):
-            task = test_endpoint_function(session, url, data, headers)
+            task = make_request(session, url, data, headers)
             tasks.append(task)
         
         start_time = time.time()
