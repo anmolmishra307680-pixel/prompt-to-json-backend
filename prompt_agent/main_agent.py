@@ -1,4 +1,5 @@
 import json
+import os
 from typing import Optional
 from pathlib import Path
 from datetime import datetime
@@ -34,17 +35,60 @@ class MainAgent:
         return spec
     
     def generate_spec(self, prompt: str, use_llm: bool = False) -> DesignSpec:
-        """Generate design specification from prompt using rule-based extraction"""
+        """Generate design specification with LLM integration"""
         if not prompt or len(prompt.strip()) < 3:
             raise ValueError("Prompt must be at least 3 characters long")
             
-        if use_llm:
-            print("[WARNING] LLM generation not available, using rule-based extraction")
+        # Try LLM generation if API key available
+        if os.getenv("OPENAI_API_KEY") and use_llm:
+            try:
+                return self._generate_with_llm(prompt)
+            except Exception as e:
+                print(f"[WARNING] LLM generation failed: {e}, using rule-based")
             
         try:
             return self._generate_with_rules(prompt)
         except Exception as e:
             raise RuntimeError(f"Failed to generate specification: {str(e)}")
+    
+    def _generate_with_llm(self, prompt: str) -> DesignSpec:
+        """Generate specs using LLM processing"""
+        try:
+            import openai
+            openai.api_key = os.getenv("OPENAI_API_KEY")
+            
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[{
+                    "role": "system", 
+                    "content": "Generate building specifications as JSON with: building_type, stories, materials, dimensions, features, requirements"
+                }, {
+                    "role": "user",
+                    "content": f"Design specifications for: {prompt}"
+                }],
+                temperature=0.7
+            )
+            
+            content = response.choices[0].message.content
+            return self._parse_llm_response(content, prompt)
+        except Exception as e:
+            raise RuntimeError(f"LLM generation failed: {e}")
+    
+    def _parse_llm_response(self, content: str, prompt: str) -> DesignSpec:
+        """Parse LLM response into DesignSpec"""
+        try:
+            import json
+            data = json.loads(content)
+            return DesignSpec(
+                building_type=data.get("building_type", "general"),
+                stories=data.get("stories", 1),
+                materials=[MaterialSpec(type=m) for m in data.get("materials", ["concrete"])],
+                dimensions=DimensionSpec(**data.get("dimensions", {"length": 20, "width": 15, "height": 3, "area": 300})),
+                features=data.get("features", []),
+                requirements=data.get("requirements", [prompt])
+            )
+        except Exception:
+            return self._generate_with_rules(prompt)
     
     def _generate_with_rules(self, prompt: str) -> DesignSpec:
         """Generate specification from any design prompt"""

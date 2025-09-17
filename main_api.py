@@ -599,6 +599,44 @@ async def prune_logs(retention_days: int = 30):
             "message": "Log pruning failed"
         }
 
+@app.post("/coordinated-improvement")
+async def coordinated_improvement(request: GenerateRequest, api_key: str = Depends(verify_api_key)):
+    """Advanced agent coordination for optimal results"""
+    try:
+        from agent_coordinator import AgentCoordinator
+        coordinator = AgentCoordinator()
+        
+        result = await coordinator.coordinated_improvement(request.prompt)
+        
+        return {
+            "success": True,
+            "result": result,
+            "message": "Coordinated improvement completed"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/agent-status")
+async def get_agent_status():
+    """Get status of all AI agents"""
+    try:
+        from agent_coordinator import AgentCoordinator
+        coordinator = AgentCoordinator()
+        
+        status = coordinator.get_agent_status()
+        
+        return {
+            "success": True,
+            "agents": status,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "message": "Failed to get agent status"
+        }
+
 
 
 if __name__ == "__main__":
