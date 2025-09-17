@@ -1,6 +1,7 @@
 """Database connection and operations for BHIV Bucket"""
 
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
@@ -9,6 +10,24 @@ from .iteration_models import IterationLog
 import json
 from typing import Dict, Any, Optional, List
 import uuid
+
+# Load environment variables
+load_dotenv()
+
+# Initialize Supabase client
+try:
+    from supabase import create_client, Client
+    url: str = os.environ.get("SUPABASE_URL")
+    key: str = os.environ.get("SUPABASE_KEY")
+    if url and key:
+        supabase: Client = create_client(url, key)
+        print("✅ Supabase client initialized")
+    else:
+        supabase = None
+        print("⚠️ Supabase credentials not found, using PostgreSQL only")
+except ImportError:
+    supabase = None
+    print("⚠️ Supabase library not installed, using PostgreSQL only")
 
 class Database:
     def __init__(self, database_url: str = None):

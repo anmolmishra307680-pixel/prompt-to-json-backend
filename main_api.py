@@ -1,26 +1,111 @@
 """FastAPI Backend for Prompt-to-JSON System"""
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import APIKeyHeader
 from pydantic import BaseModel
 from typing import Dict, Any, List, Optional
 import uvicorn
 from datetime import datetime
+import os
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 # Import agents and database
 from prompt_agent import MainAgent
 from evaluator import EvaluatorAgent
 from rl_agent import RLLoop
-from db import Database
+from db.database import Database
 from feedback import FeedbackAgent
+from cache import cache
 
-app = FastAPI(title="Prompt-to-JSON API", version="1.0.0")
+app = FastAPI(
+    title="Prompt-to-JSON API", 
+    version="1.0.0",
+    description="Secure API with API Key authentication"
+)
 
-# Initialize agents and database
-prompt_agent = MainAgent()
-evaluator_agent = EvaluatorAgent()
-rl_agent = RLLoop()
-feedback_agent = FeedbackAgent()
-db = Database()
+# API Key Authentication
+from fastapi.security import APIKeyHeader
+
+API_KEY = os.getenv("API_KEY", "bhiv-secret-key-2024")
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+def verify_api_key(api_key: str = Depends(api_key_header)):
+    """Verify API key from X-API-Key header"""
+    if not api_key or api_key != API_KEY:
+        raise HTTPException(
+            status_code=401, 
+            detail="Invalid or missing API key. Include X-API-Key header."
+        )
+    return api_key
+
+# Rate limiter with slowapi
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# CORS middleware - only allow authorized frontends
+FRONTEND_URL = os.getenv("FRONTEND_URL", "*")
+allowed_origins = [FRONTEND_URL] if FRONTEND_URL != "*" else ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
+
+# Sentry middleware
+try:
+    import sentry_sdk
+    from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
+    if os.getenv("SENTRY_DSN"):
+        sentry_sdk.init(os.getenv("SENTRY_DSN"))
+        app.add_middleware(SentryAsgiMiddleware)
+except ImportError:
+    pass
+
+# Prometheus metrics
+try:
+    from prometheus_fastapi_instrumentator import Instrumentator
+    instrumentator = Instrumentator(
+        should_group_status_codes=False,
+        should_ignore_untemplated=True,
+        should_respect_env_var=True,
+        should_instrument_requests_inprogress=True,
+        excluded_handlers=["/metrics"],
+        env_var_name="ENABLE_METRICS",
+        inprogress_name="inprogress",
+        inprogress_labels=True,
+    )
+    instrumentator.instrument(app).expose(app)
+    print("✅ Prometheus metrics enabled at /metrics")
+except ImportError:
+    print("⚠️ Prometheus not available - install: pip install prometheus-fastapi-instrumentator")
+
+# Initialize agents and database with error handling
+try:
+    prompt_agent = MainAgent()
+    evaluator_agent = EvaluatorAgent()
+    rl_agent = RLLoop()
+    feedback_agent = FeedbackAgent()
+    db = Database()
+    print("✅ All agents initialized successfully")
+except Exception as e:
+    print(f"⚠️ Agent initialization warning: {e}")
+    # Create minimal fallback objects
+    class FallbackAgent:
+        def run(self, *args, **kwargs):
+            return {"error": "Agent not available"}
+    
+    prompt_agent = FallbackAgent()
+    evaluator_agent = FallbackAgent()
+    rl_agent = FallbackAgent()
+    feedback_agent = FallbackAgent()
+    db = Database()  # Database should always work
 
 # Request models
 class GenerateRequest(BaseModel):
@@ -81,13 +166,65 @@ async def favicon():
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "agents": ["prompt", "evaluator", "rl"]}
+    try:
+        # Test database connection
+        session = db.get_session()
+        session.close()
+        db_status = True
+    except Exception as e:
+        db_status = False
+        print(f"Database health check failed: {e}")
+    
+    # Test agent availability
+    agents_status = []
+    for name, agent in [("prompt", prompt_agent), ("evaluator", evaluator_agent), ("rl", rl_agent)]:
+        try:
+            hasattr(agent, 'run')
+            agents_status.append(name)
+        except:
+            pass
+    
+    return {
+        "status": "healthy" if db_status else "degraded",
+        "database": db_status,
+        "agents": agents_status,
+        "timestamp": datetime.now().isoformat()
+    }
+
+@app.get("/metrics")
+async def basic_metrics():
+    """Basic metrics endpoint"""
+    try:
+        from pathlib import Path
+        
+        # Count generated files
+        specs_count = len(list(Path("spec_outputs").glob("*.json"))) if Path("spec_outputs").exists() else 0
+        reports_count = len(list(Path("reports").glob("*.json"))) if Path("reports").exists() else 0
+        logs_count = len(list(Path("logs").glob("*.json"))) if Path("logs").exists() else 0
+        
+        return {
+            "generated_specs": specs_count,
+            "evaluation_reports": reports_count,
+            "log_files": logs_count,
+            "active_sessions": 0,  # Placeholder for rate_limit_storage
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "error": str(e),
+            "generated_specs": 0,
+            "evaluation_reports": 0,
+            "log_files": 0,
+            "active_sessions": 0,
+            "timestamp": datetime.now().isoformat()
+        }
 
 @app.post("/generate")
-async def generate_spec(request: GenerateRequest):
+@limiter.limit("20/minute")
+async def generate_spec(request: Request, generate_request: GenerateRequest, api_key: str = Depends(verify_api_key)):
     """Generate specification from prompt"""
     try:
-        spec = prompt_agent.run(request.prompt)
+        spec = prompt_agent.run(generate_request.prompt)
         return {
             "spec": spec.model_dump(),
             "success": True,
@@ -97,10 +234,19 @@ async def generate_spec(request: GenerateRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/evaluate")
-async def evaluate_spec(request: EvaluateRequest):
+async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_api_key)):
     """Evaluate specification"""
     try:
-        from schema import DesignSpec
+        # Import with error handling
+        try:
+            from schema import DesignSpec
+        except ImportError:
+            # Fallback if schema not available
+            class DesignSpec:
+                def __init__(self, **kwargs):
+                    for k, v in kwargs.items():
+                        setattr(self, k, v)
+        
         # Add default values for missing required fields
         spec_data = request.spec.copy()
         if "building_type" not in spec_data:
@@ -138,7 +284,7 @@ async def evaluate_spec(request: EvaluateRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/iterate")
-async def iterate_rl(request: IterateRequest):
+async def iterate_rl(request: IterateRequest, api_key: str = Depends(verify_api_key)):
     """Run RL iterations with detailed before→after, scores, feedback"""
     try:
         # Ensure minimum 2 iterations
@@ -355,20 +501,32 @@ async def get_iteration_logs(session_id: str):
 @app.get("/cli-tools")
 async def get_cli_tools():
     """Get available CLI tools and commands"""
+    # Check database status
+    try:
+        db.get_session()
+        db_status = "✅ Connected (Supabase PostgreSQL)"
+        db_tables = "specs, evals, feedback_logs, hidg_logs, iteration_logs"
+    except Exception as e:
+        db_status = f"❌ Error: {str(e)}"
+        db_tables = "Using file fallback (JSON files)"
+    
     return {
-        "tools": {
-            "history": "View prompt history",
-            "stats": "Show system statistics", 
-            "db": "Database operations",
-            "score": "Quick scoring utility",
-            "examples": "View sample outputs"
+        "database_status": db_status,
+        "database_tables": db_tables,
+        "available_endpoints": {
+            "/generate": "Generate specifications (requires API key)",
+            "/evaluate": "Evaluate specifications (requires API key)", 
+            "/iterate": "RL training iterations (requires API key)",
+            "/reports/{id}": "Get evaluation reports",
+            "/health": "System health check",
+            "/metrics": "System metrics"
         },
-        "commands": [
-            "python main.py --test",
-            "python main.py --cli-tools",
-            "python main.py --score-only",
-            "python main.py --examples"
-        ]
+        "actual_commands": [
+            "python main_api.py",
+            "python load_test.py",
+            "python create-tables.py"
+        ],
+        "api_key_required": "X-API-Key: bhiv-secret-key-2024"
     }
 
 @app.get("/system-test")

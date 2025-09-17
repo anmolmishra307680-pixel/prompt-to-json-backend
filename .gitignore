@@ -1,0 +1,12 @@
+venv/
+.env
+__pycache__/
+*.pyc
+*.sqlite3
+models_weights/
+docs/demo.mp4
+.venv/
+*.db
+logs/*.json
+spec_outputs/*.json
+reports/*.json
