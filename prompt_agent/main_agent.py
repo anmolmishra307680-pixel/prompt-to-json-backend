@@ -235,8 +235,8 @@ class MainAgent:
         elif any(word in prompt_lower for word in ['task', 'project', 'plan', 'timeline', 'schedule', 'launch']):
             return "task"
         
-        # Building-related keywords
-        elif any(word in prompt_lower for word in ['building', 'house', 'office', 'warehouse', 'hospital', 'construction', 'architect']):
+        # Building-related keywords (including residential)
+        elif any(word in prompt_lower for word in ['building', 'house', 'office', 'warehouse', 'hospital', 'construction', 'architect', 'residential', 'apartment']):
             return "building"
         
         # Software/App keywords

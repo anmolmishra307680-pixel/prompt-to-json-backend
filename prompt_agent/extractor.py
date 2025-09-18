@@ -8,7 +8,7 @@ class PromptExtractor:
     def __init__(self):
         self.building_types = {
             'office': ['office', 'corporate', 'business'],
-            'residential': ['house', 'home', 'apartment', 'residential'],
+            'residential': ['house', 'home', 'apartment', 'residential', 'modern residential'],
             'warehouse': ['warehouse', 'storage', 'industrial'],
             'hospital': ['hospital', 'medical', 'clinic'],
             'school': ['school', 'university', 'education']
@@ -34,9 +34,22 @@ class PromptExtractor:
     def extract_building_type(self, prompt: str) -> str:
         """Extract building type from prompt"""
         prompt_lower = prompt.lower()
+        
+        # Check for residential first (more specific patterns)
+        residential_keywords = ['residential', 'apartment', 'house', 'home']
+        if any(keyword in prompt_lower for keyword in residential_keywords):
+            return "residential"
+        
+        # Check for compound phrases
+        if 'modern residential' in prompt_lower or 'apartment complex' in prompt_lower:
+            return "residential"
+        
+        # Then check other types
         for building_type, keywords in self.building_types.items():
-            if any(keyword in prompt_lower for keyword in keywords):
-                return building_type
+            if building_type != 'residential':  # Skip residential as we handled it above
+                if any(keyword in prompt_lower for keyword in keywords):
+                    return building_type
+        
         return "general"
     
     def extract_stories(self, prompt: str) -> int:
