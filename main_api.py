@@ -247,14 +247,44 @@ async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_
                     for k, v in kwargs.items():
                         setattr(self, k, v)
         
-        # Add default values for missing required fields
+        # Normalize materials to proper format
         spec_data = request.spec.copy()
+        
+        # Fix materials format - ensure it's a list of MaterialSpec objects
+        if "materials" in spec_data:
+            materials = spec_data["materials"]
+            normalized_materials = []
+            for material in materials:
+                if isinstance(material, dict):
+                    # Already a dict, ensure it has required fields
+                    normalized_materials.append({
+                        "type": material.get("type", "concrete"),
+                        "grade": material.get("grade", None),
+                        "properties": material.get("properties", {})
+                    })
+                elif isinstance(material, str):
+                    # Convert string to MaterialSpec format
+                    normalized_materials.append({
+                        "type": material,
+                        "grade": None,
+                        "properties": {}
+                    })
+                else:
+                    # Fallback for other types
+                    normalized_materials.append({
+                        "type": "concrete",
+                        "grade": None,
+                        "properties": {}
+                    })
+            spec_data["materials"] = normalized_materials
+        
+        # Add default values for missing required fields
         if "building_type" not in spec_data:
             spec_data["building_type"] = "general"
         if "stories" not in spec_data:
             spec_data["stories"] = 1
         if "materials" not in spec_data:
-            spec_data["materials"] = []
+            spec_data["materials"] = [{"type": "concrete", "grade": None, "properties": {}}]
         if "dimensions" not in spec_data:
             spec_data["dimensions"] = {"length": 1, "width": 1, "height": 1, "area": 1}
         if "features" not in spec_data:
