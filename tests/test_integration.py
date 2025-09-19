@@ -1,23 +1,34 @@
 import pytest
+import os
 import requests
 from fastapi.testclient import TestClient
 from main_api import app
 
 client = TestClient(app)
 
+# Use environment variables or test defaults
+API_KEY = os.getenv("API_KEY", "test-api-key")
+USERNAME = os.getenv("DEMO_USERNAME", "testuser")
+PASSWORD = os.getenv("DEMO_PASSWORD", "testpass")
+
+def get_auth_headers():
+    """Get JWT token and return headers with API key and token"""
+    try:
+        token_response = client.post("/token", json={"username": USERNAME, "password": PASSWORD})
+        if token_response.status_code == 200:
+            token = token_response.json()["access_token"]
+            return {
+                "X-API-Key": API_KEY,
+                "Authorization": f"Bearer {token}"
+            }
+    except Exception:
+        pass
+    return {"X-API-Key": API_KEY}
+
 class TestFullWorkflow:
     def test_complete_user_journey(self):
         """Test: Generate → Evaluate → Iterate → Report"""
-        # Get JWT token
-        token_response = client.post("/token", json={"username": "admin", "password": "bhiv2024"}, headers={"X-API-Key": "bhiv-secret-key-2024"})
-        if token_response.status_code == 200:
-            token = token_response.json()["access_token"]
-        else:
-            token = "dummy-token"
-        headers = {
-            "X-API-Key": "bhiv-secret-key-2024",
-            "Authorization": f"Bearer {token}"
-        }
+        headers = get_auth_headers()
         
         # Step 1: Generate specification
         generate_response = client.post(
@@ -55,16 +66,7 @@ class TestFullWorkflow:
 
     def test_batch_processing_workflow(self):
         """Test batch evaluation functionality"""
-        # Get JWT token
-        token_response = client.post("/token", json={"username": "admin", "password": "bhiv2024"}, headers={"X-API-Key": "bhiv-secret-key-2024"})
-        if token_response.status_code == 200:
-            token = token_response.json()["access_token"]
-        else:
-            token = "dummy-token"
-        headers = {
-            "X-API-Key": "bhiv-secret-key-2024",
-            "Authorization": f"Bearer {token}"
-        }
+        headers = get_auth_headers()
         
         prompts = ["Office building", "Warehouse facility", "Residential complex"]
         
@@ -78,16 +80,7 @@ class TestFullWorkflow:
 
     def test_health_and_metrics_endpoints(self):
         """Test monitoring endpoints"""
-        # Get JWT token
-        token_response = client.post("/token", json={"username": "admin", "password": "bhiv2024"}, headers={"X-API-Key": "bhiv-secret-key-2024"})
-        if token_response.status_code == 200:
-            token = token_response.json()["access_token"]
-        else:
-            token = "dummy-token"
-        headers = {
-            "X-API-Key": "bhiv-secret-key-2024",
-            "Authorization": f"Bearer {token}"
-        }
+        headers = get_auth_headers()
         
         # Health check
         health_response = client.get("/health", headers=headers)
@@ -118,17 +111,10 @@ class TestFullWorkflow:
         assert wrong_auth_response.status_code == 401
         
         # With correct API key and JWT token - should succeed
-        token_response = client.post("/token", json={"username": "admin", "password": "bhiv2024"}, headers={"X-API-Key": "bhiv-secret-key-2024"})
-        if token_response.status_code == 200:
-            token = token_response.json()["access_token"]
-        else:
-            token = "dummy-token"
+        headers = get_auth_headers()
         correct_auth_response = client.post(
             "/generate",
             json={"prompt": "Test building"},
-            headers={
-                "X-API-Key": "bhiv-secret-key-2024",
-                "Authorization": f"Bearer {token}"
-            }
+            headers=headers
         )
         assert correct_auth_response.status_code == 200

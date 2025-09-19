@@ -39,7 +39,10 @@ def get_current_user(authorization: str = Header(None)):
 
 def authenticate_user(username: str, password: str):
     """Simple user authentication for demo"""
-    # Demo credentials - replace with real authentication in production
-    if username == "admin" and password == "bhiv2024":
+    # Get credentials from environment or use defaults
+    valid_username = os.getenv("DEMO_USERNAME", "admin")
+    valid_password = os.getenv("DEMO_PASSWORD", "bhiv2024")
+    
+    if username == valid_username and password == valid_password:
         return create_access_token({"sub": username})
     raise HTTPException(status_code=401, detail="Invalid credentials")

@@ -10,16 +10,34 @@ from main_api import app
 
 client = TestClient(app)
 
+# Use environment variables or test defaults
+API_KEY = os.getenv("API_KEY", "test-api-key")
+USERNAME = os.getenv("DEMO_USERNAME", "testuser")
+PASSWORD = os.getenv("DEMO_PASSWORD", "testpass")
+
+# Global token cache to avoid rate limiting
+_cached_token = None
+
 def get_auth_headers():
     """Get JWT token and return headers with API key and token"""
-    token_response = client.post("/token", json={"username": "admin", "password": "bhiv2024"})
-    if token_response.status_code == 200:
-        token = token_response.json()["access_token"]
+    global _cached_token
+    if _cached_token:
         return {
-            "X-API-Key": "bhiv-secret-key-2024",
-            "Authorization": f"Bearer {token}"
+            "X-API-Key": API_KEY,
+            "Authorization": f"Bearer {_cached_token}"
         }
-    return {"X-API-Key": "bhiv-secret-key-2024"}
+    
+    try:
+        token_response = client.post("/token", json={"username": USERNAME, "password": PASSWORD})
+        if token_response.status_code == 200:
+            _cached_token = token_response.json()["access_token"]
+            return {
+                "X-API-Key": API_KEY,
+                "Authorization": f"Bearer {_cached_token}"
+            }
+    except Exception:
+        pass
+    return {"X-API-Key": API_KEY}
 
 def test_health_endpoint():
     """Test health check endpoint returns proper status"""
