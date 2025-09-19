@@ -1,9 +1,12 @@
-name: CI
+name: CI/CD Pipeline
 on:
   push:
     branches: [ main, staging-ready ]
+  pull_request:
+    branches: [ main ]
+
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -11,9 +14,38 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.11
-      - name: Install deps
-        run: pip install -r requirements.txt
-      - name: Run tests
-        run: pytest tests/ -q
-      - name: Build Docker
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest-cov
+      - name: Run tests with coverage
+        run: pytest tests/ --cov=. --cov-report=xml
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+  
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
         run: docker build -t ${{ github.repository }}:${{ github.sha }} .
+      - name: Run security scan
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            -v $PWD:/root/.cache/ aquasec/trivy:latest image \
+            --exit-code 0 --severity HIGH,CRITICAL \
+            ${{ github.repository }}:${{ github.sha }}
+  
+  deploy:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy to production
+        run: |
+          echo "Deploying to production..."
+          # Add your deployment commands here
