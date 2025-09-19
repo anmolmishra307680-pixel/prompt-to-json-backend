@@ -21,6 +21,7 @@ from db.database import Database
 from feedback import FeedbackAgent
 from cache import cache
 from auth import create_access_token, get_current_user
+from errors import register_exception_handlers
 
 app = FastAPI(
     title="Prompt-to-JSON API", 
@@ -30,10 +31,8 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-# Add error handlers
-app.add_exception_handler(ValidationError, validation_exception_handler)
-app.add_exception_handler(HTTPException, http_exception_handler)
-app.add_exception_handler(Exception, general_exception_handler)
+# Register structured exception handlers
+register_exception_handlers(app)
 
 # API Key Authentication
 from fastapi.security import APIKeyHeader
