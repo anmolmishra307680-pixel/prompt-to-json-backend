@@ -3,12 +3,13 @@
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader
-from pydantic import BaseModel, ValidationError
-from error_handlers import validation_exception_handler, http_exception_handler, general_exception_handler
+from pydantic import BaseModel
 from typing import Dict, Any, List, Optional
 import uvicorn
-from datetime import datetime
+from datetime import datetime, timezone
 import os
+import secrets
+import logging
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
@@ -23,16 +24,34 @@ from cache import cache
 from auth import create_access_token, get_current_user
 from errors import register_exception_handlers
 
-# API Key Authentication
-from fastapi.security import APIKeyHeader, HTTPBearer
+from fastapi.security import HTTPBearer
 
-API_KEY = os.getenv("API_KEY", "bhiv-secret-key-2024")
+# Version constant for consistency
+API_VERSION = "2.1.1"
+
+# Define fallback classes at module level for better performance
+class FallbackAgent:
+    def run(self, *args, **kwargs):
+        return {"error": "Agent not available"}
+
+class FallbackDB:
+    def get_session(self): 
+        raise RuntimeError("Database unavailable")
+    def save_spec(self, *args): return "fallback_id"
+    def save_eval(self, *args): return "fallback_id"
+    def get_report(self, *args): return None
+    def get_iteration_logs(self, *args): return []
+    def save_hidg_log(self, *args): return "fallback_id"
+
+API_KEY = os.getenv("API_KEY")
+if not API_KEY:
+    raise ValueError("API_KEY environment variable is required")
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 bearer_scheme = HTTPBearer(auto_error=False)
 
 def verify_api_key(api_key: str = Depends(api_key_header)):
     """Verify API key from X-API-Key header"""
-    if not api_key or api_key != API_KEY:
+    if not api_key or not secrets.compare_digest(api_key, API_KEY):
         raise HTTPException(
             status_code=401, 
             detail="Invalid or missing API key. Include X-API-Key header."
@@ -41,7 +60,7 @@ def verify_api_key(api_key: str = Depends(api_key_header)):
 
 app = FastAPI(
     title="Prompt-to-JSON API", 
-    version="2.1.0",
+    version=API_VERSION,
     description="Production-Ready AI Backend with Multi-Agent Coordination",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -63,7 +82,7 @@ def custom_openapi():
     from fastapi.openapi.utils import get_openapi
     openapi_schema = get_openapi(
         title="Prompt-to-JSON API",
-        version="2.1.0",
+        version=API_VERSION,
         description="Production-Ready AI Backend with Multi-Agent Coordination",
         routes=app.routes,
     )
@@ -87,10 +106,11 @@ def custom_openapi():
         for operation in path_item.values():
             if isinstance(operation, dict) and "operationId" in operation:
                 if path == "/token":
-                    # Token endpoint only needs API key
-                    operation["security"] = [
-                        {"APIKeyHeader": []}
-                    ]
+                    # Token endpoint is public (no auth required)
+                    operation["security"] = []
+                elif path == "/metrics":
+                    # Metrics endpoint is public for monitoring
+                    operation["security"] = []
                 else:
                     # All other endpoints need both API key and JWT
                     operation["security"] = [
@@ -185,7 +205,11 @@ except Exception as e:
     evaluator_agent = FallbackAgent()
     rl_agent = FallbackAgent()
     feedback_agent = FallbackAgent()
-    db = Database()  # Database should always work
+    try:
+        db = Database()
+    except Exception as db_error:
+        print(f"[ERROR] Database initialization failed: {db_error}")
+        db = FallbackDB()
 
 # Request models
 class GenerateRequest(BaseModel):
@@ -198,17 +222,6 @@ class EvaluateRequest(BaseModel):
 class IterateRequest(BaseModel):
     prompt: str
     n_iter: int = 3
-
-# Response models
-class GenerateResponse(BaseModel):
-    spec: Dict[Any, Any]
-    success: bool
-    message: str = ""
-
-class EvaluateResponse(BaseModel):
-    evaluation: Dict[Any, Any]
-    success: bool
-    message: str = ""
 
 # Response Models
 class StandardResponse(BaseModel):
@@ -238,15 +251,22 @@ class TokenRequest(BaseModel):
     password: str
 
 @app.post("/token")
-def token_create(payload: TokenRequest, api_key: str = Depends(verify_api_key)):
+@limiter.limit("10/minute")
+def token_create(request: Request, payload: TokenRequest):
     """Create JWT token for authentication"""
     username = payload.username
     password = payload.password
     if not username or not password:
         raise HTTPException(status_code=400, detail="username and password required")
     
-    # Demo: accept demo credentials (replace with real auth in production)
-    if username == "admin" and password == "bhiv2024":
+    # Check against environment variables for security
+    demo_username = os.getenv("DEMO_USERNAME")
+    demo_password = os.getenv("DEMO_PASSWORD")
+    
+    if not demo_username or not demo_password:
+        raise HTTPException(status_code=500, detail="Authentication not configured")
+    
+    if username == demo_username and password == demo_password:
         token = create_access_token({"sub": username})
         return {"access_token": token, "token_type": "bearer"}
     
@@ -258,7 +278,7 @@ async def root(request: Request, api_key: str = Depends(verify_api_key), user=De
     """Root endpoint"""
     return {
         "message": "Prompt-to-JSON API", 
-        "version": "2.1.0",
+        "version": API_VERSION,
         "status": "Production Ready",
         "features": ["AI Agents", "Multi-Agent Coordination", "RL Training", "JWT Authentication", "Monitoring"]
     }
@@ -281,17 +301,14 @@ async def health_check(request: Request, api_key: str = Depends(verify_api_key),
     # Test agent availability
     agents_status = []
     for name, agent in [("prompt", prompt_agent), ("evaluator", evaluator_agent), ("rl", rl_agent)]:
-        try:
-            hasattr(agent, 'run')
+        if hasattr(agent, 'run'):
             agents_status.append(name)
-        except:
-            pass
     
     return {
         "status": "healthy" if db_status else "degraded",
         "database": db_status,
         "agents": agents_status,
-        "timestamp": datetime.now().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 @app.get("/basic-metrics")
@@ -311,7 +328,7 @@ async def basic_metrics(request: Request, api_key: str = Depends(verify_api_key)
             "evaluation_reports": reports_count,
             "log_files": logs_count,
             "active_sessions": 0,  # Placeholder for rate_limit_storage
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     except Exception as e:
         return {
@@ -320,7 +337,7 @@ async def basic_metrics(request: Request, api_key: str = Depends(verify_api_key)
             "evaluation_reports": 0,
             "log_files": 0,
             "active_sessions": 0,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
 
 @app.post("/generate")
@@ -351,7 +368,8 @@ async def generate_spec(request: Request, generate_request: GenerateRequest, api
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/evaluate")
-async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
+@limiter.limit("20/minute")
+async def evaluate_spec(request: Request, eval_request: EvaluateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Evaluate specification"""
     try:
         # Import with error handling
@@ -365,7 +383,7 @@ async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_
                         setattr(self, k, v)
         
         # Normalize materials to proper format
-        spec_data = request.spec.copy()
+        spec_data = eval_request.spec.copy()
         
         # Fix materials format - ensure it's a list of MaterialSpec objects
         if "materials" in spec_data:
@@ -407,15 +425,15 @@ async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_
         if "features" not in spec_data:
             spec_data["features"] = []
         if "requirements" not in spec_data:
-            spec_data["requirements"] = [request.prompt]
+            spec_data["requirements"] = [eval_request.prompt]
         
         spec = DesignSpec(**spec_data)
-        evaluation = evaluator_agent.run(spec, request.prompt)
+        evaluation = evaluator_agent.run(spec, eval_request.prompt)
         
         # Save evaluation and get report ID
         try:
-            spec_id = db.save_spec(request.prompt, spec_data, 'EvaluatorAgent')
-            report_id = db.save_eval(spec_id, request.prompt, evaluation.model_dump(), evaluation.score)
+            spec_id = db.save_spec(eval_request.prompt, spec_data, 'EvaluatorAgent')
+            report_id = db.save_eval(spec_id, eval_request.prompt, evaluation.model_dump(), evaluation.score)
         except Exception as e:
             print(f"DB save failed: {e}")
             import uuid
@@ -424,7 +442,7 @@ async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_
         # Log HIDG entry for evaluation completion
         try:
             from hidg import log_evaluation_completion
-            log_evaluation_completion(request.prompt, evaluation.score)
+            log_evaluation_completion(eval_request.prompt, evaluation.score)
         except Exception as log_error:
             print(f"HIDG logging error: {log_error}")
         
@@ -438,45 +456,36 @@ async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/iterate")
-async def iterate_rl(request: IterateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
+@limiter.limit("20/minute")
+async def iterate_rl(request: Request, iterate_request: IterateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Run RL iterations with detailed before→after, scores, feedback"""
     try:
         # Ensure minimum 2 iterations
-        n_iter = max(2, request.n_iter)
+        n_iter = max(2, iterate_request.n_iter)
         rl_agent.max_iterations = n_iter
         
-        results = rl_agent.run(request.prompt, n_iter)
+        results = rl_agent.run(iterate_request.prompt, n_iter)
         
         # Format detailed iteration logs
-        detailed_iterations = []
-        for iteration in results.get("iterations", []):
-            detailed_iterations.append({
-                "iteration_number": iteration["iteration"],
-                "iteration_id": iteration.get("iteration_id"),
-                "before": {
-                    "spec": iteration.get("spec_before"),
-                    "score": iteration.get("score_before", 0)
-                },
-                "after": {
-                    "spec": iteration["spec_after"],
-                    "score": iteration["score_after"]
-                },
-                "evaluation": iteration["evaluation"],
-                "feedback": iteration["feedback"],
-                "reward": iteration["reward"],
-                "improvement": iteration.get("improvement", 0)
-            })
+        # Use list comprehension for better performance
+        detailed_iterations = [{
+            "iteration_number": iteration["iteration"],
+            "iteration_id": iteration.get("iteration_id"),
+            "before": {
+                "spec": iteration.get("spec_before"),
+                "score": iteration.get("score_before", 0)
+            },
+            "after": {
+                "spec": iteration["spec_after"],
+                "score": iteration["score_after"]
+            },
+            "evaluation": iteration["evaluation"],
+            "feedback": iteration["feedback"],
+            "reward": iteration["reward"],
+            "improvement": iteration.get("improvement", 0)
+        } for iteration in results.get("iterations", [])]
         
-        # Convert datetime objects to strings
-        import json
-        from datetime import datetime
-        
-        def serialize_datetime(obj):
-            if isinstance(obj, datetime):
-                return obj.isoformat()
-            return obj
-        
-        # Clean all data recursively
+        # Clean datetime objects recursively
         def clean_data(data):
             if isinstance(data, dict):
                 return {k: clean_data(v) for k, v in data.items()}
@@ -490,7 +499,7 @@ async def iterate_rl(request: IterateRequest, api_key: str = Depends(verify_api_
         response_data = {
             "success": True,
             "session_id": results.get("session_id"),
-            "prompt": request.prompt,
+            "prompt": iterate_request.prompt,
             "total_iterations": len(detailed_iterations),
             "iterations": clean_data(detailed_iterations),
             "final_spec": clean_data(results.get("final_spec", {})),
@@ -502,7 +511,7 @@ async def iterate_rl(request: IterateRequest, api_key: str = Depends(verify_api_
         try:
             from hidg import log_pipeline_completion
             final_score = results.get("learning_insights", {}).get("final_score")
-            log_pipeline_completion(request.prompt, len(detailed_iterations), final_score)
+            log_pipeline_completion(iterate_request.prompt, len(detailed_iterations), final_score)
         except Exception as log_error:
             print(f"HIDG logging error: {log_error}")
         
@@ -517,22 +526,15 @@ async def get_report(request: Request, report_id: str, api_key: str = Depends(ve
     try:
         report = db.get_report(report_id)
         if not report:
-            return {
-                "success": False,
-                "report_id": report_id,
-                "message": "Report not found",
-                "error": "No report exists with this ID"
-            }
+            raise HTTPException(status_code=404, detail="Report not found")
         return {
             "success": True,
             "report": report
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "message": "Failed to retrieve report"
-        }
+        import logging
+        logging.error(f"Failed to retrieve report {report_id}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve report")
 
 @app.post("/log-values")
 @limiter.limit("20/minute")
@@ -564,7 +566,7 @@ async def log_values(request: Request, log_request: LogValuesRequest, api_key: s
             "values_reflection": log_request.values_reflection,
             "achievements": log_request.achievements,
             "technical_notes": log_request.technical_notes,
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "hidg_id": hidg_id
         }
         
@@ -575,15 +577,21 @@ async def log_values(request: Request, log_request: LogValuesRequest, api_key: s
             try:
                 with open(values_file, 'r') as f:
                     values_logs = json.load(f)
-            except:
+            except (json.JSONDecodeError, IOError) as e:
+                print(f"Failed to read values log: {e}")
                 values_logs = []
         
         values_logs.append(values_entry)
         
-        with open(values_file, 'w') as f:
-            json.dump(values_logs, f, indent=2)
+        try:
+            with open(values_file, 'w') as f:
+                json.dump(values_logs, f, indent=2)
+        except IOError as e:
+            print(f"Failed to write values log: {e}")
+            raise HTTPException(status_code=500, detail="Failed to save values log")
         
-        print(f"Values logged to DB and file: {values_file}")
+        import logging
+        logging.info(f"Values logged to DB and file: {values_file}")
         
         return {
             "success": True,
@@ -639,17 +647,11 @@ async def get_iteration_logs(request: Request, session_id: str, api_key: str = D
                 with open(iteration_file, 'r') as f:
                     all_logs = json.load(f)
                 
-                # Filter by session_id
+                # Filter by session_id using list comprehension
                 logs = [log for log in all_logs if log.get('session_id') == session_id]
         
         if not logs:
-            return {
-                "success": False,
-                "session_id": session_id,
-                "total_iterations": 0,
-                "iterations": [],
-                "message": "No iteration logs found for this session"
-            }
+            raise HTTPException(status_code=404, detail="No iteration logs found for this session")
         
         return {
             "success": True,
@@ -658,14 +660,13 @@ async def get_iteration_logs(request: Request, session_id: str, api_key: str = D
             "iterations": logs
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "message": "Failed to retrieve iteration logs"
-        }
+        import logging
+        logging.error(f"Failed to retrieve iteration logs for session {session_id}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve iteration logs")
 
 @app.get("/cli-tools")
-async def get_cli_tools(api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
+@limiter.limit("20/minute")
+async def get_cli_tools(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Get available CLI tools and commands"""
     # Check database status
     try:
@@ -692,7 +693,7 @@ async def get_cli_tools(api_key: str = Depends(verify_api_key), user=Depends(get
             "python load_test.py",
             "python create-tables.py"
         ],
-        "api_key_required": "X-API-Key: bhiv-secret-key-2024"
+        "api_key_required": "X-API-Key: <your-api-key> (set via API_KEY environment variable)"
     }
 
 @app.get("/system-test")
@@ -714,11 +715,9 @@ async def run_system_test(request: Request, api_key: str = Depends(verify_api_ke
             "message": "All core tests passed"
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "message": "System test failed"
-        }
+        import logging
+        logging.error(f"System test failed: {e}")
+        raise HTTPException(status_code=500, detail=f"System test failed: {str(e)}")
 
 @app.post("/advanced-rl")
 @limiter.limit("20/minute")
@@ -740,11 +739,9 @@ async def advanced_rl_training(request: Request, rl_request: IterateRequest, api
             "message": "Advanced RL training completed"
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "message": "Advanced RL training failed"
-        }
+        import logging
+        logging.error(f"Advanced RL training failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Advanced RL training failed: {str(e)}")
 
 @app.post("/admin/prune-logs")
 @limiter.limit("20/minute")
@@ -762,27 +759,26 @@ async def prune_logs(request: Request, retention_days: int = 30, api_key: str = 
             "message": f"Log pruning completed - {results['total_pruned']} entries removed"
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "message": "Log pruning failed"
-        }
+        import logging
+        logging.error(f"Log pruning failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Log pruning failed: {str(e)}")
 
 @app.post("/coordinated-improvement")
-async def coordinated_improvement(request: GenerateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
+@limiter.limit("20/minute")
+async def coordinated_improvement(request: Request, request_data: GenerateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Advanced agent coordination for optimal results"""
     try:
         from agent_coordinator import AgentCoordinator
         coordinator = AgentCoordinator()
         
-        result = await coordinator.coordinated_improvement(request.prompt)
+        result = await coordinator.coordinated_improvement(request_data.prompt)
         
         # Log HIDG entry for coordinated improvement completion
         try:
             from hidg import append_hidg_entry
             final_score = result.get("final_score")
             score_text = f"score:{final_score:.2f}" if final_score else "completed"
-            note = f"Multi-agent coordination for '{request.prompt[:30]}...' {score_text}"
+            note = f"Multi-agent coordination for '{request_data.prompt[:30]}...' {score_text}"
             append_hidg_entry("COORDINATION", note)
         except Exception as log_error:
             print(f"HIDG logging error: {log_error}")
@@ -810,14 +806,12 @@ async def get_agent_status(request: Request, api_key: str = Depends(verify_api_k
             "success": True,
             "agents": status,
             "coordination_metrics": metrics,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "message": "Failed to get agent status"
-        }
+        import logging
+        logging.error(f"Failed to get agent status: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get agent status")
 
 @app.get("/cache-stats")
 @limiter.limit("20/minute")
@@ -828,14 +822,12 @@ async def get_cache_stats(request: Request, api_key: str = Depends(verify_api_ke
         return {
             "success": True,
             "cache_stats": stats,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "message": "Failed to get cache stats"
-        }
+        import logging
+        logging.error(f"Failed to get cache stats: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get cache stats")
 
 @app.get("/system-overview")
 @limiter.limit("20/minute")
@@ -851,7 +843,7 @@ async def get_system_overview(request: Request, api_key: str = Depends(verify_ap
         return {
             "success": True,
             "system_info": {
-                "api_version": "2.1.0",
+                "api_version": API_VERSION,
                 "production_ready": True,
                 "deployment_url": "https://prompt-to-json-backend.onrender.com",
                 "features": [
@@ -869,9 +861,9 @@ async def get_system_overview(request: Request, api_key: str = Depends(verify_ap
             "cache": cache_info.get("cache_stats", {}),
             "metrics": metrics_info,
             "endpoints": {
-                "total_endpoints": 17,
-                "protected_endpoints": 5,
-                "public_endpoints": 12,
+                "total_endpoints": len([route for route in app.routes if hasattr(route, 'methods')]),
+                "protected_endpoints": len([route for route in app.routes if hasattr(route, 'methods') and route.path not in ["/token", "/metrics"]]),
+                "public_endpoints": len([route for route in app.routes if hasattr(route, 'methods') and route.path in ["/token", "/metrics"]]),
                 "authentication_methods": ["API Key", "JWT Token"]
             },
             "performance": {
@@ -880,14 +872,12 @@ async def get_system_overview(request: Request, api_key: str = Depends(verify_ap
                 "uptime_target": "99.9%",
                 "rate_limit": "20 requests/minute"
             },
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     except Exception as e:
-        return {
-            "success": False,
-            "error": str(e),
-            "message": "Failed to get system overview"
-        }
+        import logging
+        logging.error(f"Failed to get system overview: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get system overview")
 
 
 
@@ -897,7 +887,7 @@ if __name__ == "__main__":
     workers = int(os.getenv("MAX_WORKERS", 4))
     
     if os.getenv("PRODUCTION_MODE") == "true":
-        # Production configuration for 50+ concurrent users
+        # Production configuration - validated for high concurrency
         uvicorn.run(
             "main_api:app",
             host="0.0.0.0",

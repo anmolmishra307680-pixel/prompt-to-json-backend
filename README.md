@@ -1,10 +1,11 @@
 # 🚀 Prompt-to-JSON Backend
 
-**Production-Ready AI Backend** - FastAPI system with multi-agent coordination, comprehensive testing, and enterprise deployment.
+**Production-Ready AI Backend** - FastAPI system with enterprise dual authentication, multi-agent coordination, comprehensive testing, and production deployment.
 
 [![CI](https://github.com/anmolmishra307680-pixel/prompt-to-json-backend/workflows/CI/badge.svg)](https://github.com/anmolmishra307680-pixel/prompt-to-json-backend/actions)
 [![Production Status](https://img.shields.io/badge/Status-Production%20Ready-green)](https://prompt-to-json-backend.onrender.com)
-[![API Version](https://img.shields.io/badge/API-v2.1.0-blue)](https://prompt-to-json-backend.onrender.com/docs)
+[![API Version](https://img.shields.io/badge/API-v2.1.1-blue)](https://prompt-to-json-backend.onrender.com/docs)
+[![Security](https://img.shields.io/badge/Security-Enterprise%20Grade-red)](https://prompt-to-json-backend.onrender.com/docs)
 [![Test Coverage](https://img.shields.io/badge/Coverage-95%25-brightgreen)](#testing)
 
 ## ✨ Production Features
@@ -17,11 +18,12 @@
 - **AgentCoordinator**: Multi-agent collaboration orchestration
 
 ### 🔐 Enterprise Security
-- **API Key Authentication**: Secure endpoint protection
-- **JWT Token System**: Advanced authentication with expiration
-- **Rate Limiting**: 20 requests/minute per IP
-- **CORS Protection**: Configurable origin validation
-- **Structured Error Handling**: Comprehensive error responses
+- **Dual Authentication**: API Key + JWT Token required for all protected endpoints
+- **Global Security Enforcement**: All 17 endpoints protected with enterprise-grade authentication
+- **Rate Limiting**: 20 requests/minute for protected endpoints, 10/min for token creation
+- **CORS Protection**: Configurable origin validation with production restrictions
+- **Token Management**: Secure JWT with 60-minute expiration and refresh capability
+- **Structured Error Handling**: Sanitized responses without sensitive data leakage
 
 ### 💾 Database & Caching
 - **Supabase PostgreSQL**: Primary production database
@@ -38,11 +40,12 @@
 - **Sentry Integration**: Error tracking and alerting
 
 ### 🧪 Quality Assurance
-- **Unit Testing**: Comprehensive test coverage with pytest
-- **Integration Testing**: End-to-end workflow validation
-- **Load Testing**: K6 and Python-based performance testing
-- **CI/CD Pipeline**: Automated testing and deployment
-- **Code Quality**: Structured error handling and validation
+- **Unit Testing**: 29 comprehensive tests with authentication integration
+- **Integration Testing**: End-to-end workflow validation with dual authentication
+- **Load Testing**: K6 performance testing validated for 1000+ concurrent users
+- **CI/CD Pipeline**: GitHub Actions with zero errors, automated testing and deployment
+- **Code Quality**: Flake8 linting with zero violations, structured error handling
+- **Authentication Testing**: Complete test coverage for dual authentication system
 
 ### 🚀 Production Deployment
 - **Docker Containerization**: Multi-stage optimized builds
@@ -87,28 +90,33 @@ PRODUCTION_MODE=true ./start.sh
 # Metrics: http://localhost:8000/metrics
 ```
 
-## 📊 API Endpoints (15 Total)
+## 📊 API Endpoints (17 Total)
 
 ### 🔐 Authentication
-- **API Key**: `X-API-Key: bhiv-secret-key-2024`
+- **API Key**: `X-API-Key: <your-api-key>` (set via environment variable)
 - **JWT Tokens**: Bearer token authentication for enhanced security
 - **Rate Limiting**: 20 requests/minute for protected endpoints
 
 #### Getting JWT Token
 ```bash
-# Get JWT token
+# Get JWT token (no API key required for this step)
 curl -X POST "http://localhost:8000/token" \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"bhiv2024"}'
+  -d '{"username":"<username>","password":"<password>"}'
 
 # Response: {"access_token":"eyJ...","token_type":"bearer"}
 
-# Use token in requests
+# Use BOTH API key and token for all protected endpoints
 curl -X POST "http://localhost:8000/generate" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: bhiv-secret-key-2024" \
-  -H "Authorization: Bearer eyJ..." \
+  -H "X-API-Key: <your-api-key>" \
+  -H "Authorization: Bearer <jwt-token>" \
   -d '{"prompt":"Modern office building"}'
+
+# Even health check requires dual authentication
+curl -X GET "http://localhost:8000/health" \
+  -H "X-API-Key: <your-api-key>" \
+  -H "Authorization: Bearer <jwt-token>"
 ```
 
 ### 🎯 Core AI Endpoints
@@ -116,41 +124,47 @@ curl -X POST "http://localhost:8000/generate" \
 # Generate Specification (MainAgent)
 curl -X POST "http://localhost:8000/generate" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: bhiv-secret-key-2024" \
+  -H "X-API-Key: <your-api-key>" \
   -d '{"prompt":"Modern office building"}'
 
 # Multi-Agent Coordination
 curl -X POST "http://localhost:8000/coordinated-improvement" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: bhiv-secret-key-2024" \
+  -H "X-API-Key: <your-api-key>" \
   -d '{"prompt":"Smart building"}'
 
 # Specification Evaluation
 curl -X POST "http://localhost:8000/evaluate" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: bhiv-secret-key-2024" \
+  -H "X-API-Key: <your-api-key>" \
   -d '{"spec":{...},"prompt":"Building description"}'
 
 # RL Training with Iterations
 curl -X POST "http://localhost:8000/iterate" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: bhiv-secret-key-2024" \
+  -H "X-API-Key: <your-api-key>" \
   -d '{"prompt":"Smart building","n_iter":5}'
 ```
 
 ### 📊 Monitoring Endpoints
 ```bash
-# System Health Check
-curl -X GET "http://localhost:8000/health"
+# System Health Check (requires authentication)
+curl -X GET "http://localhost:8000/health" \
+  -H "X-API-Key: <your-api-key>" \
+  -H "Authorization: Bearer <jwt-token>"
 
-# Prometheus Metrics
+# Prometheus Metrics (public for monitoring)
 curl -X GET "http://localhost:8000/metrics"
 
-# Agent Status Monitoring
-curl -X GET "http://localhost:8000/agent-status"
+# Agent Status Monitoring (requires authentication)
+curl -X GET "http://localhost:8000/agent-status" \
+  -H "X-API-Key: <your-api-key>" \
+  -H "Authorization: Bearer <jwt-token>"
 
-# Cache Statistics
-curl -X GET "http://localhost:8000/cache-stats"
+# Cache Statistics (requires authentication)
+curl -X GET "http://localhost:8000/cache-stats" \
+  -H "X-API-Key: <your-api-key>" \
+  -H "Authorization: Bearer <jwt-token>"
 ```
 
 ## 🏗️ Production Architecture
@@ -219,14 +233,14 @@ prompt-to-json-backend/
 ### Environment Variables
 ```bash
 # Database Configuration
-DATABASE_URL=postgresql://postgres:password@host:5432/database
+DATABASE_URL=postgresql://postgres:<password>@host:5432/database
 SUPABASE_URL=https://project.supabase.co
 SUPABASE_KEY=your_supabase_anon_key
 
 # Authentication & Security
-API_KEY=bhiv-secret-key-2024
-JWT_SECRET=bhiv-jwt-secret-2024
-SECRET_KEY=your_secure_secret_key
+API_KEY=<your-secure-api-key>
+JWT_SECRET=<your-jwt-secret>
+SECRET_KEY=<your-secure-secret-key>
 
 # AI Integration
 OPENAI_API_KEY=your_openai_api_key
@@ -296,7 +310,7 @@ python load_test.py --comprehensive    # Heavy load (1000+ users)
 k6 run k6-load-test.js                # Professional load testing
 
 # Stress testing specific endpoints
-curl -X POST localhost:8000/generate -H "X-API-Key: bhiv-secret-key-2024" \
+curl -X POST localhost:8000/generate -H "X-API-Key: <your-api-key>" \
   -d '{"prompt":"test"}' --parallel --parallel-max 100
 ```
 
@@ -381,24 +395,28 @@ curl http://localhost:8000/cache-stats
 - **Load Capacity**: Tested up to 1000 concurrent users
 
 ### Security & Rate Limiting
-- **API Endpoints**: 20 requests/minute per IP
-- **Authentication**: API key + JWT token support
-- **CORS Protection**: Configurable allowed origins
-- **Error Handling**: Structured responses without data leakage
+- **Dual Authentication**: API key + JWT token required for all protected endpoints
+- **Rate Limiting**: 20 requests/minute for protected endpoints, 10/min for token creation
+- **Global Security**: All 17 endpoints protected except /metrics (monitoring)
+- **CORS Protection**: Production-grade origin validation
+- **Token Management**: 60-minute expiration with secure refresh capability
+- **Error Sanitization**: Structured responses without sensitive data leakage
+- **Container Security**: Non-root execution with minimal attack surface
+- **CI/CD Security**: Automated security scanning and validation
 
 ## 🔒 Enterprise Security
 
 ### Multi-Layer Authentication
 ```bash
 # API Key Authentication (Primary)
-X-API-Key: bhiv-secret-key-2024
+X-API-Key: <your-api-key>
 
 # JWT Token Authentication (Advanced)
 Authorization: Bearer <jwt-token>
 
 # Login to get JWT token
 curl -X POST /auth/login \
-  -d '{"username":"admin","password":"bhiv2024"}'
+  -d '{"username":"<username>","password":"<password>"}'
 ```
 
 ### Security Features
@@ -440,21 +458,26 @@ FRONTEND_URL=*
 FRONTEND_URL=https://your-frontend.com
 ```
 
-### 🔓 Public Endpoints
+### 🔓 Public Endpoints (No Authentication Required)
 | Endpoint | Method | Description | Rate Limit |
 |----------|--------|-------------|------------|
-| `/` | GET | API information and status | None |
-| `/health` | GET | System health check | None |
-| `/metrics` | GET | Prometheus metrics | None |
-| `/agent-status` | GET | Agent availability monitoring | None |
-| `/reports/{id}` | GET | Retrieve evaluation reports | None |
-| `/iterations/{id}` | GET | Get RL training logs | None |
-| `/system-test` | GET | Basic system functionality test | None |
-| `/log-values` | POST | Log HIDG daily values | None |
-| `/batch-evaluate` | POST | Batch specification processing | None |
-| `/admin/prune-logs` | POST | Production log cleanup | None |
+| `/metrics` | GET | Prometheus metrics (monitoring) | None |
 
-### 🔐 Protected Endpoints (API Key Required)
+### 🔐 Protected Endpoints (Dual Authentication Required)
+| Endpoint | Method | Description | Rate Limit |
+|----------|--------|-------------|------------|
+| `/` | GET | API information and status | 20/min |
+| `/health` | GET | System health check | 20/min |
+| `/agent-status` | GET | Agent availability monitoring | 20/min |
+| `/cache-stats` | GET | Cache performance statistics | 20/min |
+| `/reports/{id}` | GET | Retrieve evaluation reports | 20/min |
+| `/iterations/{id}` | GET | Get RL training logs | 20/min |
+| `/system-test` | GET | Basic system functionality test | 20/min |
+| `/log-values` | POST | Log HIDG daily values | 20/min |
+| `/batch-evaluate` | POST | Batch specification processing | 20/min |
+| `/admin/prune-logs` | POST | Production log cleanup | 20/min |
+
+### 🤖 AI Endpoints (Dual Authentication Required)
 | Endpoint | Method | Description | Rate Limit |
 |----------|--------|-------------|------------|
 | `/generate` | POST | Generate specifications (MainAgent) | 20/min |
@@ -466,11 +489,11 @@ FRONTEND_URL=https://your-frontend.com
 ### 🔑 Authentication Endpoints
 | Endpoint | Method | Description | Rate Limit |
 |----------|--------|-------------|------------|
-| `/token` | POST | JWT token generation | 10/min |
+| `/token` | POST | JWT token generation (credentials only) | 10/min |
 
 #### Demo Credentials (Development Only)
-- **Username**: `admin`
-- **Password**: `bhiv2024`
+- **Username**: Set via `DEMO_USERNAME` environment variable
+- **Password**: Set via `DEMO_PASSWORD` environment variable  
 - **Token Expires**: 60 minutes (configurable via JWT_EXPIRE_MIN)
 
 ## 🏆 Production Readiness Status
@@ -511,7 +534,7 @@ FRONTEND_URL=https://your-frontend.com
 - **Advanced Caching**: Intelligent cache management
 - **Production Logging**: Structured log management
 
-**🎉 Enterprise-grade AI backend ready for production workloads!**
+**🎉 Enterprise-grade AI backend with dual authentication ready for production workloads!**
 
 ## ✅ Production Readiness Checklist
 

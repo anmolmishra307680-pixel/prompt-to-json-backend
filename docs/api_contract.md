@@ -9,15 +9,13 @@
 
 ## Authentication
 
-### API Key (Required)
+### Dual Authentication (Required for All Protected Endpoints)
 ```http
 X-API-Key: bhiv-secret-key-2024
-```
-
-### JWT Token (Optional, Enhanced Security)
-```http
 Authorization: Bearer <jwt_token>
 ```
+
+**Note**: Both headers are required for all protected endpoints. Only `/token` and `/metrics` endpoints have different authentication requirements.
 
 #### Get JWT Token
 ```http
@@ -189,9 +187,11 @@ Authorization: Bearer <jwt_token>
 
 ## Monitoring Endpoints
 
-### Health Check
+### Health Check (Protected)
 ```http
 GET /health
+X-API-Key: bhiv-secret-key-2024
+Authorization: Bearer <jwt_token>
 ```
 
 **Response:**
@@ -204,16 +204,20 @@ GET /health
 }
 ```
 
-### Prometheus Metrics
+### Prometheus Metrics (Public)
 ```http
 GET /metrics
 ```
 
 **Response:** Prometheus format metrics
 
-### Agent Status
+**Note**: This endpoint is public for monitoring purposes and does not require authentication.
+
+### Agent Status (Protected)
 ```http
 GET /agent-status
+X-API-Key: bhiv-secret-key-2024
+Authorization: Bearer <jwt_token>
 ```
 
 **Response:**
@@ -230,8 +234,9 @@ GET /agent-status
 ```
 
 ## Rate Limiting
-- **Protected Endpoints**: 20 requests/minute per IP
-- **Public Endpoints**: No rate limiting
+- **Protected Endpoints**: 20 requests/minute per IP (all endpoints except /token and /metrics)
+- **Token Endpoint**: 10 requests/minute per IP
+- **Metrics Endpoint**: No rate limiting (monitoring purposes)
 
 ## Error Responses
 
@@ -275,21 +280,31 @@ GET /agent-status
 ## Frontend Integration Notes
 
 1. **Authentication Flow**:
-   - Get JWT token from `/token`
-   - Include both `X-API-Key` and `Authorization` headers
-   - Token expires in 60 minutes
+   - Get JWT token from `/token` endpoint (no API key required for this step)
+   - Include **BOTH** `X-API-Key` and `Authorization` headers for all other endpoints
+   - Token expires in 60 minutes, implement refresh logic
+   - Store token securely (avoid localStorage in production)
 
 2. **Error Handling**:
    - All errors return structured JSON with `error` and `message` fields
    - Check `success` field in responses
+   - Handle 401 responses by refreshing token
 
 3. **Rate Limiting**:
-   - Implement client-side rate limiting for protected endpoints
+   - Implement client-side rate limiting: 20 requests/minute for protected endpoints
+   - Token endpoint: 10 requests/minute limit
    - Handle 429 responses with exponential backoff
 
 4. **CORS**:
    - Set `FRONTEND_URL` environment variable in production
+   - Development allows all origins (`*`)
    - Ensure credentials are included in requests
+
+5. **Security Best Practices**:
+   - Never expose API keys in client-side code
+   - Implement token refresh before expiration
+   - Use HTTPS in production
+   - Validate all responses on client side
 
 ## OpenAPI Integration
 - **Spec URL**: `/openapi.json`

@@ -5,9 +5,25 @@
 - **Local**: `http://localhost:8000`
 
 ## Authentication
-All protected endpoints require:
+All protected endpoints require **DUAL AUTHENTICATION**:
 ```
-X-API-Key: bhiv-secret-key-2024
+X-API-Key: <your-api-key>
+Authorization: Bearer <jwt-token>
+```
+
+### Getting JWT Token
+```bash
+curl -X POST "http://localhost:8000/token" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"YOUR_USERNAME","password":"YOUR_PASSWORD"}'
+```
+
+**Response:**
+```json
+{
+  "access_token": "<jwt-token-string>",
+  "token_type": "bearer"
+}
 ```
 
 ## CORS Configuration
@@ -26,7 +42,8 @@ const allowedOrigins = [
 ```http
 POST /generate
 Content-Type: application/json
-X-API-Key: bhiv-secret-key-2024
+X-API-Key: <your-api-key>
+Authorization: Bearer <jwt-token>
 
 {
   "prompt": "Modern 5-story office building with steel frame"
@@ -49,9 +66,11 @@ X-API-Key: bhiv-secret-key-2024
 }
 ```
 
-### 2. Health Check
+### 2. Health Check (Protected)
 ```http
 GET /health
+X-API-Key: <your-api-key>
+Authorization: Bearer <jwt-token>
 ```
 
 **Response:**
@@ -64,9 +83,11 @@ GET /health
 }
 ```
 
-### 3. Agent Status
+### 3. Agent Status (Protected)
 ```http
 GET /agent-status
+X-API-Key: <your-api-key>
+Authorization: Bearer <jwt-token>
 ```
 
 **Response:**
@@ -119,23 +140,40 @@ GET /agent-status
 ```
 
 ## Rate Limits
-- **Generate endpoint**: 20 requests/minute per IP
-- **Other endpoints**: No specific limits
+- **All protected endpoints**: 20 requests/minute per IP
+- **Token endpoint**: 10 requests/minute per IP
+- **Metrics endpoint**: No rate limiting (monitoring)
 
 ## Frontend Integration Example
 
 ```javascript
-// React/Next.js example
+// React/Next.js example with dual authentication
 const API_BASE = 'https://prompt-to-json-backend.onrender.com';
-const API_KEY = 'bhiv-secret-key-2024';
+const API_KEY = process.env.REACT_APP_API_KEY; // Your API key from environment
+
+// Get JWT token first
+async function getToken() {
+  const response = await fetch(`${API_BASE}/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      username: process.env.REACT_APP_USER, 
+      password: process.env.REACT_APP_PASS 
+    })
+  });
+  const data = await response.json();
+  return data.access_token;
+}
 
 async function generateSpec(prompt) {
   try {
+    const token = await getToken();
     const response = await fetch(`${API_BASE}/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-API-Key': API_KEY,
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify({ prompt }),
     });
