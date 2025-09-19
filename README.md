@@ -419,7 +419,23 @@ curl -X POST /auth/login \
 - ✅ Database connection encryption
 - ✅ Automated security scanning in CI/CD
 
-## 🎯 Complete API Reference (15 Endpoints)
+## 🎯 Complete API Reference (17 Endpoints)
+
+### 🔗 **API Documentation**
+- **OpenAPI Spec**: `/openapi.json`
+- **Swagger UI**: `/docs` (Interactive documentation)
+- **ReDoc**: `/redoc` (Alternative documentation)
+- **Postman Collection**: `docs/postman_prompt_agent_collection.json`
+- **API Contract**: `docs/api_contract.md`
+
+### 🌐 **CORS Configuration**
+```bash
+# Development (allows all origins)
+FRONTEND_URL=*
+
+# Production (restrict to frontend domain)
+FRONTEND_URL=https://your-frontend.com
+```
 
 ### 🔓 Public Endpoints
 | Endpoint | Method | Description | Rate Limit |
