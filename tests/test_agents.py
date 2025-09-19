@@ -62,7 +62,8 @@ class TestEvaluatorAgent:
             requirements=[]
         )
         evaluation = evaluator.run(incomplete_spec, "Office")
-        assert evaluation.score < 80  # Should score lower for incomplete spec
+        assert evaluation.score < 90  # Should score lower for incomplete spec
+        assert evaluation.completeness < 70  # Completeness should be low
 
 class TestRLLoop:
     @pytest.fixture

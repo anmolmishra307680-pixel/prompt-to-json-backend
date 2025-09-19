@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional, Dict, Any, Union
 from datetime import datetime
 import uuid
@@ -23,11 +23,13 @@ class DesignSpec(BaseModel):
     requirements: List[str] = Field(default_factory=list, description="Design requirements")
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat(), description="Generation timestamp")
     
-    @validator('stories')
+    @field_validator('stories')
+    @classmethod
     def validate_stories(cls, v):
         return max(1, v)
     
-    @validator('materials')
+    @field_validator('materials')
+    @classmethod
     def validate_materials(cls, v):
         if not v:
             return [MaterialSpec(type="concrete")]
@@ -42,7 +44,8 @@ class EvaluationResult(BaseModel):
     suggestions: List[str] = Field(default_factory=list, description="Improvement suggestions")
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat(), description="Evaluation timestamp")
     
-    @validator('score', 'completeness', 'format_validity', 'feasibility')
+    @field_validator('score', 'completeness', 'format_validity', 'feasibility')
+    @classmethod
     def validate_scores(cls, v):
         return max(0, min(100, v))
 
