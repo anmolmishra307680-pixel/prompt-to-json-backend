@@ -10,3 +10,7 @@ docs/demo.mp4
 logs/*.json
 spec_outputs/*.json
 reports/*.json
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
