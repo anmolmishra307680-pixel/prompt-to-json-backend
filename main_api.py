@@ -272,12 +272,25 @@ async def generate_spec(request: Request, generate_request: GenerateRequest, api
     """Generate specification from prompt"""
     try:
         spec = prompt_agent.run(generate_request.prompt)
+        # Log HIDG entry for generation completion
+        try:
+            from hidg import log_generation_completion
+            log_generation_completion(generate_request.prompt, True)
+        except Exception as log_error:
+            print(f"HIDG logging error: {log_error}")
+        
         return {
             "spec": spec.model_dump(),
             "success": True,
             "message": "Specification generated successfully"
         }
     except Exception as e:
+        # Log failed generation
+        try:
+            from hidg import log_generation_completion
+            log_generation_completion(generate_request.prompt, False)
+        except Exception as log_error:
+            print(f"HIDG logging error: {log_error}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/evaluate")
@@ -351,6 +364,13 @@ async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_
             import uuid
             report_id = str(uuid.uuid4())
         
+        # Log HIDG entry for evaluation completion
+        try:
+            from hidg import log_evaluation_completion
+            log_evaluation_completion(request.prompt, evaluation.score)
+        except Exception as log_error:
+            print(f"HIDG logging error: {log_error}")
+        
         return {
             "report_id": report_id,
             "evaluation": evaluation.model_dump(),
@@ -420,6 +440,14 @@ async def iterate_rl(request: IterateRequest, api_key: str = Depends(verify_api_
             "learning_insights": clean_data(results.get("learning_insights", {})),
             "message": f"RL training completed with {len(detailed_iterations)} iterations"
         }
+        
+        # Log HIDG entry for RL training completion
+        try:
+            from hidg import log_pipeline_completion
+            final_score = results.get("learning_insights", {}).get("final_score")
+            log_pipeline_completion(request.prompt, len(detailed_iterations), final_score)
+        except Exception as log_error:
+            print(f"HIDG logging error: {log_error}")
         
         return response_data
     except Exception as e:
@@ -684,6 +712,16 @@ async def coordinated_improvement(request: GenerateRequest, api_key: str = Depen
         coordinator = AgentCoordinator()
         
         result = await coordinator.coordinated_improvement(request.prompt)
+        
+        # Log HIDG entry for coordinated improvement completion
+        try:
+            from hidg import append_hidg_entry
+            final_score = result.get("final_score")
+            score_text = f"score:{final_score:.2f}" if final_score else "completed"
+            note = f"Multi-agent coordination for '{request.prompt[:30]}...' {score_text}"
+            append_hidg_entry("COORDINATION", note)
+        except Exception as log_error:
+            print(f"HIDG logging error: {log_error}")
         
         return {
             "success": True,
