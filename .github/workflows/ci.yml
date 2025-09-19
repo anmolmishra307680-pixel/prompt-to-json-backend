@@ -1,51 +1,85 @@
-name: CI/CD Pipeline
-on:
-  push:
-    branches: [ main, staging-ready ]
-  pull_request:
-    branches: [ main ]
+name: CI
+on: [push, pull_request]
 
 jobs:
-  test:
+  test-and-build:
     runs-on: ubuntu-latest
+    
+    services:
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
     steps:
       - uses: actions/checkout@v4
+      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.11
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
+      
+      - name: Set up test environment
+        run: |
+          echo "DATABASE_URL=sqlite:///test.db" >> $GITHUB_ENV
+          echo "API_KEY=test-key" >> $GITHUB_ENV
+          echo "JWT_SECRET=test-jwt-secret" >> $GITHUB_ENV
+          echo "REDIS_URL=redis://localhost:6379/0" >> $GITHUB_ENV
+      
+      - name: Run linting
+        run: |
+          pip install flake8
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        continue-on-error: true
+      
+      - name: Run tests
+        run: |
+          pytest tests/ -v --tb=short --disable-warnings
+      
+      - name: Test coverage
+        run: |
           pip install pytest-cov
-      - name: Run tests with coverage
-        run: pytest tests/ --cov=. --cov-report=xml
-      - name: Upload coverage
+          pytest tests/ --cov=. --cov-report=xml --cov-report=term-missing
+        continue-on-error: true
+      
+      - name: Build Docker image
+        run: |
+          docker build -t prompt-agent:${{ github.sha }} .
+          docker build -t prompt-agent:latest .
+      
+      - name: Test Docker image
+        run: |
+          docker run --rm -d --name test-container -p 8000:8000 \
+            -e DATABASE_URL=sqlite:///test.db \
+            -e API_KEY=test-key \
+            prompt-agent:latest
+          sleep 10
+          curl -f http://localhost:8000/health || exit 1
+          docker stop test-container
+      
+      - name: Upload coverage reports
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
-  
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build Docker image
-        run: docker build -t ${{ github.repository }}:${{ github.sha }} .
-      - name: Run security scan
-        run: |
-          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-            -v $PWD:/root/.cache/ aquasec/trivy:latest image \
-            --exit-code 0 --severity HIGH,CRITICAL \
-            ${{ github.repository }}:${{ github.sha }}
-  
-  deploy:
-    needs: [test, build]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Deploy to production
-        run: |
-          echo "Deploying to production..."
-          # Add your deployment commands here
+          flags: unittests
+          name: codecov-umbrella
+        continue-on-error: true

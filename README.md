@@ -2,6 +2,7 @@
 
 **Production-Ready AI Backend** - FastAPI system with multi-agent coordination, comprehensive testing, and enterprise deployment.
 
+[![CI](https://github.com/anmolmishra307680-pixel/prompt-to-json-backend/workflows/CI/badge.svg)](https://github.com/anmolmishra307680-pixel/prompt-to-json-backend/actions)
 [![Production Status](https://img.shields.io/badge/Status-Production%20Ready-green)](https://prompt-to-json-backend.onrender.com)
 [![API Version](https://img.shields.io/badge/API-v2.1.0-blue)](https://prompt-to-json-backend.onrender.com/docs)
 [![Test Coverage](https://img.shields.io/badge/Coverage-95%25-brightgreen)](#testing)
