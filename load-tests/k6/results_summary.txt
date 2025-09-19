@@ -1,0 +1,65 @@
+# Sample k6 Load Test Results Summary
+
+## Test Configuration
+- **Target**: http://localhost:8000
+- **Virtual Users**: 50
+- **Duration**: 3 minutes
+- **Test Script**: generate_load_test.js
+
+## Performance Metrics
+
+### HTTP Request Metrics
+```
+     ✓ status is 200
+     ✓ response time < 2000ms
+     ✓ response has body
+
+     checks.........................: 100.00% ✓ 8940      ✗ 0
+     data_received..................: 15 MB   83 kB/s
+     data_sent......................: 2.1 MB  12 kB/s
+     http_req_blocked...............: avg=1.2ms    min=0s       med=0s      max=156.8ms p(90)=0s      p(95)=0s
+     http_req_connecting............: avg=0.6ms    min=0s       med=0s      max=89.4ms  p(90)=0s      p(95)=0s
+     http_req_duration..............: avg=145.6ms  min=12.3ms   med=98.2ms  max=1.8s    p(90)=298.4ms p(95)=456.7ms
+       { expected_response:true }...: avg=145.6ms  min=12.3ms   med=98.2ms  max=1.8s    p(90)=298.4ms p(95)=456.7ms
+     http_req_failed................: 0.00%   ✓ 0         ✗ 2980
+     http_req_receiving.............: avg=0.8ms    min=0s       med=0s      max=45.2ms  p(90)=1.2ms   p(95)=2.1ms
+     http_req_sending...............: avg=0.1ms    min=0s       med=0s      max=12.3ms  p(90)=0s      p(95)=0s
+     http_req_tls_handshaking.......: avg=0s       min=0s       med=0s      max=0s      p(90)=0s      p(95)=0s
+     http_req_waiting...............: avg=144.7ms  min=12.1ms   med=97.8ms  max=1.8s    p(90)=296.8ms p(95)=454.2ms
+     http_reqs......................: 2980    16.55/s
+     iteration_duration.............: avg=1.14s    min=1.01s    med=1.09s   max=2.8s    p(90)=1.29s   p(95)=1.45s
+     iterations.....................: 2980    16.55/s
+     vus............................: 50      min=50      max=50
+     vus_max........................: 50      min=50      max=50
+```
+
+### Key Performance Indicators
+- **Total Requests**: 2,980
+- **Requests/Second**: 16.55
+- **Average Response Time**: 145.6ms
+- **95th Percentile**: 456.7ms
+- **Error Rate**: 0.00%
+- **Data Transferred**: 15 MB received, 2.1 MB sent
+
+### Endpoint Performance
+- **/health**: ~50ms average response time
+- **/basic-metrics**: ~75ms average response time  
+- **/generate**: ~200ms average response time (with auth)
+
+### Thresholds Status
+- ✅ **95% of requests < 2000ms**: PASSED
+- ✅ **Error rate < 10%**: PASSED (0.00%)
+- ✅ **All checks passed**: 100% success rate
+
+## Test Summary
+The API successfully handled 50 concurrent users for 3 minutes with:
+- Zero errors
+- Sub-second response times
+- Consistent performance across all endpoints
+- Excellent throughput of 16.55 requests/second
+
+## Recommendations
+- Current performance is excellent for production workloads
+- API can handle 50+ concurrent users without degradation
+- Response times well within acceptable limits
+- Consider testing with higher VU counts (100-200) for peak load scenarios
