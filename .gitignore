@@ -1,16 +1,83 @@
+# Virtual environments
 venv/
+.venv/
+env/
+ENV/
+
+# Environment files
 .env
+.env.local
+.env.*.local
+
+# Python
 __pycache__/
 *.pyc
-*.sqlite3
-models_weights/
-docs/demo.mp4
-.venv/
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Databases
 *.db
+*.sqlite
+*.sqlite3
+prompt_to_json.db
+
+# Heavy artifacts (moved to archive/)
+models_weights/
+model_weights/
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+*.onnx
+*.tflite
+
+# Large files and outputs
 logs/*.json
 spec_outputs/*.json
 reports/*.json
+logs/large_*.log
+logs/training_*.log
+reports/large_*.json
+spec_outputs/batch_*.json
+
+# Load test results
+load-tests/results/
+k6-results/
+
+# Testing and coverage
 .coverage
 coverage.xml
 htmlcov/
 .pytest_cache/
+.tox/
+.nox/
+
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Demo files
+docs/demo.mp4
+
+# Keep empty directories
+!logs/.gitkeep
+!spec_outputs/.gitkeep
+!reports/.gitkeep
