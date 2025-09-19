@@ -21,20 +21,24 @@ try:
     key: str = os.environ.get("SUPABASE_KEY")
     if url and key:
         supabase: Client = create_client(url, key)
-        print("✅ Supabase client initialized")
+        print("[OK] Supabase client initialized")
     else:
         supabase = None
-        print("⚠️ Supabase credentials not found, using PostgreSQL only")
+        print("[WARN] Supabase credentials not found, using PostgreSQL only")
 except ImportError:
     supabase = None
-    print("⚠️ Supabase library not installed, using PostgreSQL only")
+    print("[WARN] Supabase library not installed, using PostgreSQL only")
 
 class Database:
     def __init__(self, database_url: str = None):
-        self.database_url = database_url or os.getenv(
-            'DATABASE_URL', 
-            'sqlite:///prompt_to_json.db'
-        )
+        self.database_url = database_url or os.getenv('DATABASE_URL')
+        if not self.database_url or self.database_url.strip() == '':
+            print("[WARN] No DATABASE_URL found, using SQLite fallback")
+            self.database_url = 'sqlite:///prompt_to_json.db'
+        elif 'postgresql' in self.database_url:
+            print("[INFO] Using Supabase PostgreSQL database")
+        else:
+            print("[INFO] Using SQLite database")
         self.engine = create_engine(self.database_url)
         self.SessionLocal = sessionmaker(bind=self.engine)
         self.create_tables()

@@ -1,0 +1,24 @@
+k6 Load Test Commands:
+
+# Light load (development)
+k6 run --env VUS=10 --env DURATION=1m load-tests/k6/generate_load_test.js
+
+# Medium load (staging)  
+k6 run --env VUS=50 --env DURATION=3m load-tests/k6/generate_load_test.js
+
+# Heavy load (production)
+k6 run --env VUS=200 --env DURATION=10m load-tests/k6/generate_load_test.js
+
+# Authentication flow
+k6 run load-tests/k6/auth_load_test.js
+
+Install k6 first:
+- Windows: choco install k6
+- macOS: brew install k6  
+- Linux: apt-get install k6
+
+Expected Results:
+- Light: ~10 RPS, <100ms response time
+- Medium: ~50 RPS, <200ms response time
+- Heavy: ~200 RPS, <500ms response time
+- Auth: Token + generate flow validation

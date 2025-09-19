@@ -1,5 +1,5 @@
 # hidg.py
-from datetime import datetime
+from datetime import datetime, timezone
 import os
 from pathlib import Path
 
@@ -15,7 +15,7 @@ def append_hidg_entry(stage: str, note: str, branch: str = None, commit_hash: st
     reports_dir.mkdir(exist_ok=True)
     
     # Create log entry
-    timestamp = datetime.utcnow().isoformat()
+    timestamp = datetime.now(timezone.utc).isoformat()
     entry = f"{timestamp} - {stage} - {note} - branch:{branch} commit:{commit_hash}\n"
     
     # Append to daily log

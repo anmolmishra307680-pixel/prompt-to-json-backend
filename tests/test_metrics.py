@@ -10,9 +10,21 @@ from main_api import app
 
 client = TestClient(app)
 
+def get_auth_headers():
+    """Get JWT token and return headers with API key and token"""
+    token_response = client.post("/token", json={"username": "admin", "password": "bhiv2024"})
+    if token_response.status_code == 200:
+        token = token_response.json()["access_token"]
+        return {
+            "X-API-Key": "bhiv-secret-key-2024",
+            "Authorization": f"Bearer {token}"
+        }
+    return {"X-API-Key": "bhiv-secret-key-2024"}
+
 def test_health_endpoint():
     """Test health check endpoint returns proper status"""
-    response = client.get("/health")
+    headers = get_auth_headers()
+    response = client.get("/health", headers=headers)
     
     assert response.status_code == 200
     json_response = response.json()
@@ -47,7 +59,8 @@ def test_metrics_endpoint():
 
 def test_basic_metrics_endpoint():
     """Test our custom basic metrics endpoint"""
-    response = client.get("/basic-metrics")
+    headers = get_auth_headers()
+    response = client.get("/basic-metrics", headers=headers)
     
     assert response.status_code == 200
     json_response = response.json()
@@ -66,7 +79,8 @@ def test_basic_metrics_endpoint():
 
 def test_system_overview_endpoint():
     """Test system overview endpoint for comprehensive monitoring"""
-    response = client.get("/system-overview")
+    headers = get_auth_headers()
+    response = client.get("/system-overview", headers=headers)
     
     assert response.status_code == 200
     json_response = response.json()
@@ -86,7 +100,8 @@ def test_system_overview_endpoint():
 
 def test_agent_status_endpoint():
     """Test agent status monitoring"""
-    response = client.get("/agent-status")
+    headers = get_auth_headers()
+    response = client.get("/agent-status", headers=headers)
     
     assert response.status_code == 200
     json_response = response.json()
@@ -97,7 +112,8 @@ def test_agent_status_endpoint():
 
 def test_cache_stats_endpoint():
     """Test cache statistics endpoint"""
-    response = client.get("/cache-stats")
+    headers = get_auth_headers()
+    response = client.get("/cache-stats", headers=headers)
     
     assert response.status_code == 200
     json_response = response.json()

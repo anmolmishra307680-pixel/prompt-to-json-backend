@@ -23,22 +23,12 @@ from cache import cache
 from auth import create_access_token, get_current_user
 from errors import register_exception_handlers
 
-app = FastAPI(
-    title="Prompt-to-JSON API", 
-    version="2.1.0",
-    description="Production-Ready AI Backend with Multi-Agent Coordination",
-    docs_url="/docs",
-    redoc_url="/redoc"
-)
-
-# Register structured exception handlers
-register_exception_handlers(app)
-
 # API Key Authentication
-from fastapi.security import APIKeyHeader
+from fastapi.security import APIKeyHeader, HTTPBearer
 
 API_KEY = os.getenv("API_KEY", "bhiv-secret-key-2024")
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+bearer_scheme = HTTPBearer(auto_error=False)
 
 def verify_api_key(api_key: str = Depends(api_key_header)):
     """Verify API key from X-API-Key header"""
@@ -48,6 +38,69 @@ def verify_api_key(api_key: str = Depends(api_key_header)):
             detail="Invalid or missing API key. Include X-API-Key header."
         )
     return api_key
+
+app = FastAPI(
+    title="Prompt-to-JSON API", 
+    version="2.1.0",
+    description="Production-Ready AI Backend with Multi-Agent Coordination",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_tags=[
+        {"name": "Authentication", "description": "JWT token and API key authentication"},
+        {"name": "AI Agents", "description": "AI specification generation and evaluation"},
+        {"name": "Monitoring", "description": "Health checks and system metrics"}
+    ]
+)
+
+# Register structured exception handlers
+register_exception_handlers(app)
+
+# Custom OpenAPI schema with security
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    
+    from fastapi.openapi.utils import get_openapi
+    openapi_schema = get_openapi(
+        title="Prompt-to-JSON API",
+        version="2.1.0",
+        description="Production-Ready AI Backend with Multi-Agent Coordination",
+        routes=app.routes,
+    )
+    
+    # Add security schemes
+    openapi_schema["components"]["securitySchemes"] = {
+        "APIKeyHeader": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "X-API-Key"
+        },
+        "BearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    }
+    
+    # Apply security to all endpoints
+    for path, path_item in openapi_schema["paths"].items():
+        for operation in path_item.values():
+            if isinstance(operation, dict) and "operationId" in operation:
+                if path == "/token":
+                    # Token endpoint only needs API key
+                    operation["security"] = [
+                        {"APIKeyHeader": []}
+                    ]
+                else:
+                    # All other endpoints need both API key and JWT
+                    operation["security"] = [
+                        {"APIKeyHeader": [], "BearerAuth": []}
+                    ]
+    
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 # Rate limiter with slowapi
 limiter = Limiter(key_func=get_remote_address)
@@ -180,11 +233,15 @@ class LogValuesRequest(BaseModel):
     achievements: Dict[Any, Any] = None
     technical_notes: Dict[Any, Any] = None
 
+class TokenRequest(BaseModel):
+    username: str
+    password: str
+
 @app.post("/token")
-def token_create(payload: dict):
+def token_create(payload: TokenRequest, api_key: str = Depends(verify_api_key)):
     """Create JWT token for authentication"""
-    username = payload.get("username")
-    password = payload.get("password")
+    username = payload.username
+    password = payload.password
     if not username or not password:
         raise HTTPException(status_code=400, detail="username and password required")
     
@@ -196,7 +253,8 @@ def token_create(payload: dict):
     raise HTTPException(status_code=401, detail="Invalid credentials")
 
 @app.get("/")
-async def root():
+@limiter.limit("20/minute")
+async def root(request: Request):
     """Root endpoint"""
     return {
         "message": "Prompt-to-JSON API", 
@@ -205,13 +263,11 @@ async def root():
         "features": ["AI Agents", "Multi-Agent Coordination", "RL Training", "JWT Authentication", "Monitoring"]
     }
 
-@app.get("/favicon.ico")
-async def favicon():
-    """Favicon endpoint"""
-    return {"message": "No favicon configured"}
+
 
 @app.get("/health")
-async def health_check():
+@limiter.limit("20/minute")
+async def health_check(request: Request):
     """Health check endpoint"""
     try:
         # Test database connection
@@ -239,7 +295,8 @@ async def health_check():
     }
 
 @app.get("/basic-metrics")
-async def basic_metrics():
+@limiter.limit("20/minute")
+async def basic_metrics(request: Request):
     """Basic metrics endpoint"""
     try:
         from pathlib import Path
@@ -268,7 +325,7 @@ async def basic_metrics():
 
 @app.post("/generate")
 @limiter.limit("20/minute")
-async def generate_spec(request: Request, generate_request: GenerateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
+async def generate_spec(request: Request, generate_request: GenerateRequest):
     """Generate specification from prompt"""
     try:
         spec = prompt_agent.run(generate_request.prompt)
@@ -294,7 +351,7 @@ async def generate_spec(request: Request, generate_request: GenerateRequest, api
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/evaluate")
-async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
+async def evaluate_spec(request: EvaluateRequest):
     """Evaluate specification"""
     try:
         # Import with error handling
@@ -381,7 +438,7 @@ async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/iterate")
-async def iterate_rl(request: IterateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
+async def iterate_rl(request: IterateRequest):
     """Run RL iterations with detailed before→after, scores, feedback"""
     try:
         # Ensure minimum 2 iterations
@@ -454,7 +511,8 @@ async def iterate_rl(request: IterateRequest, api_key: str = Depends(verify_api_
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/reports/{report_id}")
-async def get_report(report_id: str):
+@limiter.limit("20/minute")
+async def get_report(request: Request, report_id: str):
     """Retrieve full report from DB"""
     try:
         report = db.get_report(report_id)
@@ -477,17 +535,18 @@ async def get_report(report_id: str):
         }
 
 @app.post("/log-values")
-async def log_values(request: LogValuesRequest):
+@limiter.limit("20/minute")
+async def log_values(request: Request, log_request: LogValuesRequest):
     """Store HIDG values per day"""
     try:
         # Save to database
         hidg_id = db.save_hidg_log(
-            request.date,
-            request.day,
-            request.task,
-            request.values_reflection,
-            request.achievements,
-            request.technical_notes
+            log_request.date,
+            log_request.day,
+            log_request.task,
+            log_request.values_reflection,
+            log_request.achievements,
+            log_request.technical_notes
         )
         
         # Also save to file as backup
@@ -499,12 +558,12 @@ async def log_values(request: LogValuesRequest):
         logs_dir.mkdir(exist_ok=True)
         
         values_entry = {
-            "date": request.date,
-            "day": request.day,
-            "task": request.task,
-            "values_reflection": request.values_reflection,
-            "achievements": request.achievements,
-            "technical_notes": request.technical_notes,
+            "date": log_request.date,
+            "day": log_request.day,
+            "task": log_request.task,
+            "values_reflection": log_request.values_reflection,
+            "achievements": log_request.achievements,
+            "technical_notes": log_request.technical_notes,
             "timestamp": datetime.now().isoformat(),
             "hidg_id": hidg_id
         }
@@ -536,7 +595,8 @@ async def log_values(request: LogValuesRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/batch-evaluate")
-async def batch_evaluate(prompts: List[str]):
+@limiter.limit("20/minute")
+async def batch_evaluate(request: Request, prompts: List[str]):
     """Process multiple specs/prompts and store evaluations"""
     try:
         results = []
@@ -562,7 +622,8 @@ async def batch_evaluate(prompts: List[str]):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/iterations/{session_id}")
-async def get_iteration_logs(session_id: str):
+@limiter.limit("20/minute")
+async def get_iteration_logs(request: Request, session_id: str):
     """Get all iteration logs for a session"""
     try:
         # Try database first
@@ -635,7 +696,8 @@ async def get_cli_tools():
     }
 
 @app.get("/system-test")
-async def run_system_test():
+@limiter.limit("20/minute")
+async def run_system_test(request: Request):
     """Run basic system tests"""
     try:
         # Test core functionality
@@ -659,17 +721,18 @@ async def run_system_test():
         }
 
 @app.post("/advanced-rl")
-async def advanced_rl_training(request: IterateRequest, user=Depends(get_current_user)):
+@limiter.limit("20/minute")
+async def advanced_rl_training(request: Request, rl_request: IterateRequest):
     """Run Advanced RL training with policy gradients"""
     try:
         from rl_agent.advanced_rl import AdvancedRLEnvironment
         env = AdvancedRLEnvironment()
         
-        result = env.train_episode(request.prompt, max_steps=request.n_iter)
+        result = env.train_episode(rl_request.prompt, max_steps=rl_request.n_iter)
         
         return {
             "success": True,
-            "prompt": request.prompt,
+            "prompt": rl_request.prompt,
             "steps": result.get("steps", 0),
             "final_score": result.get("final_score", 0),
             "total_reward": result.get("total_reward", 0),
@@ -684,7 +747,8 @@ async def advanced_rl_training(request: IterateRequest, user=Depends(get_current
         }
 
 @app.post("/admin/prune-logs")
-async def prune_logs(retention_days: int = 30):
+@limiter.limit("20/minute")
+async def prune_logs(request: Request, retention_days: int = 30):
     """Prune old logs for production scalability"""
     try:
         from db.log_pruning import LogPruner
@@ -705,7 +769,7 @@ async def prune_logs(retention_days: int = 30):
         }
 
 @app.post("/coordinated-improvement")
-async def coordinated_improvement(request: GenerateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
+async def coordinated_improvement(request: GenerateRequest):
     """Advanced agent coordination for optimal results"""
     try:
         from agent_coordinator import AgentCoordinator
@@ -732,7 +796,8 @@ async def coordinated_improvement(request: GenerateRequest, api_key: str = Depen
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/agent-status")
-async def get_agent_status():
+@limiter.limit("20/minute")
+async def get_agent_status(request: Request):
     """Get status of all AI agents"""
     try:
         from agent_coordinator import AgentCoordinator
@@ -755,7 +820,8 @@ async def get_agent_status():
         }
 
 @app.get("/cache-stats")
-async def get_cache_stats():
+@limiter.limit("20/minute")
+async def get_cache_stats(request: Request):
     """Get cache performance statistics"""
     try:
         stats = cache.get_stats()
@@ -772,14 +838,15 @@ async def get_cache_stats():
         }
 
 @app.get("/system-overview")
-async def get_system_overview():
+@limiter.limit("20/minute")
+async def get_system_overview(request: Request):
     """Comprehensive system status and capabilities"""
     try:
         # Get all system information
-        health_info = await health_check()
-        agent_info = await get_agent_status()
-        cache_info = await get_cache_stats()
-        metrics_info = await basic_metrics()
+        health_info = await health_check(request)
+        agent_info = await get_agent_status(request)
+        cache_info = await get_cache_stats(request)
+        metrics_info = await basic_metrics(request)
         
         return {
             "success": True,

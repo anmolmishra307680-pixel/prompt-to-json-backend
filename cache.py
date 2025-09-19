@@ -23,10 +23,10 @@ class CacheManager:
             )
             # Test connection
             self.redis_client.ping()
-            print("✅ Redis connected successfully")
+            print("[OK] Redis connected successfully")
         except Exception as e:
-            print(f"⚠️ Redis not available: {e}")
-            print("📝 Using in-memory cache fallback")
+            print(f"[WARN] Redis not available: {e}")
+            print("[INFO] Using in-memory cache fallback")
             self.redis_client = None
     
     def get_cache_key(self, prompt: str, operation: str = "generate") -> str:

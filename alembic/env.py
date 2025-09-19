@@ -16,8 +16,19 @@ from db.iteration_models import IterationLog
 # access to the values within the .ini file in use.
 config = context.config
 
-# Set database URL from environment
-config.set_main_option('sqlalchemy.url', os.getenv('DATABASE_URL', 'sqlite:///prompt_to_json.db'))
+# Prefer Supabase PostgreSQL with SQLite fallback
+supabase_url = os.getenv('DATABASE_URL')
+try:
+    if supabase_url and 'postgresql' in supabase_url:
+        # Escape % characters for ConfigParser
+        supabase_url = supabase_url.replace('%', '%%')
+        config.set_main_option('sqlalchemy.url', supabase_url)
+        print("[INFO] Using Supabase PostgreSQL")
+    else:
+        raise Exception("No PostgreSQL URL found")
+except Exception as e:
+    print(f"[WARN] Supabase not available ({e}), using SQLite fallback")
+    config.set_main_option('sqlalchemy.url', 'sqlite:///prompt_to_json.db')
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
