@@ -254,7 +254,7 @@ def token_create(payload: TokenRequest, api_key: str = Depends(verify_api_key)):
 
 @app.get("/")
 @limiter.limit("20/minute")
-async def root(request: Request):
+async def root(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Root endpoint"""
     return {
         "message": "Prompt-to-JSON API", 
@@ -267,7 +267,7 @@ async def root(request: Request):
 
 @app.get("/health")
 @limiter.limit("20/minute")
-async def health_check(request: Request):
+async def health_check(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Health check endpoint"""
     try:
         # Test database connection
@@ -296,7 +296,7 @@ async def health_check(request: Request):
 
 @app.get("/basic-metrics")
 @limiter.limit("20/minute")
-async def basic_metrics(request: Request):
+async def basic_metrics(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Basic metrics endpoint"""
     try:
         from pathlib import Path
@@ -325,7 +325,7 @@ async def basic_metrics(request: Request):
 
 @app.post("/generate")
 @limiter.limit("20/minute")
-async def generate_spec(request: Request, generate_request: GenerateRequest):
+async def generate_spec(request: Request, generate_request: GenerateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Generate specification from prompt"""
     try:
         spec = prompt_agent.run(generate_request.prompt)
@@ -351,7 +351,7 @@ async def generate_spec(request: Request, generate_request: GenerateRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/evaluate")
-async def evaluate_spec(request: EvaluateRequest):
+async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Evaluate specification"""
     try:
         # Import with error handling
@@ -438,7 +438,7 @@ async def evaluate_spec(request: EvaluateRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/iterate")
-async def iterate_rl(request: IterateRequest):
+async def iterate_rl(request: IterateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Run RL iterations with detailed before→after, scores, feedback"""
     try:
         # Ensure minimum 2 iterations
@@ -512,7 +512,7 @@ async def iterate_rl(request: IterateRequest):
 
 @app.get("/reports/{report_id}")
 @limiter.limit("20/minute")
-async def get_report(request: Request, report_id: str):
+async def get_report(request: Request, report_id: str, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Retrieve full report from DB"""
     try:
         report = db.get_report(report_id)
@@ -536,7 +536,7 @@ async def get_report(request: Request, report_id: str):
 
 @app.post("/log-values")
 @limiter.limit("20/minute")
-async def log_values(request: Request, log_request: LogValuesRequest):
+async def log_values(request: Request, log_request: LogValuesRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Store HIDG values per day"""
     try:
         # Save to database
@@ -596,7 +596,7 @@ async def log_values(request: Request, log_request: LogValuesRequest):
 
 @app.post("/batch-evaluate")
 @limiter.limit("20/minute")
-async def batch_evaluate(request: Request, prompts: List[str]):
+async def batch_evaluate(request: Request, prompts: List[str], api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Process multiple specs/prompts and store evaluations"""
     try:
         results = []
@@ -623,7 +623,7 @@ async def batch_evaluate(request: Request, prompts: List[str]):
 
 @app.get("/iterations/{session_id}")
 @limiter.limit("20/minute")
-async def get_iteration_logs(request: Request, session_id: str):
+async def get_iteration_logs(request: Request, session_id: str, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Get all iteration logs for a session"""
     try:
         # Try database first
@@ -665,7 +665,7 @@ async def get_iteration_logs(request: Request, session_id: str):
         }
 
 @app.get("/cli-tools")
-async def get_cli_tools():
+async def get_cli_tools(api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Get available CLI tools and commands"""
     # Check database status
     try:
@@ -697,7 +697,7 @@ async def get_cli_tools():
 
 @app.get("/system-test")
 @limiter.limit("20/minute")
-async def run_system_test(request: Request):
+async def run_system_test(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Run basic system tests"""
     try:
         # Test core functionality
@@ -722,7 +722,7 @@ async def run_system_test(request: Request):
 
 @app.post("/advanced-rl")
 @limiter.limit("20/minute")
-async def advanced_rl_training(request: Request, rl_request: IterateRequest):
+async def advanced_rl_training(request: Request, rl_request: IterateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Run Advanced RL training with policy gradients"""
     try:
         from rl_agent.advanced_rl import AdvancedRLEnvironment
@@ -748,7 +748,7 @@ async def advanced_rl_training(request: Request, rl_request: IterateRequest):
 
 @app.post("/admin/prune-logs")
 @limiter.limit("20/minute")
-async def prune_logs(request: Request, retention_days: int = 30):
+async def prune_logs(request: Request, retention_days: int = 30, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Prune old logs for production scalability"""
     try:
         from db.log_pruning import LogPruner
@@ -769,7 +769,7 @@ async def prune_logs(request: Request, retention_days: int = 30):
         }
 
 @app.post("/coordinated-improvement")
-async def coordinated_improvement(request: GenerateRequest):
+async def coordinated_improvement(request: GenerateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Advanced agent coordination for optimal results"""
     try:
         from agent_coordinator import AgentCoordinator
@@ -797,7 +797,7 @@ async def coordinated_improvement(request: GenerateRequest):
 
 @app.get("/agent-status")
 @limiter.limit("20/minute")
-async def get_agent_status(request: Request):
+async def get_agent_status(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Get status of all AI agents"""
     try:
         from agent_coordinator import AgentCoordinator
@@ -821,7 +821,7 @@ async def get_agent_status(request: Request):
 
 @app.get("/cache-stats")
 @limiter.limit("20/minute")
-async def get_cache_stats(request: Request):
+async def get_cache_stats(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Get cache performance statistics"""
     try:
         stats = cache.get_stats()
@@ -839,14 +839,14 @@ async def get_cache_stats(request: Request):
 
 @app.get("/system-overview")
 @limiter.limit("20/minute")
-async def get_system_overview(request: Request):
+async def get_system_overview(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Comprehensive system status and capabilities"""
     try:
         # Get all system information
-        health_info = await health_check(request)
-        agent_info = await get_agent_status(request)
-        cache_info = await get_cache_stats(request)
-        metrics_info = await basic_metrics(request)
+        health_info = await health_check(request, api_key, user)
+        agent_info = await get_agent_status(request, api_key, user)
+        cache_info = await get_cache_stats(request, api_key, user)
+        metrics_info = await basic_metrics(request, api_key, user)
         
         return {
             "success": True,

@@ -30,11 +30,13 @@ def test_value_error_format():
 
 def test_generic_exception_format():
     """Test that generic Exception returns structured JSON error"""
-    # Test with existing endpoint that might raise an exception
+    # Test with existing endpoint that requires authentication
     response = client.post("/generate", json={"prompt": "test"})
     
-    # Should get 401 for missing API key, not 500 error
+    # Should get 401 for missing API key
     assert response.status_code == 401
+    json_response = response.json()
+    assert "detail" in json_response
 
 def test_http_exception_passthrough():
     """Test that HTTPException is handled properly"""

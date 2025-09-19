@@ -39,9 +39,11 @@ def test_evaluate_missing_spec():
     assert r.status_code == 422  # Missing required fields
 
 def test_generate_no_auth():
+    # Test without any authentication
     r = client.post("/generate", json={"prompt": "test"})
     assert r.status_code == 401  # No API key
 
 def test_evaluate_no_auth():
+    # Test without any authentication
     r = client.post("/evaluate", json={})
     assert r.status_code == 401  # No API key

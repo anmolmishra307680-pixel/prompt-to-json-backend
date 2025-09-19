@@ -169,6 +169,7 @@ class RLLoop:
         
         current_spec = None
         previous_score = 0
+        evaluation = None
         
         for iteration in range(self.max_iterations):
             print(f"\n--- Iteration {iteration + 1} ---")
