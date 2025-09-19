@@ -66,30 +66,49 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Sentry middleware
+# Sentry monitoring with performance tracing
 try:
     import sentry_sdk
     from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
-    if os.getenv("SENTRY_DSN"):
-        sentry_sdk.init(os.getenv("SENTRY_DSN"))
+    from sentry_sdk.integrations.fastapi import FastApiIntegration
+    from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+    
+    sentry_dsn = os.getenv("SENTRY_DSN")
+    if sentry_dsn:
+        sentry_sdk.init(
+            dsn=sentry_dsn,
+            environment=os.getenv("SENTRY_ENVIRONMENT", "development"),
+            traces_sample_rate=0.1,  # 10% of transactions for performance monitoring
+            profiles_sample_rate=0.1,  # 10% for profiling
+            integrations=[
+                FastApiIntegration(auto_enabling_integrations=True),
+                SqlalchemyIntegration(),
+            ],
+            attach_stacktrace=True,
+            send_default_pii=False,  # Don't send personally identifiable information
+        )
         app.add_middleware(SentryAsgiMiddleware)
+        print(f"[OK] Sentry monitoring enabled for {os.getenv('SENTRY_ENVIRONMENT', 'development')}")
 except ImportError:
-    pass
+    print("[WARN] Sentry not available - install: pip install sentry-sdk")
 
 # Prometheus metrics
 try:
     from prometheus_fastapi_instrumentator import Instrumentator
+    
+    # Initialize Prometheus instrumentator
     instrumentator = Instrumentator(
         should_group_status_codes=False,
         should_ignore_untemplated=True,
-        should_respect_env_var=True,
         should_instrument_requests_inprogress=True,
-        excluded_handlers=["/metrics"],
-        env_var_name="ENABLE_METRICS",
-        inprogress_name="inprogress",
+        inprogress_name="http_requests_inprogress",
         inprogress_labels=True,
     )
-    instrumentator.instrument(app).expose(app)
+    
+    # Instrument the app and expose metrics
+    instrumentator.instrument(app)
+    instrumentator.expose(app, endpoint="/metrics")
+    
     print("[OK] Prometheus metrics enabled at /metrics")
 except ImportError:
     print("[WARN] Prometheus not available - install: pip install prometheus-fastapi-instrumentator")
@@ -219,7 +238,7 @@ async def health_check():
         "timestamp": datetime.now().isoformat()
     }
 
-@app.get("/metrics")
+@app.get("/basic-metrics")
 async def basic_metrics():
     """Basic metrics endpoint"""
     try:
