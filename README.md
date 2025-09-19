@@ -90,8 +90,25 @@ PRODUCTION_MODE=true ./start.sh
 
 ### 🔐 Authentication
 - **API Key**: `X-API-Key: bhiv-secret-key-2024`
-- **JWT Tokens**: Available for advanced authentication
+- **JWT Tokens**: Bearer token authentication for enhanced security
 - **Rate Limiting**: 20 requests/minute for protected endpoints
+
+#### Getting JWT Token
+```bash
+# Get JWT token
+curl -X POST "http://localhost:8000/token" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"bhiv2024"}'
+
+# Response: {"access_token":"eyJ...","token_type":"bearer"}
+
+# Use token in requests
+curl -X POST "http://localhost:8000/generate" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: bhiv-secret-key-2024" \
+  -H "Authorization: Bearer eyJ..." \
+  -d '{"prompt":"Modern office building"}'
+```
 
 ### 🎯 Core AI Endpoints
 ```bash
@@ -429,8 +446,12 @@ curl -X POST /auth/login \
 ### 🔑 Authentication Endpoints
 | Endpoint | Method | Description | Rate Limit |
 |----------|--------|-------------|------------|
-| `/auth/login` | POST | JWT token generation | 10/min |
-| `/auth/refresh` | POST | JWT token refresh | 10/min |
+| `/token` | POST | JWT token generation | 10/min |
+
+#### Demo Credentials (Development Only)
+- **Username**: `admin`
+- **Password**: `bhiv2024`
+- **Token Expires**: 60 minutes (configurable via JWT_EXPIRE_MIN)
 
 ## 🏆 Production Readiness Status
 

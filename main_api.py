@@ -20,6 +20,7 @@ from rl_agent import RLLoop
 from db.database import Database
 from feedback import FeedbackAgent
 from cache import cache
+from auth import create_access_token, get_current_user
 
 app = FastAPI(
     title="Prompt-to-JSON API", 
@@ -90,9 +91,9 @@ try:
         inprogress_labels=True,
     )
     instrumentator.instrument(app).expose(app)
-    print("✅ Prometheus metrics enabled at /metrics")
+    print("[OK] Prometheus metrics enabled at /metrics")
 except ImportError:
-    print("⚠️ Prometheus not available - install: pip install prometheus-fastapi-instrumentator")
+    print("[WARN] Prometheus not available - install: pip install prometheus-fastapi-instrumentator")
 
 # Initialize agents and database with error handling
 try:
@@ -101,9 +102,9 @@ try:
     rl_agent = RLLoop()
     feedback_agent = FeedbackAgent()
     db = Database()
-    print("✅ All agents initialized successfully")
+    print("[OK] All agents initialized successfully")
 except Exception as e:
-    print(f"⚠️ Agent initialization warning: {e}")
+    print(f"[WARN] Agent initialization warning: {e}")
     # Create minimal fallback objects
     class FallbackAgent:
         def run(self, *args, **kwargs):
@@ -161,6 +162,21 @@ class LogValuesRequest(BaseModel):
     achievements: Dict[Any, Any] = None
     technical_notes: Dict[Any, Any] = None
 
+@app.post("/token")
+def token_create(payload: dict):
+    """Create JWT token for authentication"""
+    username = payload.get("username")
+    password = payload.get("password")
+    if not username or not password:
+        raise HTTPException(status_code=400, detail="username and password required")
+    
+    # Demo: accept demo credentials (replace with real auth in production)
+    if username == "admin" and password == "bhiv2024":
+        token = create_access_token({"sub": username})
+        return {"access_token": token, "token_type": "bearer"}
+    
+    raise HTTPException(status_code=401, detail="Invalid credentials")
+
 @app.get("/")
 async def root():
     """Root endpoint"""
@@ -168,7 +184,7 @@ async def root():
         "message": "Prompt-to-JSON API", 
         "version": "2.1.0",
         "status": "Production Ready",
-        "features": ["AI Agents", "Multi-Agent Coordination", "RL Training", "Authentication", "Monitoring"]
+        "features": ["AI Agents", "Multi-Agent Coordination", "RL Training", "JWT Authentication", "Monitoring"]
     }
 
 @app.get("/favicon.ico")
@@ -234,7 +250,7 @@ async def basic_metrics():
 
 @app.post("/generate")
 @limiter.limit("20/minute")
-async def generate_spec(request: Request, generate_request: GenerateRequest, api_key: str = Depends(verify_api_key)):
+async def generate_spec(request: Request, generate_request: GenerateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Generate specification from prompt"""
     try:
         spec = prompt_agent.run(generate_request.prompt)
@@ -247,7 +263,7 @@ async def generate_spec(request: Request, generate_request: GenerateRequest, api
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/evaluate")
-async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_api_key)):
+async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Evaluate specification"""
     try:
         # Import with error handling
@@ -327,7 +343,7 @@ async def evaluate_spec(request: EvaluateRequest, api_key: str = Depends(verify_
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/iterate")
-async def iterate_rl(request: IterateRequest, api_key: str = Depends(verify_api_key)):
+async def iterate_rl(request: IterateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Run RL iterations with detailed before→after, scores, feedback"""
     try:
         # Ensure minimum 2 iterations
@@ -597,7 +613,7 @@ async def run_system_test():
         }
 
 @app.post("/advanced-rl")
-async def advanced_rl_training(request: IterateRequest):
+async def advanced_rl_training(request: IterateRequest, user=Depends(get_current_user)):
     """Run Advanced RL training with policy gradients"""
     try:
         from rl_agent.advanced_rl import AdvancedRLEnvironment
@@ -643,7 +659,7 @@ async def prune_logs(retention_days: int = 30):
         }
 
 @app.post("/coordinated-improvement")
-async def coordinated_improvement(request: GenerateRequest, api_key: str = Depends(verify_api_key)):
+async def coordinated_improvement(request: GenerateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Advanced agent coordination for optimal results"""
     try:
         from agent_coordinator import AgentCoordinator

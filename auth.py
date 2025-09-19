@@ -1,35 +1,45 @@
 """JWT Authentication for API"""
 
-import jwt
 import os
 from datetime import datetime, timedelta
-from fastapi import HTTPException, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from typing import Optional
+from fastapi import Depends, HTTPException, status, Header
+import jwt
 
-security = HTTPBearer()
-SECRET_KEY = os.getenv("JWT_SECRET", "bhiv-jwt-secret-2024")
+SECRET_KEY = os.getenv("SECRET_KEY", "bhiv-jwt-secret-2024")
 ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MIN", 60))
 
-def create_access_token(data: dict):
-    """Create JWT token"""
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    """Create JWT access token"""
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(hours=24)
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
-def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
+def verify_token(token: str):
     """Verify JWT token"""
     try:
-        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expired")
-    except jwt.JWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
-# Login endpoint
+def get_current_user(authorization: str = Header(None)):
+    """Get current user from JWT token"""
+    if not authorization:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing Authorization header")
+    if not authorization.lower().startswith("bearer "):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Authorization header")
+    token = authorization.split(" ", 1)[1]
+    return verify_token(token)
+
 def authenticate_user(username: str, password: str):
-    """Simple user authentication"""
+    """Simple user authentication for demo"""
+    # Demo credentials - replace with real authentication in production
     if username == "admin" and password == "bhiv2024":
         return create_access_token({"sub": username})
     raise HTTPException(status_code=401, detail="Invalid credentials")
