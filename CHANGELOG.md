@@ -2,6 +2,32 @@
 
 All notable changes to the Prompt-to-JSON Backend project are documented in this file.
 
+## [2.1.2] - 2024-01-20
+
+### 🚗 Vehicle Dimension Extraction Enhancement
+- **Enhanced** Universal extractor to properly parse vehicle-specific dimensions
+- **Fixed** Dimension extraction for prompts like "door of 1.5 meters, windshield of 0.5 meters"
+- **Added** Vehicle part mapping: door→height, windshield→width, wheel→diameter, trunk→depth
+- **Improved** Regex patterns for vehicle component dimensions
+
+### 📊 Evaluation Criteria Improvements
+- **Updated** Evaluation criteria to handle all design types appropriately
+- **Fixed** Vehicle-specific feasibility checks instead of building-only criteria
+- **Added** Design-type-specific completeness validation
+- **Enhanced** Feasibility checks for electronics, appliances, and furniture
+
+### 🔧 CI/CD Pipeline Fixes
+- **Fixed** Multiple TOML syntax errors in pyproject.toml
+- **Resolved** Unescaped backslash issues in regex patterns
+- **Restored** Complete CI workflow with all original steps
+- **Added** GitHub Actions workflow for automated green/red status checks
+- **Removed** Duplicate CI workflows causing conflicts
+
+### 📋 Documentation Maintenance
+- **Updated** All documentation files to reflect recent changes
+- **Enhanced** API_STATUS.md with current system health metrics
+- **Maintained** Comprehensive project structure documentation
+
 ## [2.1.1] - 2024-01-20
 
 ### 🎯 Universal Design System Implementation
