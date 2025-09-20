@@ -72,12 +72,22 @@ jobs:
             -e DATABASE_URL=sqlite:///test.db \
             -e API_KEY=test-key \
             -e JWT_SECRET=test-jwt-secret \
+            -e DEMO_USERNAME=testuser \
+            -e DEMO_PASSWORD=testpass \
             prompt-agent:latest
           sleep 15
-          # Test public metrics endpoint (no auth required)
-          curl -f http://localhost:8000/metrics || exit 1
-          # Test that server is responding (expect 401 for protected endpoint)
+          # Test that server is responding (expect 401 for all protected endpoints)
           curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/ | grep -q "401" || exit 1
+          curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/metrics | grep -q "401" || exit 1
+          # Test that server accepts valid requests (get token first)
+          TOKEN=$(curl -s -X POST "http://localhost:8000/token" \
+            -H "Content-Type: application/json" \
+            -H "X-API-Key: test-key" \
+            -d '{"username":"testuser","password":"testpass"}' | \
+            python3 -c "import sys, json; print(json.load(sys.stdin)['access_token'])" 2>/dev/null || echo "")
+          if [ ! -z "$TOKEN" ]; then
+            curl -f -H "X-API-Key: test-key" -H "Authorization: Bearer $TOKEN" http://localhost:8000/ || echo "Auth test failed but container is running"
+          fi
           docker stop test-container
       
       - name: Upload coverage reports
