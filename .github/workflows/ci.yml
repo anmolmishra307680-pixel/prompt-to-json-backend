@@ -71,9 +71,13 @@ jobs:
           docker run --rm -d --name test-container -p 8000:8000 \
             -e DATABASE_URL=sqlite:///test.db \
             -e API_KEY=test-key \
+            -e JWT_SECRET=test-jwt-secret \
             prompt-agent:latest
-          sleep 10
-          curl -f http://localhost:8000/health || exit 1
+          sleep 15
+          # Test public metrics endpoint (no auth required)
+          curl -f http://localhost:8000/metrics || exit 1
+          # Test that server is responding (expect 401 for protected endpoint)
+          curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/ | grep -q "401" || exit 1
           docker stop test-container
       
       - name: Upload coverage reports
