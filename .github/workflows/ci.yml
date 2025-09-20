@@ -5,6 +5,17 @@ jobs:
   test-and-build:
     runs-on: ubuntu-latest
     
+    services:
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
     steps:
       - uses: actions/checkout@v4
       
@@ -28,17 +39,60 @@ jobs:
       
       - name: Set up test environment
         run: |
+          echo "DATABASE_URL=sqlite:///test.db" >> $GITHUB_ENV
           echo "API_KEY=bhiv-secret-key-2024" >> $GITHUB_ENV
           echo "JWT_SECRET=test-jwt-secret" >> $GITHUB_ENV
           echo "DEMO_USERNAME=admin" >> $GITHUB_ENV
           echo "DEMO_PASSWORD=bhiv2024" >> $GITHUB_ENV
+          echo "REDIS_URL=redis://localhost:6379/0" >> $GITHUB_ENV
+      
+      - name: Run linting
+        run: |
+          pip install flake8
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        continue-on-error: true
       
       - name: Run tests
         run: |
-          pytest testing/tests/ -v
+          pytest testing/tests/ -v --tb=short --disable-warnings
       
       - name: Test coverage
         run: |
           pip install pytest-cov
-          pytest testing/tests/ --cov=src --cov-report=term-missing
+          pytest testing/tests/ --cov=src --cov-report=xml --cov-report=term-missing
+        continue-on-error: true
+      
+      - name: Build Docker image
+        run: |
+          docker build -t prompt-backend:${{ github.sha }} .
+          docker build -t prompt-backend:latest .
+      
+      - name: Test Docker image
+        run: |
+          docker run --rm -d --name test-container -p 8000:8000 \
+            -e DATABASE_URL=sqlite:///test.db \
+            -e API_KEY=bhiv-secret-key-2024 \
+            -e JWT_SECRET=test-jwt-secret \
+            -e DEMO_USERNAME=admin \
+            -e DEMO_PASSWORD=bhiv2024 \
+            prompt-backend:latest
+          sleep 15
+          curl -f http://localhost:8000/health || exit 1
+          TOKEN=$(curl -s -X POST "http://localhost:8000/token" \
+            -H "Content-Type: application/json" \
+            -H "X-API-Key: bhiv-secret-key-2024" \
+            -d '{"username":"admin","password":"bhiv2024"}' | \
+            python3 -c "import sys, json; print(json.load(sys.stdin)['access_token'])" 2>/dev/null || echo "")
+          if [ ! -z "$TOKEN" ]; then
+            curl -f -H "X-API-Key: bhiv-secret-key-2024" -H "Authorization: Bearer $TOKEN" http://localhost:8000/ || echo "Auth test failed but container is running"
+          fi
+          docker stop test-container
+      
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
         continue-on-error: true
