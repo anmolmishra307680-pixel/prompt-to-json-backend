@@ -36,7 +36,8 @@ COPY . /app
 
 # Create necessary directories and set permissions
 RUN mkdir -p logs spec_outputs reports && \
-    chown -R appuser:appuser /app
+    chown -R appuser:appuser /app && \
+    chmod +x ./start.sh
 
 # Switch to non-root user
 USER appuser

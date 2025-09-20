@@ -46,6 +46,9 @@ logs/training_*.log
 reports/large_*.json
 spec_outputs/batch_*.json
 
+# Keep HIDG daily logs
+!reports/daily_log.txt
+
 # Load test results
 load-tests/results/
 k6-results/
@@ -77,7 +80,20 @@ Thumbs.db
 # Demo files
 docs/demo.mp4
 
-# Keep empty directories
+# Keep empty directories and important files
 !logs/.gitkeep
 !spec_outputs/.gitkeep
 !reports/.gitkeep
+!reports/daily_log.txt
+
+# Archive directory (keep structure)
+archive/logs/*.json
+archive/reports/*.json
+archive/spec_outputs/*.json
+!archive/README.md
+
+# Test artifacts
+testing/test_hidg.py
+*.db-journal
+*.db-wal
+*.db-shm
