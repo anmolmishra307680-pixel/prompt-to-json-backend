@@ -126,6 +126,9 @@ def custom_openapi():
                     operation["security"] = [
                         {"APIKeyHeader": []}
                     ]
+                elif path == "/health":
+                    # Health endpoint is public for monitoring
+                    operation["security"] = []
                 else:
                     # All other endpoints require both
                     operation["security"] = [
@@ -301,8 +304,8 @@ async def root(request: Request, api_key: str = Depends(verify_api_key), user=De
 
 @app.get("/health")
 @limiter.limit("20/minute")
-async def health_check(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
-    """Health check endpoint"""
+async def health_check(request: Request):
+    """Public health check endpoint for monitoring"""
     try:
         # Test database connection
         session = db.get_session()

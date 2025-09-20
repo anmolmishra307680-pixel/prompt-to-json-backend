@@ -115,10 +115,8 @@ curl -X POST "http://localhost:8000/generate" \
   -H "Authorization: Bearer <jwt-token>" \
   -d '{"prompt":"Modern office building"}'
 
-# All endpoints require dual authentication
-curl -X GET "http://localhost:8000/health" \
-  -H "X-API-Key: bhiv-secret-key-2024" \
-  -H "Authorization: Bearer <jwt-token>"
+# Health endpoint is public (no authentication required)
+curl -X GET "http://localhost:8000/health"
 ```
 
 ### 🎯 Core AI Endpoints
@@ -397,10 +395,10 @@ curl http://localhost:8000/cache-stats
 - **Load Capacity**: Tested up to 1000 concurrent users
 
 ### Maximum Security & Rate Limiting
-- **Universal Authentication**: API key required for ALL 17 endpoints (including /token)
-- **Dual Authentication**: API key + JWT token required for 16 endpoints
+- **Universal Authentication**: API key required for 16 endpoints (including /token)
+- **Dual Authentication**: API key + JWT token required for 15 endpoints
 - **Rate Limiting**: 20 requests/minute for protected endpoints, 10/min for token creation
-- **Zero Public Access**: No public endpoints - maximum security implementation
+- **Public Health Check**: /health endpoint public for monitoring
 - **CORS Protection**: Production-grade origin validation
 - **Token Management**: 60-minute expiration with secure refresh capability
 - **Error Sanitization**: Structured responses without sensitive data leakage
@@ -432,10 +430,10 @@ curl -X POST /auth/login \
 - **Dependency Scanning**: Automated vulnerability checks
 
 ### Maximum Security Checklist
-- ✅ API key authentication on ALL endpoints
+- ✅ API key authentication on 16 endpoints
 - ✅ JWT token system with expiration
 - ✅ Rate limiting on all endpoints
-- ✅ Zero public endpoints (maximum security)
+- ✅ Public health endpoint for monitoring
 - ✅ CORS properly configured
 - ✅ Input validation and sanitization
 - ✅ Structured error handling
@@ -462,15 +460,19 @@ FRONTEND_URL=*
 FRONTEND_URL=https://your-frontend.com
 ```
 
-### 🔒 Maximum Security - No Public Endpoints
-**ALL 17 endpoints require authentication for maximum security**
+### 🔒 Maximum Security - One Public Endpoint
+**16 endpoints require authentication, 1 public health endpoint for monitoring**
+
+### 🌐 Public Endpoints (No Authentication Required)
+| Endpoint | Method | Description | Rate Limit |
+|----------|--------|-------------|------------|
+| `/health` | GET | System health check for monitoring | 20/min |
 
 ### 🔐 Protected Endpoints (Dual Authentication Required)
 | Endpoint | Method | Description | Rate Limit |
 |----------|--------|-------------|------------|
 | `/` | GET | API information and status | 20/min |
-| `/health` | GET | System health check | 20/min |
-| `/metrics` | GET | Prometheus metrics (now protected) | 20/min |
+| `/metrics` | GET | Prometheus metrics (protected) | 20/min |
 | `/agent-status` | GET | Agent availability monitoring | 20/min |
 | `/cache-stats` | GET | Cache performance statistics | 20/min |
 | `/reports/{id}` | GET | Retrieve evaluation reports | 20/min |

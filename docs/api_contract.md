@@ -188,11 +188,9 @@ Authorization: Bearer <jwt_token>
 
 ## Monitoring Endpoints
 
-### Health Check (Protected)
+### Health Check (Public)
 ```http
 GET /health
-X-API-Key: bhiv-secret-key-2024
-Authorization: Bearer <jwt_token>
 ```
 
 **Response:**
@@ -204,6 +202,8 @@ Authorization: Bearer <jwt_token>
   "timestamp": "2024-01-15T10:30:45.123456"
 }
 ```
+
+**Note**: This endpoint is public for monitoring purposes and does not require authentication.
 
 ### Prometheus Metrics (Protected)
 ```http
@@ -237,9 +237,10 @@ Authorization: Bearer <jwt_token>
 ```
 
 ## Rate Limiting
-- **All Endpoints**: 20 requests/minute per IP (maximum security)
+- **Protected Endpoints**: 20 requests/minute per IP (16 endpoints)
 - **Token Endpoint**: 10 requests/minute per IP
-- **No Public Endpoints**: All endpoints require authentication
+- **Public Health Endpoint**: 20 requests/minute per IP
+- **One Public Endpoint**: /health for monitoring
 
 ## Error Responses
 
@@ -294,10 +295,10 @@ Authorization: Bearer <jwt_token>
    - Handle 401 responses by refreshing token
 
 3. **Rate Limiting**:
-   - Implement client-side rate limiting: 20 requests/minute for all endpoints
+   - Implement client-side rate limiting: 20 requests/minute for protected endpoints
    - Token endpoint: 10 requests/minute limit
+   - Health endpoint: 20 requests/minute (public)
    - Handle 429 responses with exponential backoff
-   - No public endpoints - all require authentication
 
 4. **CORS**:
    - Set `FRONTEND_URL` environment variable in production

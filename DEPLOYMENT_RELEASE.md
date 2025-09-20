@@ -38,12 +38,10 @@ GUNICORN_TIMEOUT=120
 
 ### **🛠️ Runbook:**
 
-#### **Health Monitoring (Requires Authentication):**
+#### **Health Monitoring (Public):**
 ```bash
-# Check system health (requires both API key and JWT token)
-curl -H "X-API-Key: bhiv-secret-key-2024" \
-     -H "Authorization: Bearer <jwt-token>" \
-     https://prompt-to-json-backend.onrender.com/health
+# Check system health (public endpoint, no authentication required)
+curl https://prompt-to-json-backend.onrender.com/health
 
 # Check metrics (requires both API key and JWT token)
 curl -H "X-API-Key: bhiv-secret-key-2024" \
@@ -63,12 +61,10 @@ curl -X POST -H "X-API-Key: bhiv-secret-key-2024" \
 k6 run --env TARGET_URL=https://prompt-to-json-backend.onrender.com load-test.js
 ```
 
-#### **Database Operations (Requires Authentication):**
+#### **Database Operations:**
 ```bash
-# Check database connectivity via health endpoint
-curl -H "X-API-Key: bhiv-secret-key-2024" \
-     -H "Authorization: Bearer <jwt-token>" \
-     https://prompt-to-json-backend.onrender.com/health
+# Check database connectivity via health endpoint (public)
+curl https://prompt-to-json-backend.onrender.com/health
 
 # Prune old logs (admin)
 curl -X POST -H "X-API-Key: bhiv-secret-key-2024" \
@@ -105,14 +101,14 @@ curl -X POST -H "X-API-Key: bhiv-secret-key-2024" \
 5. Monitor metrics for 24 hours
 
 ### **📋 Maximum Security Acceptance Criteria Met:**
-- ✅ GET /health returns status: ok and DB true (requires dual authentication)
+- ✅ GET /health returns status: ok and DB true (public endpoint for monitoring)
 - ✅ POST /generate returns valid spec in <200ms average (requires dual authentication)
 - ✅ k6 test with 50 VUs: error rate <1%
 - ✅ CI pipeline: All tests passing, flake8 clean, Docker build successful
 - ✅ Metrics available at /metrics (now protected with dual authentication)
-- ✅ ALL 17 endpoints require API key (maximum security)
-- ✅ 16 endpoints require dual authentication (API key + JWT)
-- ✅ Zero public endpoints - maximum security implementation
+- ✅ 16 endpoints require API key (maximum security)
+- ✅ 15 endpoints require dual authentication (API key + JWT)
+- ✅ 1 public health endpoint for monitoring
 - ✅ Database with complete schema and migrations
 - ✅ Multi-agent coordination system operational
 - ✅ Production deployment with 99.95% uptime
