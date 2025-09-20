@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'src'))
 
 from fastapi.testclient import TestClient
-from main_api import app
+from src.main_api import app
 
 client = TestClient(app)
 

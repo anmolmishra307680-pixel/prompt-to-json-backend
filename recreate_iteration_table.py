@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
-from db.iteration_models import IterationLog, Base
+from src.db.iteration_models import IterationLog, Base
 
 def recreate_iteration_table():
     """Recreate the iteration_logs table"""
@@ -72,7 +72,7 @@ def test_table_operations():
     print("\nTesting table operations...")
     
     try:
-        from db.database import Database
+        from src.db.database import Database
         db = Database()
         
         # Test saving an iteration log

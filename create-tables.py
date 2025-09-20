@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """Create database tables"""
 
-from db.database import Database
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent / "src"))
+
+from src.db.database import Database
 
 # Create database instance to get engine
 db = Database()
 engine = db.engine
 
 # Import models after engine is available
-from db.models import Base
+from src.db.models import Base
 
 def create_tables():
     print("🔧 Creating database tables...")

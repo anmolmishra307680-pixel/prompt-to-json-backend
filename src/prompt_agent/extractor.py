@@ -2,7 +2,7 @@
 
 import re
 from typing import List
-from schema import DesignSpec, MaterialSpec, DimensionSpec
+from src.schema import DesignSpec, MaterialSpec, DimensionSpec
 
 class PromptExtractor:
     def __init__(self):

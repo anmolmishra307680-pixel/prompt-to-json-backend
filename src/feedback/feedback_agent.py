@@ -2,11 +2,7 @@
 
 import os
 from typing import Dict, Any, List
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from schema import DesignSpec, EvaluationResult
+from src.schema import DesignSpec, EvaluationResult
 
 class FeedbackAgent:
     def __init__(self):

@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from prompt_agent.universal_extractor import UniversalPromptExtractor
+from src.prompt_agent.universal_extractor import UniversalPromptExtractor
 
 def test_universal_extractor():
     """Test the universal extractor with different design types"""

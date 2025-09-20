@@ -1,10 +1,6 @@
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from schema import DesignSpec, EvaluationResult
-from .criteria import EvaluationCriteria
-from .report import ReportGenerator
+from src.schema import DesignSpec, EvaluationResult
+from src.evaluator.criteria import EvaluationCriteria
+from src.evaluator.report import ReportGenerator
 
 class EvaluatorAgent:
     def __init__(self):
@@ -17,7 +13,7 @@ class EvaluatorAgent:
 
         # Save to DB via clean interface
         try:
-            from db.database import Database
+            from src.db.database import Database
             db = Database()
             spec_id = getattr(spec, 'id', 'unknown')
             eval_id = db.save_eval(spec_id, prompt, evaluation.model_dump(), evaluation.score)

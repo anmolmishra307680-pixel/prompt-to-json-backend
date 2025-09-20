@@ -3,14 +3,10 @@ import os
 from typing import Optional
 from pathlib import Path
 from datetime import datetime
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from schema import DesignSpec, MaterialSpec, DimensionSpec
-from universal_schema import UniversalDesignSpec
-from .extractor import PromptExtractor
-from .universal_extractor import UniversalPromptExtractor
+from src.schema import DesignSpec, MaterialSpec, DimensionSpec
+from src.universal_schema import UniversalDesignSpec
+from src.prompt_agent.extractor import PromptExtractor
+from src.prompt_agent.universal_extractor import UniversalPromptExtractor
 
 class MainAgent:
     def __init__(self):
@@ -32,7 +28,7 @@ class MainAgent:
 
         # Save to DB via clean interface
         try:
-            from db.database import Database
+            from src.db.database import Database
             db = Database()
             spec_id = db.save_spec(prompt, spec.model_dump(), 'MainAgent')
             print(f"Spec saved to DB with ID: {spec_id}")
@@ -89,7 +85,7 @@ class MainAgent:
         try:
             import json
             data = json.loads(content)
-            from universal_schema import MaterialSpec as UniversalMaterialSpec, DimensionSpec as UniversalDimensionSpec
+            from src.universal_schema import MaterialSpec as UniversalMaterialSpec, DimensionSpec as UniversalDimensionSpec
             return UniversalDesignSpec(
                 design_type="building",
                 category=data.get("building_type", "general"),
@@ -207,7 +203,7 @@ class MainAgent:
 
                 if "materials" in suggestion_lower or "material" in suggestion_lower:
                     if not improved_spec.materials:
-                        from universal_schema import MaterialSpec
+                        from src.universal_schema import MaterialSpec
                         improved_spec.materials.append(MaterialSpec(type="steel"))
                         improvements_applied += 1
 
@@ -279,7 +275,7 @@ class MainAgent:
 
     def _generate_general_spec(self, prompt: str, design_type: str) -> DesignSpec:
         """Generate specification for non-building designs"""
-        from schema import DimensionSpec, MaterialSpec
+        from src.schema import DimensionSpec, MaterialSpec
 
         # Extract key components from prompt
         components = self._extract_components(prompt)
@@ -359,7 +355,7 @@ class MainAgent:
 
     def _convert_to_universal(self, old_spec: DesignSpec) -> UniversalDesignSpec:
         """Convert old DesignSpec to UniversalDesignSpec"""
-        from universal_schema import MaterialSpec as UniversalMaterialSpec, DimensionSpec as UniversalDimensionSpec
+        from src.universal_schema import MaterialSpec as UniversalMaterialSpec, DimensionSpec as UniversalDimensionSpec
 
         # Convert materials
         universal_materials = []
@@ -391,7 +387,7 @@ class MainAgent:
 
     def _create_fallback_spec(self, prompt: str) -> UniversalDesignSpec:
         """Create a basic fallback specification"""
-        from universal_schema import MaterialSpec as UniversalMaterialSpec, DimensionSpec as UniversalDimensionSpec
+        from src.universal_schema import MaterialSpec as UniversalMaterialSpec, DimensionSpec as UniversalDimensionSpec
 
         return UniversalDesignSpec(
             design_type="general",

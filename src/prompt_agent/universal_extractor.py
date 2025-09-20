@@ -2,7 +2,7 @@
 
 import re
 from typing import List, Dict, Tuple
-from universal_schema import UniversalDesignSpec, MaterialSpec, DimensionSpec, PerformanceSpec
+from src.universal_schema import UniversalDesignSpec, MaterialSpec, DimensionSpec, PerformanceSpec
 
 class UniversalPromptExtractor:
     def __init__(self):

@@ -16,15 +16,15 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
 # Import agents and database
-from prompt_agent import MainAgent
-from evaluator import EvaluatorAgent
-from rl_agent import RLLoop
-from db.database import Database
-from feedback import FeedbackAgent
-from cache import cache
-from auth import create_access_token, get_current_user
-import error_handlers
-from universal_schema import UniversalDesignSpec
+from src.prompt_agent import MainAgent
+from src.evaluator import EvaluatorAgent
+from src.rl_agent import RLLoop
+from src.db.database import Database
+from src.feedback import FeedbackAgent
+from src.cache import cache
+from src.auth import create_access_token, get_current_user
+from src import error_handlers
+from src.universal_schema import UniversalDesignSpec
 
 from fastapi.security import HTTPBearer
 
@@ -193,7 +193,7 @@ except ImportError:
 # Prometheus metrics
 try:
     from prometheus_fastapi_instrumentator import Instrumentator
-    from monitoring.custom_metrics import (
+    from src.monitoring.custom_metrics import (
         track_generation, track_evaluation_score, track_rl_training,
         update_active_sessions, get_business_metrics
     )
@@ -386,7 +386,7 @@ async def generate_spec(request: Request, generate_request: GenerateRequest, api
 
         # Track business metrics
         try:
-            from monitoring.custom_metrics import spec_generation_counter, agent_response_time
+            from src.monitoring.custom_metrics import spec_generation_counter, agent_response_time
             spec_generation_counter.labels(agent_type='MainAgent', success='true').inc()
             agent_response_time.labels(agent_name='MainAgent').observe(time.time() - start_time)
         except ImportError:
@@ -394,7 +394,7 @@ async def generate_spec(request: Request, generate_request: GenerateRequest, api
 
         # Log HIDG entry for generation completion
         try:
-            from hidg import log_generation_completion
+            from src.hidg import log_generation_completion
             log_generation_completion(generate_request.prompt, True)
         except Exception as log_error:
             print(f"HIDG logging error: {log_error}")
@@ -407,14 +407,14 @@ async def generate_spec(request: Request, generate_request: GenerateRequest, api
     except Exception as e:
         # Track failed generation
         try:
-            from monitoring.custom_metrics import spec_generation_counter
+            from src.monitoring.custom_metrics import spec_generation_counter
             spec_generation_counter.labels(agent_type='MainAgent', success='false').inc()
         except ImportError:
             pass
 
         # Log failed generation
         try:
-            from hidg import log_generation_completion
+            from src.hidg import log_generation_completion
             log_generation_completion(generate_request.prompt, False)
         except Exception as log_error:
             print(f"HIDG logging error: {log_error}")
@@ -427,7 +427,7 @@ async def evaluate_spec(request: Request, eval_request: EvaluateRequest, api_key
     try:
         # Import with error handling
         try:
-            from schema import DesignSpec
+            from src.schema import DesignSpec
         except ImportError:
             # Fallback if schema not available
             class DesignSpec:
@@ -494,14 +494,14 @@ async def evaluate_spec(request: Request, eval_request: EvaluateRequest, api_key
 
         # Track business metrics
         try:
-            from monitoring.custom_metrics import track_evaluation_score
+            from src.monitoring.custom_metrics import track_evaluation_score
             track_evaluation_score(evaluation.score)
         except ImportError:
             pass
 
         # Log HIDG entry for evaluation completion
         try:
-            from hidg import log_evaluation_completion
+            from src.hidg import log_evaluation_completion
             log_evaluation_completion(eval_request.prompt, evaluation.score)
         except Exception as log_error:
             print(f"HIDG logging error: {log_error}")
@@ -529,7 +529,7 @@ async def iterate_rl(request: Request, iterate_request: IterateRequest, api_key:
 
         # Track RL training metrics
         try:
-            from monitoring.custom_metrics import track_rl_training
+            from src.monitoring.custom_metrics import track_rl_training
             duration = time.time() - start_time
             track_rl_training(n_iter, duration)
         except ImportError:
@@ -578,7 +578,7 @@ async def iterate_rl(request: Request, iterate_request: IterateRequest, api_key:
 
         # Log HIDG entry for RL training completion
         try:
-            from hidg import log_pipeline_completion
+            from src.hidg import log_pipeline_completion
             final_score = results.get("learning_insights", {}).get("final_score")
             log_pipeline_completion(iterate_request.prompt, len(detailed_iterations), final_score)
         except Exception as log_error:
@@ -793,7 +793,7 @@ async def run_system_test(request: Request, api_key: str = Depends(verify_api_ke
 async def advanced_rl_training(request: Request, rl_request: IterateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Run Advanced RL training with policy gradients"""
     try:
-        from rl_agent.advanced_rl import AdvancedRLEnvironment
+        from src.rl_agent.advanced_rl import AdvancedRLEnvironment
         env = AdvancedRLEnvironment()
 
         result = env.train_episode(rl_request.prompt, max_steps=rl_request.n_iter)
@@ -817,7 +817,7 @@ async def advanced_rl_training(request: Request, rl_request: IterateRequest, api
 async def prune_logs(request: Request, retention_days: int = 30, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Prune old logs for production scalability"""
     try:
-        from db.log_pruning import LogPruner
+        from src.db.log_pruning import LogPruner
         pruner = LogPruner(retention_days=retention_days)
         results = pruner.prune_all_logs()
 
@@ -837,14 +837,14 @@ async def prune_logs(request: Request, retention_days: int = 30, api_key: str = 
 async def coordinated_improvement(request: Request, request_data: GenerateRequest, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Advanced agent coordination for optimal results"""
     try:
-        from agent_coordinator import AgentCoordinator
+        from src.agent_coordinator import AgentCoordinator
         coordinator = AgentCoordinator()
 
         result = await coordinator.coordinated_improvement(request_data.prompt)
 
         # Log HIDG entry for coordinated improvement completion
         try:
-            from hidg import append_hidg_entry
+            from src.hidg import append_hidg_entry
             final_score = result.get("final_score")
             score_text = f"score:{final_score:.2f}" if final_score else "completed"
             note = f"Multi-agent coordination for '{request_data.prompt[:30]}...' {score_text}"
@@ -865,7 +865,7 @@ async def coordinated_improvement(request: Request, request_data: GenerateReques
 async def get_agent_status(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Get status of all AI agents"""
     try:
-        from agent_coordinator import AgentCoordinator
+        from src.agent_coordinator import AgentCoordinator
         coordinator = AgentCoordinator()
 
         status = coordinator.get_agent_status()

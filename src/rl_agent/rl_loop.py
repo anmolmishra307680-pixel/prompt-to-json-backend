@@ -1,16 +1,12 @@
 import json
 from pathlib import Path
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from schema import DesignSpec
+from src.schema import DesignSpec
 
 class RLLoop:
     def __init__(self, max_iterations: int = 3, binary_rewards: bool = False):
-        from prompt_agent import MainAgent
-        from evaluator import EvaluatorAgent
-        from feedback import FeedbackLoop
+        from src.prompt_agent import MainAgent
+        from src.evaluator import EvaluatorAgent
+        from src.feedback import FeedbackLoop
 
         self.main_agent = MainAgent()
         self.evaluator_agent = EvaluatorAgent()
@@ -155,8 +151,8 @@ class RLLoop:
         """Run RL training loop with DB iteration logging"""
         print(f"Starting RL training loop for prompt: '{prompt}'")
 
-        from db.database import Database
-        from feedback import FeedbackAgent
+        from src.db.database import Database
+        from src.feedback import FeedbackAgent
         import uuid
 
         db = Database()
@@ -351,7 +347,7 @@ class RLLoop:
             standard_result = self.run_single_iteration(prompt)
 
             # Advanced RL approach
-            from advanced_rl import AdvancedRLEnvironment
+            from src.rl_agent.advanced_rl import AdvancedRLEnvironment
             env = AdvancedRLEnvironment()
             rl_result = env.train_episode(prompt, max_steps=3)
 

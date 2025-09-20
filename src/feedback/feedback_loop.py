@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any
-from schema import DesignSpec, EvaluationResult
+from src.schema import DesignSpec, EvaluationResult
 
 class FeedbackLoop:
     def __init__(self, feedback_log_path: str = "logs/feedback_log.json"):
