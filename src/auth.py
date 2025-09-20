@@ -42,7 +42,7 @@ def authenticate_user(username: str, password: str):
     # Get credentials from environment or use defaults
     valid_username = os.getenv("DEMO_USERNAME", "admin")
     valid_password = os.getenv("DEMO_PASSWORD", "bhiv2024")
-    
+
     if username == valid_username and password == valid_password:
         return create_access_token({"sub": username})
     raise HTTPException(status_code=401, detail="Invalid credentials")

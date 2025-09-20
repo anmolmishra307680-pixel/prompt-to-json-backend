@@ -11,12 +11,12 @@ class ReportGenerator:
     def __init__(self, reports_dir: str = "reports"):
         self.reports_dir = Path(reports_dir)
         self.reports_dir.mkdir(exist_ok=True)
-    
+
     def generate_report(self, spec: DesignSpec, evaluation: EvaluationResult, prompt: str = "") -> str:
         """Generate evaluation report"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         report_file = self.reports_dir / f"evaluation_report_{timestamp}.json"
-        
+
         report_data = {
             "timestamp": datetime.now().isoformat(),
             "prompt": prompt,
@@ -29,12 +29,12 @@ class ReportGenerator:
                 "top_suggestions": evaluation.suggestions[:3]
             }
         }
-        
+
         with open(report_file, 'w') as f:
             json.dump(report_data, f, indent=2, default=str)
-        
+
         return str(report_file)
-    
+
     def _get_grade(self, score: float) -> str:
         """Convert score to letter grade"""
         if score >= 90:
@@ -47,17 +47,17 @@ class ReportGenerator:
             return "D"
         else:
             return "F"
-    
+
     def generate_summary_report(self, reports_data: list) -> str:
         """Generate summary report from multiple evaluations"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         summary_file = self.reports_dir / f"summary_report_{timestamp}.json"
-        
+
         if not reports_data:
             return str(summary_file)
-        
+
         scores = [r["evaluation_results"]["score"] for r in reports_data]
-        
+
         summary = {
             "timestamp": datetime.now().isoformat(),
             "total_evaluations": len(reports_data),
@@ -67,12 +67,12 @@ class ReportGenerator:
             "grade_distribution": self._calculate_grade_distribution(scores),
             "common_issues": self._find_common_issues(reports_data)
         }
-        
+
         with open(summary_file, 'w') as f:
             json.dump(summary, f, indent=2)
-        
+
         return str(summary_file)
-    
+
     def _calculate_grade_distribution(self, scores: list) -> dict:
         """Calculate distribution of grades"""
         grades = [self._get_grade(score) for score in scores]
@@ -80,17 +80,17 @@ class ReportGenerator:
         for grade in ['A', 'B', 'C', 'D', 'F']:
             distribution[grade] = grades.count(grade)
         return distribution
-    
+
     def _find_common_issues(self, reports_data: list) -> list:
         """Find most common issues across reports"""
         all_feedback = []
         for report in reports_data:
             all_feedback.extend(report["evaluation_results"]["feedback"])
-        
+
         # Simple frequency count
         issue_counts = {}
         for feedback in all_feedback:
             issue_counts[feedback] = issue_counts.get(feedback, 0) + 1
-        
+
         # Return top 5 most common issues
         return sorted(issue_counts.items(), key=lambda x: x[1], reverse=True)[:5]

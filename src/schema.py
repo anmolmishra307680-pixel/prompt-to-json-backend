@@ -10,7 +10,7 @@ class MaterialSpec(BaseModel):
 
 class DimensionSpec(BaseModel):
     length: Optional[float] = Field(default=None, description="Length in meters")
-    width: Optional[float] = Field(default=None, description="Width in meters") 
+    width: Optional[float] = Field(default=None, description="Width in meters")
     height: Optional[float] = Field(default=None, description="Height in meters")
     area: Optional[float] = Field(default=None, description="Area in square meters")
 
@@ -22,12 +22,12 @@ class DesignSpec(BaseModel):
     features: List[str] = Field(default_factory=list, description="Special features")
     requirements: List[str] = Field(default_factory=list, description="Design requirements")
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat(), description="Generation timestamp")
-    
+
     @field_validator('stories')
     @classmethod
     def validate_stories(cls, v):
         return max(1, v)
-    
+
     @field_validator('materials')
     @classmethod
     def validate_materials(cls, v):
@@ -43,7 +43,7 @@ class EvaluationResult(BaseModel):
     feedback: List[str] = Field(default_factory=list, description="Feedback comments")
     suggestions: List[str] = Field(default_factory=list, description="Improvement suggestions")
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat(), description="Evaluation timestamp")
-    
+
     @field_validator('score', 'completeness', 'format_validity', 'feasibility')
     @classmethod
     def validate_scores(cls, v):

@@ -9,7 +9,7 @@ business_registry = CollectorRegistry()
 
 # Business Metrics
 spec_generation_counter = Counter(
-    'spec_generations_total', 
+    'spec_generations_total',
     'Total number of specifications generated',
     ['agent_type', 'success'],
     registry=business_registry

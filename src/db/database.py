@@ -44,18 +44,18 @@ class Database:
         self.engine = create_engine(self.database_url)
         self.SessionLocal = sessionmaker(bind=self.engine)
         self.create_tables()
-    
+
     def create_tables(self):
         """Create all tables"""
         try:
             Base.metadata.create_all(bind=self.engine)
         except Exception as e:
             print(f"Warning: Could not create tables: {e}")
-    
+
     def get_session(self):
         """Get database session"""
         return self.SessionLocal()
-    
+
     def save_spec(self, prompt: str, spec_data: Dict[Any, Any], agent_type: str = 'MainAgent') -> str:
         """Save specification to database"""
         try:
@@ -71,7 +71,7 @@ class Database:
         except Exception as e:
             print(f"DB save failed, using fallback: {e}")
             return self._fallback_save_spec(prompt, spec_data)
-    
+
     def save_eval(self, spec_id: str, prompt: str, eval_data: Dict[Any, Any], score: float) -> str:
         """Save evaluation to database"""
         try:
@@ -88,7 +88,7 @@ class Database:
         except Exception as e:
             print(f"DB save failed, using fallback: {e}")
             return self._fallback_save_eval(spec_id, prompt, eval_data, score)
-    
+
     def save_feedback(self, spec_id: str, iteration: int, feedback_data: Dict[Any, Any], reward: float = None) -> str:
         """Save feedback to database"""
         try:
@@ -105,8 +105,8 @@ class Database:
         except Exception as e:
             print(f"DB save failed, using fallback: {e}")
             return self._fallback_save_feedback(spec_id, iteration, feedback_data, reward)
-    
-    def save_hidg_log(self, date: str, day: str, task: str, values_reflection: Dict[Any, Any], 
+
+    def save_hidg_log(self, date: str, day: str, task: str, values_reflection: Dict[Any, Any],
                       achievements: Dict[Any, Any] = None, technical_notes: Dict[Any, Any] = None) -> str:
         """Save HIDG values log to database"""
         try:
@@ -125,7 +125,7 @@ class Database:
         except Exception as e:
             print(f"DB save failed, using fallback: {e}")
             return self._fallback_save_hidg(date, day, task, values_reflection, achievements, technical_notes)
-    
+
     def get_spec(self, spec_id: str) -> Optional[Dict[Any, Any]]:
         """Get specification by ID"""
         try:
@@ -142,7 +142,7 @@ class Database:
         except Exception as e:
             print(f"DB query failed: {e}")
         return None
-    
+
     def get_eval(self, eval_id: str) -> Optional[Dict[Any, Any]]:
         """Get evaluation by ID"""
         try:
@@ -160,7 +160,7 @@ class Database:
         except Exception as e:
             print(f"DB query failed: {e}")
         return None
-    
+
     def get_report(self, report_id: str) -> Optional[Dict[Any, Any]]:
         """Get full report (spec + eval) by ID"""
         try:
@@ -186,16 +186,16 @@ class Database:
         except Exception as e:
             print(f"DB query failed: {e}")
         return None
-    
+
     def _fallback_save_spec(self, prompt: str, spec_data: Dict[Any, Any]) -> str:
         """Fallback to file storage"""
         import uuid
         from pathlib import Path
         from datetime import datetime
-        
+
         spec_id = str(uuid.uuid4())
         Path("spec_outputs").mkdir(exist_ok=True)
-        
+
         with open(f"spec_outputs/spec_{spec_id}.json", 'w') as f:
             json.dump({
                 'id': spec_id,
@@ -203,18 +203,18 @@ class Database:
                 'spec_data': spec_data,
                 'created_at': datetime.now().isoformat()
             }, f, indent=2)
-        
+
         return spec_id
-    
+
     def _fallback_save_eval(self, spec_id: str, prompt: str, eval_data: Dict[Any, Any], score: float) -> str:
         """Fallback to file storage"""
         import uuid
         from pathlib import Path
         from datetime import datetime
-        
+
         eval_id = str(uuid.uuid4())
         Path("reports").mkdir(exist_ok=True)
-        
+
         with open(f"reports/eval_{eval_id}.json", 'w') as f:
             json.dump({
                 'id': eval_id,
@@ -224,24 +224,24 @@ class Database:
                 'score': score,
                 'created_at': datetime.now().isoformat()
             }, f, indent=2)
-        
+
         return eval_id
-    
+
     def _fallback_save_feedback(self, spec_id: str, iteration: int, feedback_data: Dict[Any, Any], reward: float) -> str:
         """Fallback to file storage"""
         import uuid
         from pathlib import Path
         from datetime import datetime
-        
+
         feedback_id = str(uuid.uuid4())
         Path("logs").mkdir(exist_ok=True)
-        
+
         existing_logs = []
         feedback_file = Path("logs/feedback_log.json")
         if feedback_file.exists():
             with open(feedback_file, 'r') as f:
                 existing_logs = json.load(f)
-        
+
         existing_logs.append({
             'id': feedback_id,
             'spec_id': spec_id,
@@ -250,28 +250,28 @@ class Database:
             'reward': reward,
             'created_at': datetime.now().isoformat()
         })
-        
+
         with open(feedback_file, 'w') as f:
             json.dump(existing_logs, f, indent=2)
-        
+
         return feedback_id
-    
-    def _fallback_save_hidg(self, date: str, day: str, task: str, values_reflection: Dict[Any, Any], 
+
+    def _fallback_save_hidg(self, date: str, day: str, task: str, values_reflection: Dict[Any, Any],
                            achievements: Dict[Any, Any], technical_notes: Dict[Any, Any]) -> str:
         """Fallback to file storage"""
         import uuid
         from pathlib import Path
         from datetime import datetime
-        
+
         hidg_id = str(uuid.uuid4())
         Path("logs").mkdir(exist_ok=True)
-        
+
         existing_logs = []
         values_file = Path("logs/values_log.json")
         if values_file.exists():
             with open(values_file, 'r') as f:
                 existing_logs = json.load(f)
-        
+
         existing_logs.append({
             'id': hidg_id,
             'date': date,
@@ -282,12 +282,12 @@ class Database:
             'technical_notes': technical_notes,
             'created_at': datetime.now().isoformat()
         })
-        
+
         with open(values_file, 'w') as f:
             json.dump(existing_logs, f, indent=2)
-        
+
         return hidg_id
-    
+
     def save_iteration_log(self, session_id: str, iteration_number: int, prompt: str,
                           spec_before: Dict[Any, Any], spec_after: Dict[Any, Any],
                           evaluation_data: Dict[Any, Any], feedback_data: Dict[Any, Any],
@@ -315,7 +315,7 @@ class Database:
             return self._fallback_save_iteration(session_id, iteration_number, prompt,
                                                spec_before, spec_after, evaluation_data,
                                                feedback_data, score_before, score_after, reward)
-    
+
     def get_iteration_logs(self, session_id: str) -> List[Dict[Any, Any]]:
         """Get all iteration logs for a session"""
         try:
@@ -323,7 +323,7 @@ class Database:
                 logs = session.query(IterationLog).filter(
                     IterationLog.session_id == session_id
                 ).order_by(IterationLog.iteration_number).all()
-                
+
                 return [{
                     'id': log.id,
                     'session_id': log.session_id,
@@ -341,7 +341,7 @@ class Database:
         except Exception as e:
             print(f"DB query failed: {e}")
             return []
-    
+
     def _fallback_save_iteration(self, session_id: str, iteration_number: int, prompt: str,
                                spec_before: Dict[Any, Any], spec_after: Dict[Any, Any],
                                evaluation_data: Dict[Any, Any], feedback_data: Dict[Any, Any],
@@ -349,16 +349,16 @@ class Database:
         """Fallback to file storage for iteration logs"""
         from pathlib import Path
         from datetime import datetime
-        
+
         iteration_id = str(uuid.uuid4())
         Path("logs").mkdir(exist_ok=True)
-        
+
         existing_logs = []
         iteration_file = Path("logs/iteration_logs.json")
         if iteration_file.exists():
             with open(iteration_file, 'r') as f:
                 existing_logs = json.load(f)
-        
+
         existing_logs.append({
             'id': iteration_id,
             'session_id': session_id,
@@ -373,10 +373,10 @@ class Database:
             'reward': reward,
             'created_at': datetime.now().isoformat()
         })
-        
+
         with open(iteration_file, 'w') as f:
             json.dump(existing_logs, f, indent=2)
-        
+
         return iteration_id
 
 # Global database instance

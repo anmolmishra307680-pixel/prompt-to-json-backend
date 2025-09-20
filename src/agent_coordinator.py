@@ -14,46 +14,46 @@ class AgentCoordinator:
     def __init__(self):
         self.agents = {
             'prompt': MainAgent(),
-            'evaluator': EvaluatorAgent(), 
+            'evaluator': EvaluatorAgent(),
             'rl': RLLoop(),
             'feedback': FeedbackAgent()
         }
-        
+
     async def coordinated_improvement(self, prompt: str, target_score: float = 90.0) -> Dict[str, Any]:
         """Agents work together for optimal results"""
         start_time = time.time()
         agents_used = []
         improvements = []
-        
+
         try:
             # Generate initial spec
             spec = self.agents['prompt'].run(prompt)
             agents_used.append("MainAgent")
-            
+
             # Get evaluation feedback
             evaluation = self.agents['evaluator'].run(spec, prompt)
             agents_used.append("EvaluatorAgent")
-            
+
             # If score < target, trigger collaborative improvement
             if evaluation.score < target_score:
                 print(f"Score {evaluation.score} below target {target_score}, starting collaborative improvement...")
                 improvements.append(f"Initial score: {evaluation.score}")
-                
+
                 # RL agent uses evaluator feedback
                 try:
                     improved_result = self.agents['rl'].run(prompt, n_iter=3)
                     agents_used.append("RLLoop")
-                    
+
                     # Re-evaluate improved result
                     final_spec = improved_result.get("final_spec", spec.model_dump())
                     final_evaluation = self.agents['evaluator'].run(
                         DesignSpec(**final_spec), prompt
                     )
-                    
+
                     improvements.append(f"RL improvement: {final_evaluation.score - evaluation.score:.1f} points")
-                    
+
                     coordination_time = time.time() - start_time
-                    
+
                     return CoordinationResult(
                         success=True,
                         agents_used=agents_used,
@@ -62,13 +62,13 @@ class AgentCoordinator:
                         improvements=improvements,
                         coordination_time=coordination_time
                     ).model_dump()
-                    
+
                 except Exception as e:
                     print(f"RL improvement failed: {e}")
                     improvements.append(f"RL failed: {str(e)}")
-                    
+
             coordination_time = time.time() - start_time
-            
+
             return CoordinationResult(
                 success=True,
                 agents_used=agents_used,
@@ -77,7 +77,7 @@ class AgentCoordinator:
                 improvements=improvements or [f"Initial score {evaluation.score} meets target"],
                 coordination_time=coordination_time
             ).model_dump()
-            
+
         except Exception as e:
             coordination_time = time.time() - start_time
             return CoordinationResult(
@@ -88,7 +88,7 @@ class AgentCoordinator:
                 improvements=[f"Coordination failed: {str(e)}"],
                 coordination_time=coordination_time
             ).model_dump()
-    
+
     def get_agent_status(self) -> Dict[str, str]:
         """Get status of all agents"""
         status = {}
@@ -101,19 +101,19 @@ class AgentCoordinator:
                     status[name] = "❌ No run method"
             except Exception as e:
                 status[name] = f"❌ Error: {str(e)}"
-        
+
         return status
-    
+
     def optimize_spec_iteratively(self, prompt: str, max_iterations: int = 5) -> Dict[str, Any]:
         """Iteratively optimize specification until target score reached"""
         try:
             current_spec = self.agents['prompt'].run(prompt)
             iteration_history = []
-            
+
             for i in range(max_iterations):
                 # Evaluate current spec
                 evaluation = self.agents['evaluator'].run(current_spec, prompt)
-                
+
                 iteration_data = {
                     "iteration": i + 1,
                     "spec": current_spec.model_dump(),
@@ -122,14 +122,14 @@ class AgentCoordinator:
                     "suggestions": evaluation.suggestions
                 }
                 iteration_history.append(iteration_data)
-                
+
                 # If score is good enough, stop
                 if evaluation.score >= 90.0:
                     break
-                
+
                 # For now, just return the current spec since improve_spec_with_feedback may not exist
                 # This can be enhanced when that method is implemented
-            
+
             return {
                 "final_spec": current_spec.model_dump(),
                 "final_score": evaluation.score,
@@ -144,7 +144,7 @@ class AgentCoordinator:
                 "iterations": [],
                 "total_iterations": 0
             }
-    
+
     def get_coordination_metrics(self) -> Dict[str, Any]:
         """Get coordination system metrics"""
         return {

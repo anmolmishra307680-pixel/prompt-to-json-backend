@@ -37,7 +37,7 @@ class FallbackAgent:
         return {"error": "Agent not available"}
 
 class FallbackDB:
-    def get_session(self): 
+    def get_session(self):
         raise RuntimeError("Database unavailable")
     def save_spec(self, *args): return "fallback_id"
     def save_eval(self, *args): return "fallback_id"
@@ -53,24 +53,24 @@ def verify_api_key(api_key: str = Depends(api_key_header)):
     """Verify API key from X-API-Key header"""
     if not api_key:
         raise HTTPException(
-            status_code=401, 
+            status_code=401,
             detail="Invalid or missing API key. Include X-API-Key header."
         )
-    
+
     # In test environment, be more flexible with API key validation
     if os.getenv("TESTING") == "true":
         # Accept any non-empty API key in test mode
         return api_key
-    
+
     if not secrets.compare_digest(api_key, API_KEY):
         raise HTTPException(
-            status_code=401, 
+            status_code=401,
             detail="Invalid or missing API key. Include X-API-Key header."
         )
     return api_key
 
 app = FastAPI(
-    title="Prompt-to-JSON API", 
+    title="Prompt-to-JSON API",
     version=API_VERSION,
     description="Production-Ready AI Backend with Multi-Agent Coordination",
     docs_url="/docs",
@@ -94,7 +94,7 @@ app.add_exception_handler(Exception, error_handlers.general_exception_handler)
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
-    
+
     from fastapi.openapi.utils import get_openapi
     openapi_schema = get_openapi(
         title="Prompt-to-JSON API",
@@ -102,7 +102,7 @@ def custom_openapi():
         description="Production-Ready AI Backend with Multi-Agent Coordination",
         routes=app.routes,
     )
-    
+
     # Add security schemes
     openapi_schema["components"]["securitySchemes"] = {
         "APIKeyHeader": {
@@ -116,7 +116,7 @@ def custom_openapi():
             "bearerFormat": "JWT"
         }
     }
-    
+
     # Apply security to endpoints and clean up parameters
     for path, path_item in openapi_schema["paths"].items():
         for method, operation in path_item.items():
@@ -127,7 +127,7 @@ def custom_openapi():
                         param for param in operation["parameters"]
                         if param.get("name") not in ["authorization", "Authorization", "X-API-Key"]
                     ]
-                
+
                 if path == "/token":
                     # Token endpoint requires only API key
                     operation["security"] = [
@@ -141,7 +141,7 @@ def custom_openapi():
                     operation["security"] = [
                         {"APIKeyHeader": [], "BearerAuth": []}
                     ]
-    
+
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
@@ -170,7 +170,7 @@ try:
     from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
     from sentry_sdk.integrations.fastapi import FastApiIntegration
     from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
-    
+
     sentry_dsn = os.getenv("SENTRY_DSN")
     if sentry_dsn:
         sentry_sdk.init(
@@ -197,7 +197,7 @@ try:
         track_generation, track_evaluation_score, track_rl_training,
         update_active_sessions, get_business_metrics
     )
-    
+
     # Initialize Prometheus instrumentator
     instrumentator = Instrumentator(
         should_group_status_codes=False,
@@ -206,10 +206,10 @@ try:
         inprogress_name="http_requests_inprogress",
         inprogress_labels=True,
     )
-    
+
     # Instrument the app but don't auto-expose
     instrumentator.instrument(app)
-    
+
     print("[OK] Prometheus metrics instrumentation enabled")
     print("[OK] Custom business metrics enabled")
 except ImportError:
@@ -237,7 +237,7 @@ except Exception as e:
     class FallbackAgent:
         def run(self, *args, **kwargs):
             return {"error": "Agent not available"}
-    
+
     prompt_agent = FallbackAgent()
     evaluator_agent = FallbackAgent()
     rl_agent = FallbackAgent()
@@ -295,18 +295,18 @@ def token_create(request: Request, payload: TokenRequest, api_key: str = Depends
     password = payload.password
     if not username or not password:
         raise HTTPException(status_code=400, detail="username and password required")
-    
+
     # Check against environment variables for security
     demo_username = os.getenv("DEMO_USERNAME")
     demo_password = os.getenv("DEMO_PASSWORD")
-    
+
     if not demo_username or not demo_password:
         raise HTTPException(status_code=500, detail="Authentication not configured")
-    
+
     if username == demo_username and password == demo_password:
         token = create_access_token({"sub": username})
         return {"access_token": token, "token_type": "bearer"}
-    
+
     raise HTTPException(status_code=401, detail="Invalid credentials")
 
 @app.get("/")
@@ -314,12 +314,11 @@ def token_create(request: Request, payload: TokenRequest, api_key: str = Depends
 async def root(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
     """Root endpoint"""
     return {
-        "message": "Prompt-to-JSON API", 
+        "message": "Prompt-to-JSON API",
         "version": API_VERSION,
         "status": "Production Ready",
         "features": ["AI Agents", "Multi-Agent Coordination", "RL Training", "JWT Authentication", "Monitoring"]
     }
-
 
 
 @app.get("/health")
@@ -334,13 +333,13 @@ async def health_check(request: Request):
     except Exception as e:
         db_status = False
         print(f"Database health check failed: {e}")
-    
+
     # Test agent availability
     agents_status = []
     for name, agent in [("prompt", prompt_agent), ("evaluator", evaluator_agent), ("rl", rl_agent)]:
         if hasattr(agent, 'run'):
             agents_status.append(name)
-    
+
     return {
         "status": "healthy" if db_status else "degraded",
         "database": db_status,
@@ -354,12 +353,12 @@ async def basic_metrics(request: Request, api_key: str = Depends(verify_api_key)
     """Basic metrics endpoint"""
     try:
         from pathlib import Path
-        
+
         # Count generated files
         specs_count = len(list(Path("spec_outputs").glob("*.json"))) if Path("spec_outputs").exists() else 0
         reports_count = len(list(Path("reports").glob("*.json"))) if Path("reports").exists() else 0
         logs_count = len(list(Path("logs").glob("*.json"))) if Path("logs").exists() else 0
-        
+
         return {
             "generated_specs": specs_count,
             "evaluation_reports": reports_count,
@@ -384,7 +383,7 @@ async def generate_spec(request: Request, generate_request: GenerateRequest, api
     start_time = time.time()
     try:
         spec = prompt_agent.run(generate_request.prompt)
-        
+
         # Track business metrics
         try:
             from monitoring.custom_metrics import spec_generation_counter, agent_response_time
@@ -392,14 +391,14 @@ async def generate_spec(request: Request, generate_request: GenerateRequest, api
             agent_response_time.labels(agent_name='MainAgent').observe(time.time() - start_time)
         except ImportError:
             pass
-        
+
         # Log HIDG entry for generation completion
         try:
             from hidg import log_generation_completion
             log_generation_completion(generate_request.prompt, True)
         except Exception as log_error:
             print(f"HIDG logging error: {log_error}")
-        
+
         return {
             "spec": spec.model_dump(),
             "success": True,
@@ -412,7 +411,7 @@ async def generate_spec(request: Request, generate_request: GenerateRequest, api
             spec_generation_counter.labels(agent_type='MainAgent', success='false').inc()
         except ImportError:
             pass
-        
+
         # Log failed generation
         try:
             from hidg import log_generation_completion
@@ -435,10 +434,10 @@ async def evaluate_spec(request: Request, eval_request: EvaluateRequest, api_key
                 def __init__(self, **kwargs):
                     for k, v in kwargs.items():
                         setattr(self, k, v)
-        
+
         # Normalize materials to proper format
         spec_data = eval_request.spec.copy()
-        
+
         # Fix materials format - ensure it's a list of MaterialSpec objects
         if "materials" in spec_data:
             materials = spec_data["materials"]
@@ -466,7 +465,7 @@ async def evaluate_spec(request: Request, eval_request: EvaluateRequest, api_key
                         "properties": {}
                     })
             spec_data["materials"] = normalized_materials
-        
+
         # Add default values for missing required fields
         if "building_type" not in spec_data:
             spec_data["building_type"] = "general"
@@ -480,10 +479,10 @@ async def evaluate_spec(request: Request, eval_request: EvaluateRequest, api_key
             spec_data["features"] = []
         if "requirements" not in spec_data:
             spec_data["requirements"] = [eval_request.prompt]
-        
+
         spec = DesignSpec(**spec_data)
         evaluation = evaluator_agent.run(spec, eval_request.prompt)
-        
+
         # Save evaluation and get report ID
         try:
             spec_id = db.save_spec(eval_request.prompt, spec_data, 'EvaluatorAgent')
@@ -492,21 +491,21 @@ async def evaluate_spec(request: Request, eval_request: EvaluateRequest, api_key
             print(f"DB save failed: {e}")
             import uuid
             report_id = str(uuid.uuid4())
-        
+
         # Track business metrics
         try:
             from monitoring.custom_metrics import track_evaluation_score
             track_evaluation_score(evaluation.score)
         except ImportError:
             pass
-        
+
         # Log HIDG entry for evaluation completion
         try:
             from hidg import log_evaluation_completion
             log_evaluation_completion(eval_request.prompt, evaluation.score)
         except Exception as log_error:
             print(f"HIDG logging error: {log_error}")
-        
+
         return {
             "report_id": report_id,
             "evaluation": evaluation.model_dump(),
@@ -525,9 +524,9 @@ async def iterate_rl(request: Request, iterate_request: IterateRequest, api_key:
         # Ensure minimum 2 iterations
         n_iter = max(2, iterate_request.n_iter)
         rl_agent.max_iterations = n_iter
-        
+
         results = rl_agent.run(iterate_request.prompt, n_iter)
-        
+
         # Track RL training metrics
         try:
             from monitoring.custom_metrics import track_rl_training
@@ -535,7 +534,7 @@ async def iterate_rl(request: Request, iterate_request: IterateRequest, api_key:
             track_rl_training(n_iter, duration)
         except ImportError:
             pass
-        
+
         # Format detailed iteration logs
         # Use list comprehension for better performance
         detailed_iterations = [{
@@ -554,7 +553,7 @@ async def iterate_rl(request: Request, iterate_request: IterateRequest, api_key:
             "reward": iteration["reward"],
             "improvement": iteration.get("improvement", 0)
         } for iteration in results.get("iterations", [])]
-        
+
         # Clean datetime objects recursively
         def clean_data(data):
             if isinstance(data, dict):
@@ -565,7 +564,7 @@ async def iterate_rl(request: Request, iterate_request: IterateRequest, api_key:
                 return data.isoformat()
             else:
                 return data
-        
+
         response_data = {
             "success": True,
             "session_id": results.get("session_id"),
@@ -576,7 +575,7 @@ async def iterate_rl(request: Request, iterate_request: IterateRequest, api_key:
             "learning_insights": clean_data(results.get("learning_insights", {})),
             "message": f"RL training completed with {len(detailed_iterations)} iterations"
         }
-        
+
         # Log HIDG entry for RL training completion
         try:
             from hidg import log_pipeline_completion
@@ -584,7 +583,7 @@ async def iterate_rl(request: Request, iterate_request: IterateRequest, api_key:
             log_pipeline_completion(iterate_request.prompt, len(detailed_iterations), final_score)
         except Exception as log_error:
             print(f"HIDG logging error: {log_error}")
-        
+
         return response_data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -620,15 +619,15 @@ async def log_values(request: Request, log_request: LogValuesRequest, api_key: s
             log_request.achievements,
             log_request.technical_notes
         )
-        
+
         # Also save to file as backup
         from pathlib import Path
         from datetime import datetime
         import json
-        
+
         logs_dir = Path("logs")
         logs_dir.mkdir(exist_ok=True)
-        
+
         values_entry = {
             "date": log_request.date,
             "day": log_request.day,
@@ -639,10 +638,10 @@ async def log_values(request: Request, log_request: LogValuesRequest, api_key: s
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "hidg_id": hidg_id
         }
-        
+
         values_file = logs_dir / "values_log.json"
         values_logs = []
-        
+
         if values_file.exists():
             try:
                 with open(values_file, 'r') as f:
@@ -650,19 +649,19 @@ async def log_values(request: Request, log_request: LogValuesRequest, api_key: s
             except (json.JSONDecodeError, IOError) as e:
                 print(f"Failed to read values log: {e}")
                 values_logs = []
-        
+
         values_logs.append(values_entry)
-        
+
         try:
             with open(values_file, 'w') as f:
                 json.dump(values_logs, f, indent=2)
         except IOError as e:
             print(f"Failed to write values log: {e}")
             raise HTTPException(status_code=500, detail="Failed to save values log")
-        
+
         import logging
         logging.info(f"Values logged to DB and file: {values_file}")
-        
+
         return {
             "success": True,
             "hidg_id": hidg_id,
@@ -683,13 +682,13 @@ async def batch_evaluate(request: Request, prompts: List[str], api_key: str = De
             spec = prompt_agent.run(prompt)
             # Evaluate spec
             evaluation = evaluator_agent.run(spec, prompt)
-            
+
             results.append({
                 "prompt": prompt,
                 "spec": spec.model_dump(),
                 "evaluation": evaluation.model_dump()
             })
-        
+
         return {
             "success": True,
             "results": results,
@@ -706,23 +705,23 @@ async def get_iteration_logs(request: Request, session_id: str, api_key: str = D
     try:
         # Try database first
         logs = db.get_iteration_logs(session_id)
-        
+
         # If no logs in DB, check fallback files
         if not logs:
             from pathlib import Path
             import json
-            
+
             iteration_file = Path("logs/iteration_logs.json")
             if iteration_file.exists():
                 with open(iteration_file, 'r') as f:
                     all_logs = json.load(f)
-                
+
                 # Filter by session_id using list comprehension
                 logs = [log for log in all_logs if log.get('session_id') == session_id]
-        
+
         if not logs:
             raise HTTPException(status_code=404, detail="No iteration logs found for this session")
-        
+
         return {
             "success": True,
             "session_id": session_id,
@@ -746,13 +745,13 @@ async def get_cli_tools(request: Request, api_key: str = Depends(verify_api_key)
     except Exception as e:
         db_status = f"❌ Error: {str(e)}"
         db_tables = "Using file fallback (JSON files)"
-    
+
     return {
         "database_status": db_status,
         "database_tables": db_tables,
         "available_endpoints": {
             "/generate": "Generate specifications (requires API key)",
-            "/evaluate": "Evaluate specifications (requires API key)", 
+            "/evaluate": "Evaluate specifications (requires API key)",
             "/iterate": "RL training iterations (requires API key)",
             "/reports/{id}": "Get evaluation reports",
             "/health": "System health check",
@@ -774,7 +773,7 @@ async def run_system_test(request: Request, api_key: str = Depends(verify_api_ke
         # Test core functionality
         spec = prompt_agent.run("Test building")
         evaluation = evaluator_agent.run(spec, "Test building")
-        
+
         return {
             "success": True,
             "tests_passed": [
@@ -796,9 +795,9 @@ async def advanced_rl_training(request: Request, rl_request: IterateRequest, api
     try:
         from rl_agent.advanced_rl import AdvancedRLEnvironment
         env = AdvancedRLEnvironment()
-        
+
         result = env.train_episode(rl_request.prompt, max_steps=rl_request.n_iter)
-        
+
         return {
             "success": True,
             "prompt": rl_request.prompt,
@@ -821,7 +820,7 @@ async def prune_logs(request: Request, retention_days: int = 30, api_key: str = 
         from db.log_pruning import LogPruner
         pruner = LogPruner(retention_days=retention_days)
         results = pruner.prune_all_logs()
-        
+
         return {
             "success": True,
             "retention_days": retention_days,
@@ -840,9 +839,9 @@ async def coordinated_improvement(request: Request, request_data: GenerateReques
     try:
         from agent_coordinator import AgentCoordinator
         coordinator = AgentCoordinator()
-        
+
         result = await coordinator.coordinated_improvement(request_data.prompt)
-        
+
         # Log HIDG entry for coordinated improvement completion
         try:
             from hidg import append_hidg_entry
@@ -852,7 +851,7 @@ async def coordinated_improvement(request: Request, request_data: GenerateReques
             append_hidg_entry("COORDINATION", note)
         except Exception as log_error:
             print(f"HIDG logging error: {log_error}")
-        
+
         return {
             "success": True,
             "result": result,
@@ -868,10 +867,10 @@ async def get_agent_status(request: Request, api_key: str = Depends(verify_api_k
     try:
         from agent_coordinator import AgentCoordinator
         coordinator = AgentCoordinator()
-        
+
         status = coordinator.get_agent_status()
         metrics = coordinator.get_coordination_metrics()
-        
+
         return {
             "success": True,
             "agents": status,
@@ -906,16 +905,16 @@ async def get_metrics(request: Request, api_key: str = Depends(verify_api_key), 
     try:
         from prometheus_fastapi_instrumentator import Instrumentator
         from prometheus_client import generate_latest, REGISTRY
-        
+
         # Get standard metrics
         standard_metrics = ""
         registry = instrumentator.registry if 'instrumentator' in globals() else None
         if registry:
             standard_metrics = generate_latest(registry).decode('utf-8')
-        
+
         # Get business metrics
         business_metrics = get_business_metrics().decode('utf-8')
-        
+
         # Combine metrics
         combined_metrics = standard_metrics + "\n" + business_metrics
         return Response(combined_metrics, media_type="text/plain")
@@ -932,7 +931,7 @@ async def get_system_overview(request: Request, api_key: str = Depends(verify_ap
         agent_info = await get_agent_status(request, api_key, user)
         cache_info = await get_cache_stats(request, api_key, user)
         metrics_info = await basic_metrics(request, api_key, user)
-        
+
         return {
             "success": True,
             "system_info": {
@@ -973,12 +972,11 @@ async def get_system_overview(request: Request, api_key: str = Depends(verify_ap
         raise HTTPException(status_code=500, detail="Failed to get system overview")
 
 
-
 if __name__ == "__main__":
     import os
     port = int(os.getenv("PORT", 8000))
     workers = int(os.getenv("MAX_WORKERS", 4))
-    
+
     if os.getenv("PRODUCTION_MODE") == "true":
         # Production configuration - validated for high concurrency
         uvicorn.run(

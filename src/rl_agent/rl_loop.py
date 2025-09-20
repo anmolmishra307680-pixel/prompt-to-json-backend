@@ -11,40 +11,40 @@ class RLLoop:
         from prompt_agent import MainAgent
         from evaluator import EvaluatorAgent
         from feedback import FeedbackLoop
-        
+
         self.main_agent = MainAgent()
         self.evaluator_agent = EvaluatorAgent()
         self.feedback_loop = FeedbackLoop()
         self.max_iterations = max_iterations
         self.binary_rewards = binary_rewards
-        
+
         # Create logs directory
         Path("logs").mkdir(exist_ok=True)
-    
+
     def run(self, prompt: str, n_iter: int = None):
         """BHIV Core Hook: Single entry point for orchestration"""
         iterations = n_iter or self.max_iterations
         self.max_iterations = iterations
         return self.run_training_loop_with_db(prompt)
-    
+
     def run_training_loop(self, prompt: str) -> dict:
         """Run reinforcement learning training loop"""
         print(f"Starting RL training loop for prompt: '{prompt}'")
-        
+
         results = {
             "prompt": prompt,
             "iterations": [],
             "final_spec": None,
             "learning_insights": None
         }
-        
+
         current_spec = None
         previous_score = 0
         evaluation = None
-        
+
         for iteration in range(self.max_iterations):
             print(f"\n--- Iteration {iteration + 1} ---")
-            
+
             # Generate specification
             if iteration == 0:
                 # Initial generation
@@ -54,20 +54,20 @@ class RLLoop:
                 try:
                     feedback_suggestions = self.feedback_loop.get_feedback_for_prompt(prompt)
                     spec = self.main_agent.improve_spec_with_feedback(
-                        current_spec, 
-                        evaluation.feedback, 
+                        current_spec,
+                        evaluation.feedback,
                         evaluation.suggestions + feedback_suggestions
                     )
                 except Exception as e:
                     print(f"[INFO] Using current spec due to improvement error: {e}")
                     spec = current_spec
-            
+
             # Save specification for each iteration
             from datetime import datetime
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             spec_filename = f"design_spec_{timestamp}_iter{iteration + 1}.json"
             spec_path = self.main_agent.spec_outputs_dir / spec_filename
-            
+
             output_data = {
                 "prompt": f"{prompt} (RL iteration {iteration + 1})",
                 "specification": spec.model_dump(),
@@ -78,19 +78,19 @@ class RLLoop:
                     "rl_mode": True
                 }
             }
-            
+
             import json
             with open(spec_path, 'w') as f:
                 json.dump(output_data, f, indent=2, default=str)
-            
+
             print(f"Specification saved to: {spec_path}")
-            
+
             # Evaluate specification
             evaluation = self.evaluator_agent.evaluate_spec(spec, prompt)
-            
+
             # Calculate reward
             reward = self.feedback_loop.calculate_reward(evaluation, previous_score, self.binary_rewards)
-            
+
             # Log iteration (always log, use dummy spec for first iteration)
             if current_spec:
                 self.feedback_loop.log_iteration(
@@ -102,7 +102,7 @@ class RLLoop:
                 self.feedback_loop.log_iteration(
                     prompt, dummy_spec, spec, evaluation, reward, iteration + 1
                 )
-            
+
             # Store iteration results with dashboard format
             iteration_result = {
                 "iteration": iteration + 1,
@@ -119,50 +119,50 @@ class RLLoop:
                 }
             }
             results["iterations"].append(iteration_result)
-            
+
             print(f"Score: {evaluation.score:.2f}, Reward: {reward:.3f}")
-            
+
             # Update for next iteration
             current_spec = spec
             previous_score = evaluation.score
-            
+
             # Only allow early stopping after minimum iterations and if score is perfect
             if evaluation.score >= 100 and iteration >= (self.max_iterations - 1):
                 print("Early stopping: Perfect score achieved")
                 break
-        
+
         # Ensure we have valid results
         if current_spec:
             results["final_spec"] = current_spec.model_dump()
         else:
             results["final_spec"] = None
-            
+
         try:
             results["learning_insights"] = self.feedback_loop.get_learning_insights()
         except Exception as e:
             print(f"Warning: Failed to get learning insights: {e}")
             results["learning_insights"] = {"error": str(e)}
-        
+
         # Save training results
         try:
             self._save_training_results(results)
         except Exception as e:
             print(f"Warning: Failed to save training results: {e}")
-        
+
         return results
-    
+
     def run_training_loop_with_db(self, prompt: str) -> dict:
         """Run RL training loop with DB iteration logging"""
         print(f"Starting RL training loop for prompt: '{prompt}'")
-        
+
         from db.database import Database
         from feedback import FeedbackAgent
         import uuid
-        
+
         db = Database()
         feedback_agent = FeedbackAgent()
         session_id = str(uuid.uuid4())
-        
+
         results = {
             "session_id": session_id,
             "prompt": prompt,
@@ -170,18 +170,18 @@ class RLLoop:
             "final_spec": None,
             "learning_insights": None
         }
-        
+
         current_spec = None
         previous_score = 0
         evaluation = None
-        
+
         for iteration in range(self.max_iterations):
             print(f"\n--- Iteration {iteration + 1} ---")
-            
+
             # Store spec before improvement
             spec_before = current_spec.model_dump() if current_spec else None
             score_before = previous_score
-            
+
             # Generate or improve specification
             if iteration == 0:
                 spec = self.main_agent.generate_spec(prompt)
@@ -190,31 +190,31 @@ class RLLoop:
                 feedback_data = feedback_agent.run(current_spec, prompt, evaluation)
                 try:
                     spec = self.main_agent.improve_spec_with_feedback(
-                        current_spec, 
-                        evaluation.feedback, 
+                        current_spec,
+                        evaluation.feedback,
                         feedback_data.get('suggestions', [])
                     )
                 except Exception as e:
                     print(f"[INFO] Using current spec due to improvement error: {e}")
                     spec = current_spec
-            
+
             # Evaluate specification
             evaluation = self.evaluator_agent.evaluate_spec(spec, prompt)
-            
+
             # Generate feedback
             feedback_data = feedback_agent.run(spec, prompt, evaluation)
-            
+
             # Calculate reward
             reward = feedback_agent.calculate_reward(evaluation, previous_score, self.binary_rewards)
-            
+
             # Always create log files (force fallback)
             iteration_id = f"fallback_{iteration + 1}"
-            
+
             # Create log files
-            self._create_fallback_logs(session_id, iteration + 1, prompt, spec_before, 
-                                     spec.model_dump(), evaluation.model_dump(), 
+            self._create_fallback_logs(session_id, iteration + 1, prompt, spec_before,
+                                     spec.model_dump(), evaluation.model_dump(),
                                      feedback_data, score_before, evaluation.score, reward)
-            
+
             # Store iteration results
             iteration_result = {
                 "iteration": iteration + 1,
@@ -229,34 +229,34 @@ class RLLoop:
                 "improvement": evaluation.score - previous_score if iteration > 0 else 0
             }
             results["iterations"].append(iteration_result)
-            
+
             print(f"Score: {evaluation.score:.2f}, Reward: {reward:.3f}")
-            
+
             # Update for next iteration
             current_spec = spec
             previous_score = evaluation.score
-        
+
         # Finalize results
         if current_spec:
             results["final_spec"] = current_spec.model_dump()
-        
+
         try:
             results["learning_insights"] = self.feedback_loop.get_learning_insights()
         except Exception as e:
             print(f"Warning: Failed to get learning insights: {e}")
             results["learning_insights"] = {"error": str(e)}
-        
+
         return results
-    
-    def _create_fallback_logs(self, session_id, iteration, prompt, spec_before, spec_after, 
+
+    def _create_fallback_logs(self, session_id, iteration, prompt, spec_before, spec_after,
                              evaluation_data, feedback_data, score_before, score_after, reward):
         """Create log files when DB fails"""
         from pathlib import Path
         from datetime import datetime
         import json
-        
+
         Path("logs").mkdir(exist_ok=True)
-        
+
         # Create iteration log
         iteration_entry = {
             "session_id": session_id,
@@ -271,7 +271,7 @@ class RLLoop:
             "reward": reward,
             "timestamp": datetime.now().isoformat()
         }
-        
+
         # Save to iteration logs
         iteration_file = Path("logs/iteration_logs.json")
         logs = []
@@ -281,11 +281,11 @@ class RLLoop:
                     logs = json.load(f)
                 except:
                     logs = []
-        
+
         logs.append(iteration_entry)
         with open(iteration_file, 'w') as f:
             json.dump(logs, f, indent=2)
-        
+
         # Save to feedback logs
         feedback_entry = {
             "session_id": session_id,
@@ -294,7 +294,7 @@ class RLLoop:
             "feedback": feedback_data,
             "timestamp": datetime.now().isoformat()
         }
-        
+
         feedback_file = Path("logs/feedback_log.json")
         feedback_logs = []
         if feedback_file.exists():
@@ -303,58 +303,58 @@ class RLLoop:
                     feedback_logs = json.load(f)
                 except:
                     feedback_logs = []
-        
+
         feedback_logs.append(feedback_entry)
         with open(feedback_file, 'w') as f:
             json.dump(feedback_logs, f, indent=2)
-        
+
         print(f"Fallback logs created for iteration {iteration}")
-    
+
     def _save_training_results(self, results: dict):
         """Save training results to logs"""
         from datetime import datetime
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         log_file = Path("logs") / f"rl_training_{timestamp}.json"
-        
+
         with open(log_file, 'w') as f:
             json.dump(results, f, indent=2, default=str)
-        
+
         print(f"Training results saved to: {log_file}")
-    
+
     def run_single_iteration(self, prompt: str) -> dict:
         """Run a single iteration of the loop"""
         # Generate specification
         spec = self.main_agent.generate_spec(prompt)
-        
+
         # Evaluate specification
         evaluation = self.evaluator_agent.evaluate_spec(spec, prompt)
-        
+
         # Calculate reward
         reward = self.feedback_loop.calculate_reward(evaluation)
-        
+
         # Save specification
         spec_path = self.main_agent.save_spec(spec, prompt)
-        
+
         return {
             "specification": spec,
             "evaluation": evaluation,
             "reward": reward,
             "spec_file": spec_path
         }
-    
+
     def compare_approaches(self, prompt: str) -> dict:
         """Compare rule-based vs advanced RL approaches"""
         print("Comparing rule-based vs Advanced RL...")
-        
+
         try:
             # Standard rule-based approach
             standard_result = self.run_single_iteration(prompt)
-            
+
             # Advanced RL approach
             from advanced_rl import AdvancedRLEnvironment
             env = AdvancedRLEnvironment()
             rl_result = env.train_episode(prompt, max_steps=3)
-            
+
             comparison = {
                 "prompt": prompt,
                 "rule_based": {
@@ -367,25 +367,25 @@ class RLLoop:
                 },
                 "winner": "rule_based" if standard_result["evaluation"].score > rl_result["final_score"] else "advanced_rl"
             }
-            
+
             print(f"Rule-based score: {standard_result['evaluation'].score:.2f}")
             print(f"Advanced RL score: {rl_result['final_score']:.2f}")
             print(f"Winner: {comparison['winner']}")
-            
+
             # Log comparison to feedback log
             try:
                 self.feedback_loop.log_comparison(
-                    prompt, 
-                    standard_result["specification"], 
+                    prompt,
+                    standard_result["specification"],
                     rl_result["final_spec"],
                     standard_result["evaluation"],
                     rl_result["final_score"]
                 )
             except Exception as log_error:
                 print(f"Warning: Failed to log comparison: {log_error}")
-            
+
             return comparison
-            
+
         except Exception as e:
             print(f"Comparison failed: {e}")
             return {

@@ -5,24 +5,24 @@ from pathlib import Path
 
 def append_hidg_entry(stage: str, note: str, branch: str = None, commit_hash: str = None):
     """Append HIDG daily log entry after pipeline runs"""
-    
+
     # Get git info from environment or defaults
     branch = branch or os.getenv('GIT_BRANCH', 'main')
     commit_hash = commit_hash or os.getenv('GIT_COMMIT', 'local')
-    
+
     # Ensure reports directory exists
     reports_dir = Path("reports")
     reports_dir.mkdir(exist_ok=True)
-    
+
     # Create log entry
     timestamp = datetime.now(timezone.utc).isoformat()
     entry = f"{timestamp} - {stage} - {note} - branch:{branch} commit:{commit_hash}\n"
-    
+
     # Append to daily log
     log_path = reports_dir / "daily_log.txt"
     with open(log_path, "a", encoding="utf-8") as f:
         f.write(entry)
-    
+
     print(f"[HIDG] Logged: {stage} - {note}")
 
 def log_pipeline_completion(prompt: str, iterations: int, final_score: float = None):

@@ -9,7 +9,7 @@ Base = declarative_base()
 
 class Spec(Base):
     __tablename__ = 'specs'
-    
+
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     prompt = Column(Text, nullable=False)
     spec_data = Column(JSON, nullable=False)
@@ -19,7 +19,7 @@ class Spec(Base):
 
 class Eval(Base):
     __tablename__ = 'evals'
-    
+
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     spec_id = Column(String, nullable=False)
     prompt = Column(Text, nullable=False)
@@ -29,7 +29,7 @@ class Eval(Base):
 
 class FeedbackLog(Base):
     __tablename__ = 'feedback_logs'
-    
+
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     spec_id = Column(String, nullable=False)
     iteration = Column(Integer, nullable=False)
@@ -39,7 +39,7 @@ class FeedbackLog(Base):
 
 class HidgLog(Base):
     __tablename__ = 'hidg_logs'
-    
+
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     date = Column(String, nullable=False)
     day = Column(String, nullable=False)

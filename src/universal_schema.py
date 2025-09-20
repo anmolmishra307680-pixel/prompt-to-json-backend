@@ -10,7 +10,7 @@ class MaterialSpec(BaseModel):
 
 class DimensionSpec(BaseModel):
     length: Optional[float] = Field(default=None, description="Length in appropriate units")
-    width: Optional[float] = Field(default=None, description="Width in appropriate units") 
+    width: Optional[float] = Field(default=None, description="Width in appropriate units")
     height: Optional[float] = Field(default=None, description="Height in appropriate units")
     depth: Optional[float] = Field(default=None, description="Depth in appropriate units")
     diameter: Optional[float] = Field(default=None, description="Diameter for circular objects")
@@ -41,7 +41,7 @@ class UniversalDesignSpec(BaseModel):
     estimated_cost: Optional[str] = Field(default=None, description="Estimated cost range")
     timeline: Optional[str] = Field(default=None, description="Development/construction timeline")
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat(), description="Generation timestamp")
-    
+
     @field_validator('materials')
     @classmethod
     def validate_materials(cls, v):
@@ -59,7 +59,7 @@ class EvaluationResult(BaseModel):
     feedback: List[str] = Field(default_factory=list, description="Feedback comments")
     suggestions: List[str] = Field(default_factory=list, description="Improvement suggestions")
     timestamp: str = Field(default_factory=lambda: datetime.now().isoformat(), description="Evaluation timestamp")
-    
+
     @field_validator('score', 'completeness', 'format_validity', 'feasibility', 'innovation', 'practicality')
     @classmethod
     def validate_scores(cls, v):
