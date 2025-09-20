@@ -1,12 +1,8 @@
 """Test structured error handling"""
 
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import pytest
 from fastapi.testclient import TestClient
-from main_api import app
+from src.main_api import app
 
 client = TestClient(app)
 

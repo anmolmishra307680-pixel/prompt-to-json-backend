@@ -1,8 +1,4 @@
 import pytest
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / 'src'))
-
 from src.prompt_agent import MainAgent
 from src.evaluator import EvaluatorAgent
 from src.rl_agent import RLLoop

@@ -44,6 +44,7 @@ testpaths = ["testing/tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+pythonpath = [".", "src"]
 markers = [
     "slow: marks tests as slow",
     "integration: marks tests as integration tests",
