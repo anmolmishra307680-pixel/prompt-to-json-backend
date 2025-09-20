@@ -22,10 +22,10 @@ if __name__ == "__main__":
     
     if os.getenv("PRODUCTION_MODE") == "true":
         uvicorn.run(
-            "main:app",
+            app,
             host="0.0.0.0",
             port=port,
             workers=int(os.getenv("MAX_WORKERS", 4))
         )
     else:
-        uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
+        uvicorn.run(app, host="0.0.0.0", port=port, reload=False)
