@@ -14,7 +14,10 @@ PASSWORD = os.getenv("DEMO_PASSWORD", "testpass")
 def get_auth_headers():
     """Get JWT token and return headers with API key and token"""
     try:
-        token_response = client.post("/token", json={"username": USERNAME, "password": PASSWORD})
+        # Token endpoint now requires API key
+        token_response = client.post("/token", 
+                                   json={"username": USERNAME, "password": PASSWORD},
+                                   headers={"X-API-Key": API_KEY})
         if token_response.status_code == 200:
             token = token_response.json()["access_token"]
             return {

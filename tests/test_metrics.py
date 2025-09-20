@@ -28,7 +28,10 @@ def get_auth_headers():
         }
     
     try:
-        token_response = client.post("/token", json={"username": USERNAME, "password": PASSWORD})
+        # Token endpoint now requires API key
+        token_response = client.post("/token", 
+                                   json={"username": USERNAME, "password": PASSWORD},
+                                   headers={"X-API-Key": API_KEY})
         if token_response.status_code == 200:
             _cached_token = token_response.json()["access_token"]
             return {
@@ -58,7 +61,8 @@ def test_health_endpoint():
 
 def test_metrics_endpoint():
     """Test Prometheus metrics endpoint"""
-    response = client.get("/metrics")
+    headers = get_auth_headers()
+    response = client.get("/metrics", headers=headers)
     
     assert response.status_code == 200
     

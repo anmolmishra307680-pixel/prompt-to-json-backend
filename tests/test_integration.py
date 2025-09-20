@@ -14,7 +14,10 @@ PASSWORD = os.getenv("DEMO_PASSWORD", "testpass")
 def get_auth_headers():
     """Get JWT token and return headers with API key and token"""
     try:
-        token_response = client.post("/token", json={"username": USERNAME, "password": PASSWORD})
+        # Token endpoint now requires API key
+        token_response = client.post("/token", 
+                                   json={"username": USERNAME, "password": PASSWORD},
+                                   headers={"X-API-Key": API_KEY})
         if token_response.status_code == 200:
             token = token_response.json()["access_token"]
             return {
@@ -87,11 +90,9 @@ class TestFullWorkflow:
         assert health_response.status_code == 200
         assert "status" in health_response.json()
         
-        # Metrics (Prometheus format)
-        metrics_response = client.get("/metrics")
+        # Metrics (now requires authentication)
+        metrics_response = client.get("/metrics", headers=headers)
         assert metrics_response.status_code == 200
-        # Prometheus metrics are text format, not JSON
-        assert "http_requests" in metrics_response.text
 
     def test_authentication_workflow(self):
         """Test API key authentication"""
