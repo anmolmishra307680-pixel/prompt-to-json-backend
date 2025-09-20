@@ -2,7 +2,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  test:
+  test-and-build:
     runs-on: ubuntu-latest
     
     steps:
@@ -12,6 +12,14 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.11
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
       
       - name: Install dependencies
         run: |
@@ -28,3 +36,9 @@ jobs:
       - name: Run tests
         run: |
           pytest testing/tests/ -v
+      
+      - name: Test coverage
+        run: |
+          pip install pytest-cov
+          pytest testing/tests/ --cov=src --cov-report=term-missing
+        continue-on-error: true
