@@ -2,7 +2,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  test-and-build:
+  test:
     runs-on: ubuntu-latest
     
     steps:
@@ -28,9 +28,3 @@ jobs:
       - name: Run tests
         run: |
           pytest testing/tests/ -v
-      
-      - name: Test coverage
-        run: |
-          pip install pytest-cov
-          pytest testing/tests/ --cov=src --cov-report=term-missing
-        continue-on-error: true
