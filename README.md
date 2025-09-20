@@ -92,30 +92,32 @@ PRODUCTION_MODE=true ./start.sh
 
 ## 📊 API Endpoints (17 Total)
 
-### 🔐 Authentication
-- **API Key**: `X-API-Key: <your-api-key>` (set via environment variable)
+### 🔐 Maximum Security Authentication
+- **API Key**: `X-API-Key: bhiv-secret-key-2024` (required for ALL endpoints)
 - **JWT Tokens**: Bearer token authentication for enhanced security
 - **Rate Limiting**: 20 requests/minute for protected endpoints
+- **Zero Public Endpoints**: Maximum security - all endpoints require authentication
 
-#### Getting JWT Token
+#### Getting JWT Token (Requires API Key)
 ```bash
-# Get JWT token (no API key required for this step)
+# Get JWT token (API key required for this step)
 curl -X POST "http://localhost:8000/token" \
   -H "Content-Type: application/json" \
-  -d '{"username":"<username>","password":"<password>"}'
+  -H "X-API-Key: bhiv-secret-key-2024" \
+  -d '{"username":"admin","password":"bhiv2024"}'
 
 # Response: {"access_token":"eyJ...","token_type":"bearer"}
 
-# Use BOTH API key and token for all protected endpoints
+# Use BOTH API key and token for all other endpoints
 curl -X POST "http://localhost:8000/generate" \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: <your-api-key>" \
+  -H "X-API-Key: bhiv-secret-key-2024" \
   -H "Authorization: Bearer <jwt-token>" \
   -d '{"prompt":"Modern office building"}'
 
-# Even health check requires dual authentication
+# All endpoints require dual authentication
 curl -X GET "http://localhost:8000/health" \
-  -H "X-API-Key: <your-api-key>" \
+  -H "X-API-Key: bhiv-secret-key-2024" \
   -H "Authorization: Bearer <jwt-token>"
 ```
 
@@ -394,10 +396,11 @@ curl http://localhost:8000/cache-stats
 - **Uptime**: 99.9% availability
 - **Load Capacity**: Tested up to 1000 concurrent users
 
-### Security & Rate Limiting
-- **Dual Authentication**: API key + JWT token required for all protected endpoints
+### Maximum Security & Rate Limiting
+- **Universal Authentication**: API key required for ALL 17 endpoints (including /token)
+- **Dual Authentication**: API key + JWT token required for 16 endpoints
 - **Rate Limiting**: 20 requests/minute for protected endpoints, 10/min for token creation
-- **Global Security**: All 17 endpoints protected except /metrics (monitoring)
+- **Zero Public Access**: No public endpoints - maximum security implementation
 - **CORS Protection**: Production-grade origin validation
 - **Token Management**: 60-minute expiration with secure refresh capability
 - **Error Sanitization**: Structured responses without sensitive data leakage
@@ -428,10 +431,11 @@ curl -X POST /auth/login \
 - **Container Security**: Non-root user execution
 - **Dependency Scanning**: Automated vulnerability checks
 
-### Production Security Checklist
-- ✅ API key authentication implemented
+### Maximum Security Checklist
+- ✅ API key authentication on ALL endpoints
 - ✅ JWT token system with expiration
-- ✅ Rate limiting on all protected endpoints
+- ✅ Rate limiting on all endpoints
+- ✅ Zero public endpoints (maximum security)
 - ✅ CORS properly configured
 - ✅ Input validation and sanitization
 - ✅ Structured error handling
@@ -458,16 +462,15 @@ FRONTEND_URL=*
 FRONTEND_URL=https://your-frontend.com
 ```
 
-### 🔓 Public Endpoints (No Authentication Required)
-| Endpoint | Method | Description | Rate Limit |
-|----------|--------|-------------|------------|
-| `/metrics` | GET | Prometheus metrics (monitoring) | None |
+### 🔒 Maximum Security - No Public Endpoints
+**ALL 17 endpoints require authentication for maximum security**
 
 ### 🔐 Protected Endpoints (Dual Authentication Required)
 | Endpoint | Method | Description | Rate Limit |
 |----------|--------|-------------|------------|
 | `/` | GET | API information and status | 20/min |
 | `/health` | GET | System health check | 20/min |
+| `/metrics` | GET | Prometheus metrics (now protected) | 20/min |
 | `/agent-status` | GET | Agent availability monitoring | 20/min |
 | `/cache-stats` | GET | Cache performance statistics | 20/min |
 | `/reports/{id}` | GET | Retrieve evaluation reports | 20/min |
@@ -486,14 +489,15 @@ FRONTEND_URL=https://your-frontend.com
 | `/advanced-rl` | POST | Advanced RL with policy gradients | 20/min |
 | `/coordinated-improvement` | POST | Multi-agent collaboration | 20/min |
 
-### 🔑 Authentication Endpoints
+### 🔑 Authentication Endpoints (API Key Required)
 | Endpoint | Method | Description | Rate Limit |
 |----------|--------|-------------|------------|
-| `/token` | POST | JWT token generation (credentials only) | 10/min |
+| `/token` | POST | JWT token generation (requires API key) | 10/min |
 
-#### Demo Credentials (Development Only)
-- **Username**: Set via `DEMO_USERNAME` environment variable
-- **Password**: Set via `DEMO_PASSWORD` environment variable  
+#### Production Credentials
+- **API Key**: `bhiv-secret-key-2024` (set via API_KEY environment variable)
+- **Username**: `admin` (set via DEMO_USERNAME environment variable)
+- **Password**: `bhiv2024` (set via DEMO_PASSWORD environment variable)  
 - **Token Expires**: 60 minutes (configurable via JWT_EXPIRE_MIN)
 
 ## 🏆 Production Readiness Status

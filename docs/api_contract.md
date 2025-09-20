@@ -9,18 +9,19 @@
 
 ## Authentication
 
-### Dual Authentication (Required for All Protected Endpoints)
+### Maximum Security Authentication (Required for ALL Endpoints)
 ```http
 X-API-Key: bhiv-secret-key-2024
 Authorization: Bearer <jwt_token>
 ```
 
-**Note**: Both headers are required for all protected endpoints. Only `/token` and `/metrics` endpoints have different authentication requirements.
+**Note**: API key is required for ALL 17 endpoints. JWT token is additionally required for 16 endpoints (all except `/token`).
 
-#### Get JWT Token
+#### Get JWT Token (Requires API Key)
 ```http
 POST /token
 Content-Type: application/json
+X-API-Key: bhiv-secret-key-2024
 
 {
   "username": "admin",
@@ -204,14 +205,16 @@ Authorization: Bearer <jwt_token>
 }
 ```
 
-### Prometheus Metrics (Public)
+### Prometheus Metrics (Protected)
 ```http
 GET /metrics
+X-API-Key: bhiv-secret-key-2024
+Authorization: Bearer <jwt_token>
 ```
 
 **Response:** Prometheus format metrics
 
-**Note**: This endpoint is public for monitoring purposes and does not require authentication.
+**Note**: This endpoint now requires full authentication for maximum security.
 
 ### Agent Status (Protected)
 ```http
@@ -234,9 +237,9 @@ Authorization: Bearer <jwt_token>
 ```
 
 ## Rate Limiting
-- **Protected Endpoints**: 20 requests/minute per IP (all endpoints except /token and /metrics)
+- **All Endpoints**: 20 requests/minute per IP (maximum security)
 - **Token Endpoint**: 10 requests/minute per IP
-- **Metrics Endpoint**: No rate limiting (monitoring purposes)
+- **No Public Endpoints**: All endpoints require authentication
 
 ## Error Responses
 
@@ -280,8 +283,8 @@ Authorization: Bearer <jwt_token>
 ## Frontend Integration Notes
 
 1. **Authentication Flow**:
-   - Get JWT token from `/token` endpoint (no API key required for this step)
-   - Include **BOTH** `X-API-Key` and `Authorization` headers for all other endpoints
+   - Get JWT token from `/token` endpoint (API key required for this step)
+   - Include **BOTH** `X-API-Key` and `Authorization` headers for all 16 other endpoints
    - Token expires in 60 minutes, implement refresh logic
    - Store token securely (avoid localStorage in production)
 
@@ -291,9 +294,10 @@ Authorization: Bearer <jwt_token>
    - Handle 401 responses by refreshing token
 
 3. **Rate Limiting**:
-   - Implement client-side rate limiting: 20 requests/minute for protected endpoints
+   - Implement client-side rate limiting: 20 requests/minute for all endpoints
    - Token endpoint: 10 requests/minute limit
    - Handle 429 responses with exponential backoff
+   - No public endpoints - all require authentication
 
 4. **CORS**:
    - Set `FRONTEND_URL` environment variable in production

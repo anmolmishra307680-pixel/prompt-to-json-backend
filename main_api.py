@@ -1,6 +1,6 @@
 """FastAPI Backend for Prompt-to-JSON System"""
 
-from fastapi import FastAPI, HTTPException, Request, Depends
+from fastapi import FastAPI, HTTPException, Request, Depends, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import APIKeyHeader
 from pydantic import BaseModel
@@ -110,18 +110,24 @@ def custom_openapi():
         }
     }
     
-    # Apply security to all endpoints
+    # Apply security to endpoints and clean up parameters
     for path, path_item in openapi_schema["paths"].items():
-        for operation in path_item.values():
+        for method, operation in path_item.items():
             if isinstance(operation, dict) and "operationId" in operation:
+                # Remove authorization parameters from UI
+                if "parameters" in operation:
+                    operation["parameters"] = [
+                        param for param in operation["parameters"]
+                        if param.get("name") not in ["authorization", "Authorization", "X-API-Key"]
+                    ]
+                
                 if path == "/token":
-                    # Token endpoint is public (no auth required)
-                    operation["security"] = []
-                elif path == "/metrics":
-                    # Metrics endpoint is public for monitoring
-                    operation["security"] = []
+                    # Token endpoint requires only API key
+                    operation["security"] = [
+                        {"APIKeyHeader": []}
+                    ]
                 else:
-                    # All other endpoints need both API key and JWT
+                    # All other endpoints require both
                     operation["security"] = [
                         {"APIKeyHeader": [], "BearerAuth": []}
                     ]
@@ -187,11 +193,10 @@ try:
         inprogress_labels=True,
     )
     
-    # Instrument the app and expose metrics
+    # Instrument the app but don't auto-expose
     instrumentator.instrument(app)
-    instrumentator.expose(app, endpoint="/metrics")
     
-    print("[OK] Prometheus metrics enabled at /metrics")
+    print("[OK] Prometheus metrics instrumentation enabled")
 except ImportError:
     print("[WARN] Prometheus not available - install: pip install prometheus-fastapi-instrumentator")
 
@@ -261,8 +266,8 @@ class TokenRequest(BaseModel):
 
 @app.post("/token")
 @limiter.limit("10/minute")
-def token_create(request: Request, payload: TokenRequest):
-    """Create JWT token for authentication"""
+def token_create(request: Request, payload: TokenRequest, api_key: str = Depends(verify_api_key)):
+    """Create JWT token for authentication (requires API key)"""
     username = payload.username
     password = payload.password
     if not username or not password:
@@ -837,6 +842,22 @@ async def get_cache_stats(request: Request, api_key: str = Depends(verify_api_ke
         import logging
         logging.error(f"Failed to get cache stats: {e}")
         raise HTTPException(status_code=500, detail="Failed to get cache stats")
+
+@app.get("/metrics")
+@limiter.limit("20/minute")
+async def get_metrics(request: Request, api_key: str = Depends(verify_api_key), user=Depends(get_current_user)):
+    """Protected Prometheus metrics endpoint"""
+    try:
+        from prometheus_fastapi_instrumentator import Instrumentator
+        # Get metrics from instrumentator
+        registry = instrumentator.registry if 'instrumentator' in globals() else None
+        if registry:
+            from prometheus_client import generate_latest
+            return Response(generate_latest(registry), media_type="text/plain")
+        else:
+            return Response("# Metrics not available\n", media_type="text/plain")
+    except Exception as e:
+        return Response(f"# Error: {str(e)}\n", media_type="text/plain")
 
 @app.get("/system-overview")
 @limiter.limit("20/minute")

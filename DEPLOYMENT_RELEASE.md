@@ -25,9 +25,11 @@ GUNICORN_TIMEOUT=120
 - **Response Time**: < 2 seconds average
 - **Error Rate**: < 2% target
 
-### **🔒 Security Configuration:**
-- **Dual Authentication**: API Key + JWT Token required for all protected endpoints
-- **Rate Limiting**: 20 requests/minute for protected endpoints, 10/min for token endpoint
+### **🔒 Maximum Security Configuration:**
+- **Universal Authentication**: API Key required for ALL 17 endpoints (including /token)
+- **Dual Authentication**: API Key + JWT Token required for 16 endpoints
+- **Zero Public Access**: No public endpoints - maximum security implementation
+- **Rate Limiting**: 20 requests/minute for all endpoints, 10/min for token endpoint
 - **CORS**: Configurable origin validation for production
 - **SSL**: Required for all database connections
 - **Environment Security**: All secrets secured in environment variables
@@ -36,13 +38,23 @@ GUNICORN_TIMEOUT=120
 
 ### **🛠️ Runbook:**
 
-#### **Health Monitoring:**
+#### **Health Monitoring (Requires Authentication):**
 ```bash
-# Check system health
-curl https://prompt-to-json-backend.onrender.com/health
+# Check system health (requires both API key and JWT token)
+curl -H "X-API-Key: bhiv-secret-key-2024" \
+     -H "Authorization: Bearer <jwt-token>" \
+     https://prompt-to-json-backend.onrender.com/health
 
-# Check metrics
-curl https://prompt-to-json-backend.onrender.com/metrics
+# Check metrics (requires both API key and JWT token)
+curl -H "X-API-Key: bhiv-secret-key-2024" \
+     -H "Authorization: Bearer <jwt-token>" \
+     https://prompt-to-json-backend.onrender.com/metrics
+
+# Get JWT token (requires API key)
+curl -X POST -H "X-API-Key: bhiv-secret-key-2024" \
+     -H "Content-Type: application/json" \
+     -d '{"username":"admin","password":"bhiv2024"}' \
+     https://prompt-to-json-backend.onrender.com/token
 ```
 
 #### **Load Testing:**
@@ -51,13 +63,17 @@ curl https://prompt-to-json-backend.onrender.com/metrics
 k6 run --env TARGET_URL=https://prompt-to-json-backend.onrender.com load-test.js
 ```
 
-#### **Database Operations:**
+#### **Database Operations (Requires Authentication):**
 ```bash
 # Check database connectivity via health endpoint
-curl https://prompt-to-json-backend.onrender.com/health
+curl -H "X-API-Key: bhiv-secret-key-2024" \
+     -H "Authorization: Bearer <jwt-token>" \
+     https://prompt-to-json-backend.onrender.com/health
 
 # Prune old logs (admin)
-curl -X POST "https://prompt-to-json-backend.onrender.com/admin/prune-logs?retention_days=30"
+curl -X POST -H "X-API-Key: bhiv-secret-key-2024" \
+     -H "Authorization: Bearer <jwt-token>" \
+     "https://prompt-to-json-backend.onrender.com/admin/prune-logs?retention_days=30"
 ```
 
 ### **🚨 Troubleshooting:**
@@ -88,13 +104,15 @@ curl -X POST "https://prompt-to-json-backend.onrender.com/admin/prune-logs?reten
 4. Health checks validate deployment
 5. Monitor metrics for 24 hours
 
-### **📋 Acceptance Criteria Met:**
-- ✅ GET /health returns status: ok and DB true (with authentication)
-- ✅ POST /generate returns valid spec in <200ms average
+### **📋 Maximum Security Acceptance Criteria Met:**
+- ✅ GET /health returns status: ok and DB true (requires dual authentication)
+- ✅ POST /generate returns valid spec in <200ms average (requires dual authentication)
 - ✅ k6 test with 50 VUs: error rate <1%
 - ✅ CI pipeline: All tests passing, flake8 clean, Docker build successful
-- ✅ Metrics available at /metrics (public for monitoring)
-- ✅ All 17 endpoints protected with dual authentication
+- ✅ Metrics available at /metrics (now protected with dual authentication)
+- ✅ ALL 17 endpoints require API key (maximum security)
+- ✅ 16 endpoints require dual authentication (API key + JWT)
+- ✅ Zero public endpoints - maximum security implementation
 - ✅ Database with complete schema and migrations
 - ✅ Multi-agent coordination system operational
 - ✅ Production deployment with 99.95% uptime
